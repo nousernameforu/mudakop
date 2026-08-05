@@ -61,44 +61,44 @@ pkg_install() {
     fi
 }
 
-update_config() {
-    printf "\033[48;5;196m\033[1m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ ! Обнаружена старая версия mudakop.                                   ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Если продолжите обновление, вам потребуется настроить mudakop заново. ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Старая конфигурация будет сохранена в /etc/config/mudakop-070         ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Подробности: https://github.com/nousernameforu/mudakop       ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Точно хотите продолжить?                                             ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n"
+# update_config() {
+#     printf "\033[48;5;196m\033[1m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ ! Обнаружена старая версия mudakop.                                   ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Если продолжите обновление, вам потребуется настроить mudakop заново. ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Старая конфигурация будет сохранена в /etc/config/mudakop-070         ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Подробности: https://github.com/nousernameforu/mudakop       ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Точно хотите продолжить?                                             ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n"
 
-    echo ""
+#     echo ""
 
-    printf "\033[48;5;196m\033[1m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ ! Detected old mudakop version.                                       ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ If you continue the update, you will need to RECONFIGURE mudakop.     ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Your old configuration will be saved to /etc/config/mudakop-070       ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Details: https://github.com/nousernameforu/mudakop           ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m║ Are you sure you want to continue?                                   ║\033[0m\n"
-    printf "\033[48;5;196m\033[1m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n"
+#     printf "\033[48;5;196m\033[1m╔══════════════════════════════════════════════════════════════════════╗\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ ! Detected old mudakop version.                                       ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ If you continue the update, you will need to RECONFIGURE mudakop.     ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Your old configuration will be saved to /etc/config/mudakop-070       ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Details: https://github.com/nousernameforu/mudakop           ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m║ Are you sure you want to continue?                                   ║\033[0m\n"
+#     printf "\033[48;5;196m\033[1m╚══════════════════════════════════════════════════════════════════════╝\033[0m\n"
 
-    msg "Continue? (yes/no)"
+#     msg "Continue? (yes/no)"
 
-    while true; do
-            read -r -p '' CONFIG_UPDATE
-            case $CONFIG_UPDATE in
+#     while true; do
+#             read -r -p '' CONFIG_UPDATE
+#             case $CONFIG_UPDATE in
 
-            yes|y|Y)
-                mv /etc/config/mudakop /etc/config/mudakop-070
-                wget -O /etc/config/mudakop https://raw.githubusercontent.com/nousernameforu/mudakop/refs/heads/main/mudakop/files/etc/config/mudakop
-                msg "mudakop config has been reset to default. Your old config saved in /etc/config/mudakop-070"
-                break
-                ;;
-            *)
-                msg "Exit"
-                exit 1
-                ;;
-        esac
-    done
-}
+#             yes|y|Y)
+#                 mv /etc/config/mudakop /etc/config/mudakop-010
+#                 wget -O /etc/config/mudakop https://raw.githubusercontent.com/nousernameforu/mudakop/refs/heads/main/mudakop/files/etc/config/mudakop
+#                 msg "mudakop config has been reset to default. Your old config saved in /etc/config/mudakop-070"
+#                 break
+#                 ;;
+#             *)
+#                 msg "Exit"
+#                 exit 1
+#                 ;;
+#         esac
+#     done
+# }
 
 main() {
     check_system
@@ -240,38 +240,38 @@ check_system() {
     fi
 
     # Check version
-    if command -v mudakop > /dev/null 2>&1; then
-        local version
-        version=$(/usr/bin/mudakop show_version 2> /dev/null)
-        if [ -n "$version" ]; then
-            version=$(echo "$version" | sed 's/^v//')
-            local major
-            local minor
-            local patch
-            local revision #new revision check
-            major=$(echo "$version" | cut -d. -f1)
-            minor=$(echo "$version" | cut -d. -f2)
-            patch=$(echo "$version" | cut -d. -f3 | sed 's/-.*//') #cut off possible revisions
-            revision=$(echo "$version" | sed -n 's/.*-r\([0-9][0-9]*\)$/\1/p') #new revision check
-            revision=${revision:-0} 
+    # if command -v mudakop > /dev/null 2>&1; then
+    #     local version
+    #     version=$(/usr/bin/mudakop show_version 2> /dev/null)
+    #     if [ -n "$version" ]; then
+    #         version=$(echo "$version" | sed 's/^v//')
+    #         local major
+    #         local minor
+    #         local patch
+    #         local revision #new revision check
+    #         major=$(echo "$version" | cut -d. -f1)
+    #         minor=$(echo "$version" | cut -d. -f2)
+    #         patch=$(echo "$version" | cut -d. -f3 | sed 's/-.*//') #cut off possible revisions
+    #         revision=$(echo "$version" | sed -n 's/.*-r\([0-9][0-9]*\)$/\1/p') #new revision check
+    #         revision=${revision:-0} 
 
-            # Compare version: must be >= 0.7.0
-            if [ "$major" -gt 0 ] ||
-                { [ "$major" -eq 0 ] && [ "$minor" -gt 7 ]; } ||
-                { [ "$major" -eq 0 ] && [ "$minor" -eq 7 ] && [ "$patch" -gt 0 ]; } ||
-                { [ "$major" -eq 0 ] && [ "$minor" -eq 7 ] && [ "$patch" -eq 0 ] && [ "$revision" -ge 1 ]; } #also revisions here
-                then
-                msg "mudakop version >= 0.7.0"
-                break
-            else
-                msg "mudakop version < 0.7.0"
-                update_config
-            fi
-        else
-            msg "Unknown mudakop version"
-            update_config
-        fi
-    fi
+    #         # Compare version: must be >= 0.1.0
+    #         if [ "$major" -gt 0 ] ||
+    #             { [ "$major" -eq 0 ] && [ "$minor" -gt 7 ]; } ||
+    #             { [ "$major" -eq 0 ] && [ "$minor" -eq 7 ] && [ "$patch" -gt 0 ]; } ||
+    #             { [ "$major" -eq 0 ] && [ "$minor" -eq 7 ] && [ "$patch" -eq 0 ] && [ "$revision" -ge 1 ]; } #also revisions here
+    #             then
+    #             msg "mudakop version >= 0.1.0"
+    #             break
+    #         else
+    #             msg "mudakop version < 0.1.0"
+    #             update_config
+    #         fi
+    #     else
+    #         msg "Unknown mudakop version"
+    #         update_config
+    #     fi
+    # fi
 
     if pkg_is_installed https-dns-proxy; then
         msg "Conflicting package detected: https-dns-proxy. Remove?"
