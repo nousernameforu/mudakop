@@ -1,0 +1,14 @@
+{
+  "admin/services/mudakop": {
+    "title": "mudakop",
+    "order": 42,
+    "action": {
+      "type": "view",
+      "path": "mudakop/mudakop"
+    },
+    "depends": {
+			"acl": [ "luci-app-mudakop" ],
+			"uci": { "mudakop": true }
+		}
+  }
+}

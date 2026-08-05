@@ -1,0 +1,14 @@
+FROM itdoginfo/openwrt-sdk-ipk:24.10.6
+
+ARG MUDAKOP_VERSION
+
+ARG MUDAKOP_RELEASE=1
+ENV MUDAKOP_RELEASE=${MUDAKOP_RELEASE}
+
+COPY ./mudakop /builder/package/feeds/utilities/mudakop
+COPY ./luci-app-mudakop /builder/package/feeds/luci/luci-app-mudakop
+
+RUN export MUDAKOP_VERSION="${MUDAKOP_VERSION}" && \
+    make defconfig && \
+    make package/mudakop/compile V=s -j4 && \
+    make package/luci-app-mudakop/compile V=s -j4

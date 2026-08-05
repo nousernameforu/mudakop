@@ -1,0 +1,47 @@
+# Local build environment for patched mudakop packages (apk / OpenWrt 25.12).
+#
+# Unlike Dockerfile-apk, which compiles during `docker build` and requires
+# `docker create` + `docker cp` to retrieve artifacts, this image contains only the
+# SDK. The compile runs at `docker run` time with the sources bind-mounted at /src,
+# so edits do not invalidate the image layer and packages land straight on the host.
+#
+# Both packages are PKGARCH:=all, so the x86_64 SDK produces .apk files that install
+# on any OpenWrt 25.12 target regardless of the router's CPU.
+#
+# Build the image once:
+#   docker build -f Dockerfile-apk-dev -t mudakop-sdk:apk .
+#
+# Then compile (see README-BUILD.md for the full command):
+#   docker run --rm -v "<repo>:/src:ro" -v "<repo>/out:/out" mudakop-sdk:apk
+
+FROM itdoginfo/openwrt-sdk-apk:25.12.3
+
+WORKDIR /builder
+
+# PKG_RELEASE is the build revision; apk orders on it, which is what makes successive
+# builds upgradeable. Both are overridable at run time with
+# `-e MUDAKOP_VERSION=... -e MUDAKOP_RELEASE=...`
+ENV MUDAKOP_VERSION=0.1.0
+ENV MUDAKOP_RELEASE=1
+
+ENTRYPOINT ["/bin/sh", "-c", "set -eu; \
+    echo \"==> Staging sources (MUDAKOP_VERSION=$MUDAKOP_VERSION)\"; \
+    rm -rf package/feeds/utilities/mudakop package/feeds/luci/luci-app-mudakop; \
+    mkdir -p package/feeds/utilities package/feeds/luci; \
+    cp -a /src/mudakop package/feeds/utilities/mudakop; \
+    cp -a /src/luci-app-mudakop package/feeds/luci/luci-app-mudakop; \
+    echo '==> make defconfig'; \
+    make defconfig; \
+    echo '==> Cleaning previous build output'; \
+    make package/mudakop/clean package/luci-app-mudakop/clean >/dev/null 2>&1 || true; \
+    echo '==> Compiling mudakop'; \
+    make package/mudakop/compile -j\"$(nproc)\" V=s; \
+    echo '==> Compiling luci-app-mudakop'; \
+    make package/luci-app-mudakop/compile -j\"$(nproc)\" V=s; \
+    echo '==> Collecting packages into /out'; \
+    mkdir -p /out; \
+    find bin/packages -name 'mudakop-*.apk' -exec cp -f {} /out/ \\; ; \
+    find bin/packages -name 'luci-app-mudakop-*.apk' -exec cp -f {} /out/ \\; ; \
+    find bin/packages -name 'luci-i18n-mudakop-ru-*.apk' -exec cp -f {} /out/ \\; ; \
+    echo '==> Done:'; \
+    ls -l /out"]

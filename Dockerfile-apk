@@ -1,0 +1,14 @@
+FROM itdoginfo/openwrt-sdk-apk:25.12.3
+
+ARG MUDAKOP_VERSION
+ENV MUDAKOP_VERSION=${MUDAKOP_VERSION}
+
+ARG MUDAKOP_RELEASE=1
+ENV MUDAKOP_RELEASE=${MUDAKOP_RELEASE}
+
+COPY ./mudakop /builder/package/feeds/utilities/mudakop
+COPY ./luci-app-mudakop /builder/package/feeds/luci/luci-app-mudakop
+
+RUN make defconfig && \
+    make package/mudakop/compile -j4 V=s && \
+    make package/luci-app-mudakop/compile -j4 V=s

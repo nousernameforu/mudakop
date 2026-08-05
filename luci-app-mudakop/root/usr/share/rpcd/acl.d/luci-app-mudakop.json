@@ -1,0 +1,28 @@
+{
+  "luci-app-mudakop": {
+    "description": "Grant UCI and RPC access to LuCI app mudakop",
+    "read": {
+      "file": {
+        "/etc/init.d/mudakop": [
+          "exec"
+        ],
+        "/usr/bin/mudakop": [
+          "exec"
+        ]
+      },
+      "ubus": {
+        "service": [
+          "list"
+        ]
+      },
+      "uci": [
+        "mudakop"
+      ]
+    },
+    "write": {
+      "uci": [
+        "mudakop"
+      ]
+    }
+  }
+}

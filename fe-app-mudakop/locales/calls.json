@@ -1,0 +1,2002 @@
+[
+  {
+    "call": "✔ Enabled",
+    "key": "✔ Enabled",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:345"
+    ]
+  },
+  {
+    "call": "✔ Running",
+    "key": "✔ Running",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:356"
+    ]
+  },
+  {
+    "call": "✘ Disabled",
+    "key": "✘ Disabled",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:346"
+    ]
+  },
+  {
+    "call": "✘ Stopped",
+    "key": "✘ Stopped",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:357"
+    ]
+  },
+  {
+    "call": "Active Connections",
+    "key": "Active Connections",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:307"
+    ]
+  },
+  {
+    "call": "Additional marking rules found",
+    "key": "Additional marking rules found",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:106"
+    ]
+  },
+  {
+    "call": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
+    "key": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:271"
+    ]
+  },
+  {
+    "call": "Applicable for SOCKS and Shadowsocks proxy",
+    "key": "Applicable for SOCKS and Shadowsocks proxy",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:227"
+    ]
+  },
+  {
+    "call": "At least one valid domain must be specified. Comments-only content is not allowed.",
+    "key": "At least one valid domain must be specified. Comments-only content is not allowed.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:480"
+    ]
+  },
+  {
+    "call": "At least one valid subnet or IP must be specified. Comments-only content is not allowed.",
+    "key": "At least one valid subnet or IP must be specified. Comments-only content is not allowed.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:560"
+    ]
+  },
+  {
+    "call": "Available actions",
+    "key": "Available actions",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:43"
+    ]
+  },
+  {
+    "call": "Bootsrap DNS",
+    "key": "Bootsrap DNS",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:65"
+    ]
+  },
+  {
+    "call": "Bootstrap DNS server",
+    "key": "Bootstrap DNS server",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:45"
+    ]
+  },
+  {
+    "call": "Cache File Path",
+    "key": "Cache File Path",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:372"
+    ]
+  },
+  {
+    "call": "Cache file path cannot be empty",
+    "key": "Cache file path cannot be empty",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:386"
+    ]
+  },
+  {
+    "call": "Cannot receive checks result",
+    "key": "Cannot receive checks result",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:27",
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:27",
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:28",
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:27",
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:25"
+    ]
+  },
+  {
+    "call": "Checking, please wait",
+    "key": "Checking, please wait",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:15",
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:15",
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:13",
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:15",
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:13"
+    ]
+  },
+  {
+    "call": "checks",
+    "key": "checks",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getCheckTitle.ts:2"
+    ]
+  },
+  {
+    "call": "Checks failed",
+    "key": "Checks failed",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getMeta.ts:26"
+    ]
+  },
+  {
+    "call": "Checks passed",
+    "key": "Checks passed",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getMeta.ts:13"
+    ]
+  },
+  {
+    "call": "CIDR must be between 0 and 32",
+    "key": "CIDR must be between 0 and 32",
+    "places": [
+      "src/validators/validateSubnet.ts:38"
+    ]
+  },
+  {
+    "call": "Close",
+    "key": "Close",
+    "places": [
+      "src/partials/modal/renderModal.ts:26"
+    ]
+  },
+  {
+    "call": "Community Lists",
+    "key": "Community Lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:335"
+    ]
+  },
+  {
+    "call": "Config File Path",
+    "key": "Config File Path",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:359"
+    ]
+  },
+  {
+    "call": "Configuration for mudakop service",
+    "key": "Configuration for mudakop service",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:27"
+    ]
+  },
+  {
+    "call": "Configuration Type",
+    "key": "Configuration Type",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:23"
+    ]
+  },
+  {
+    "call": "Connection Type",
+    "key": "Connection Type",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:12"
+    ]
+  },
+  {
+    "call": "Connection URL",
+    "key": "Connection URL",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:26"
+    ]
+  },
+  {
+    "call": "Copy",
+    "key": "Copy",
+    "places": [
+      "src/partials/modal/renderModal.ts:20"
+    ]
+  },
+  {
+    "call": "Currently unavailable",
+    "key": "Currently unavailable",
+    "places": [
+      "src/mudakop/tabs/dashboard/partials/renderWidget.ts:22"
+    ]
+  },
+  {
+    "call": "Dashboard",
+    "key": "Dashboard",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:80"
+    ]
+  },
+  {
+    "call": "Dashboard currently unavailable",
+    "key": "Dashboard currently unavailable",
+    "places": [
+      "src/mudakop/tabs/dashboard/partials/renderSections.ts:19"
+    ]
+  },
+  {
+    "call": "Delay in milliseconds before reloading mudakop after interface UP",
+    "key": "Delay in milliseconds before reloading mudakop after interface UP",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:246"
+    ]
+  },
+  {
+    "call": "Delay value cannot be empty",
+    "key": "Delay value cannot be empty",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:253"
+    ]
+  },
+  {
+    "call": "DHCP has DNS server",
+    "key": "DHCP has DNS server",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:82"
+    ]
+  },
+  {
+    "call": "Diagnostics",
+    "key": "Diagnostics",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:65"
+    ]
+  },
+  {
+    "call": "Disable autostart",
+    "key": "Disable autostart",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:79"
+    ]
+  },
+  {
+    "call": "Disable QUIC",
+    "key": "Disable QUIC",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:289"
+    ]
+  },
+  {
+    "call": "Disable the QUIC protocol to improve compatibility or fix issues with video streaming",
+    "key": "Disable the QUIC protocol to improve compatibility or fix issues with video streaming",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:290"
+    ]
+  },
+  {
+    "call": "Disabled",
+    "key": "Disabled",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:426",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:506"
+    ]
+  },
+  {
+    "call": "DNS on router",
+    "key": "DNS on router",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:77"
+    ]
+  },
+  {
+    "call": "DNS over HTTPS (DoH)",
+    "key": "DNS over HTTPS (DoH)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:303",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:15"
+    ]
+  },
+  {
+    "call": "DNS over TLS (DoT)",
+    "key": "DNS over TLS (DoT)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:304",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:16"
+    ]
+  },
+  {
+    "call": "DNS Protocol Type",
+    "key": "DNS Protocol Type",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:300",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:12"
+    ]
+  },
+  {
+    "call": "DNS Rewrite TTL",
+    "key": "DNS Rewrite TTL",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:92"
+    ]
+  },
+  {
+    "call": "DNS Server",
+    "key": "DNS Server",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:313",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:24"
+    ]
+  },
+  {
+    "call": "DNS server address cannot be empty",
+    "key": "DNS server address cannot be empty",
+    "places": [
+      "src/validators/validateDns.ts:7"
+    ]
+  },
+  {
+    "call": "DNS Strategy",
+    "key": "DNS Strategy",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:79"
+    ]
+  },
+  {
+    "call": "Domain Resolver",
+    "key": "Domain Resolver",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:287"
+    ]
+  },
+  {
+    "call": "Dont Touch My DHCP!",
+    "key": "Dont Touch My DHCP!",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:350"
+    ]
+  },
+  {
+    "call": "Downlink",
+    "key": "Downlink",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:241",
+      "src/mudakop/tabs/dashboard/initController.ts:275"
+    ]
+  },
+  {
+    "call": "Download",
+    "key": "Download",
+    "places": [
+      "src/partials/modal/renderModal.ts:15"
+    ]
+  },
+  {
+    "call": "Download Lists via Proxy/VPN",
+    "key": "Download Lists via Proxy/VPN",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:312"
+    ]
+  },
+  {
+    "call": "Download Lists via specific proxy section",
+    "key": "Download Lists via specific proxy section",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:321"
+    ]
+  },
+  {
+    "call": "Downloading all lists via specific Proxy/VPN",
+    "key": "Downloading all lists via specific Proxy/VPN",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:313",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:322"
+    ]
+  },
+  {
+    "call": "Dynamic List",
+    "key": "Dynamic List",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:427",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:507"
+    ]
+  },
+  {
+    "call": "Enable autostart",
+    "key": "Enable autostart",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:89"
+    ]
+  },
+  {
+    "call": "Enable built-in DNS resolver for domains handled by this section",
+    "key": "Enable built-in DNS resolver for domains handled by this section",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:288"
+    ]
+  },
+  {
+    "call": "Enable DNS resolve to get real IP when routing",
+    "key": "Enable DNS resolve to get real IP when routing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:726"
+    ]
+  },
+  {
+    "call": "Enable IPv6",
+    "key": "Enable IPv6",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:68"
+    ]
+  },
+  {
+    "call": "Enable Mixed Proxy",
+    "key": "Enable Mixed Proxy",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:700"
+    ]
+  },
+  {
+    "call": "Enable Output Network Interface",
+    "key": "Enable Output Network Interface",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:150"
+    ]
+  },
+  {
+    "call": "Enable the mixed proxy, allowing this section to route traffic through both HTTP and SOCKS proxies",
+    "key": "Enable the mixed proxy, allowing this section to route traffic through both HTTP and SOCKS proxies",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:701"
+    ]
+  },
+  {
+    "call": "Enable YACD",
+    "key": "Enable YACD",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:261"
+    ]
+  },
+  {
+    "call": "Enable YACD WAN Access",
+    "key": "Enable YACD WAN Access",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:270"
+    ]
+  },
+  {
+    "call": "Endpoint Config",
+    "key": "Endpoint Config",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:30"
+    ]
+  },
+  {
+    "call": "Endpoint Configuration",
+    "key": "Endpoint Configuration",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:89"
+    ]
+  },
+  {
+    "call": "Endpoint must be a JSON object",
+    "key": "Endpoint must be a JSON object",
+    "places": [
+      "src/validators/validateEndpointJson.ts:13"
+    ]
+  },
+  {
+    "call": "Endpoint must contain a non-empty \"type\" field",
+    "key": "Endpoint must contain a non-empty \"type\" field",
+    "places": [
+      "src/validators/validateEndpointJson.ts:21"
+    ]
+  },
+  {
+    "call": "Enter complete endpoint configuration in JSON format, e.g. a WireGuard endpoint. The tag is assigned by mudakop and will be overwritten",
+    "key": "Enter complete endpoint configuration in JSON format, e.g. a WireGuard endpoint. The tag is assigned by mudakop and will be overwritten",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:90"
+    ]
+  },
+  {
+    "call": "Enter complete outbound configuration in JSON format",
+    "key": "Enter complete outbound configuration in JSON format",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:67"
+    ]
+  },
+  {
+    "call": "Enter domain names separated by commas, spaces, or newlines. You can add comments using //",
+    "key": "Enter domain names separated by commas, spaces, or newlines. You can add comments using //",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:462"
+    ]
+  },
+  {
+    "call": "Enter domain names without protocols, e.g. example.com or sub.example.com",
+    "key": "Enter domain names without protocols, e.g. example.com or sub.example.com",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:436"
+    ]
+  },
+  {
+    "call": "Enter subnets in CIDR notation (e.g. 103.21.244.0/22 or 2001:db8::/32) or single IP addresses. IPv6 entries are only routed when IPv6 support is enabled in the settings",
+    "key": "Enter subnets in CIDR notation (e.g. 103.21.244.0/22 or 2001:db8::/32) or single IP addresses. IPv6 entries are only routed when IPv6 support is enabled in the settings",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:516"
+    ]
+  },
+  {
+    "call": "Enter subnets in CIDR notation or single IP addresses, separated by commas, spaces, or newlines. IPv6 entries are only routed when IPv6 support is enabled in the settings. You can add comments using //",
+    "key": "Enter subnets in CIDR notation or single IP addresses, separated by commas, spaces, or newlines. IPv6 entries are only routed when IPv6 support is enabled in the settings. You can add comments using //",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:542"
+    ]
+  },
+  {
+    "call": "Every 1 minute",
+    "key": "Every 1 minute",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:166"
+    ]
+  },
+  {
+    "call": "Every 3 minutes",
+    "key": "Every 3 minutes",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:167"
+    ]
+  },
+  {
+    "call": "Every 30 seconds",
+    "key": "Every 30 seconds",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:165"
+    ]
+  },
+  {
+    "call": "Every 5 minutes",
+    "key": "Every 5 minutes",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:168"
+    ]
+  },
+  {
+    "call": "Exclude NTP",
+    "key": "Exclude NTP",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:426"
+    ]
+  },
+  {
+    "call": "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN",
+    "key": "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:427"
+    ]
+  },
+  {
+    "call": "Failed to copy!",
+    "key": "Failed to copy!",
+    "places": [
+      "src/helpers/copyToClipboard.ts:12"
+    ]
+  },
+  {
+    "call": "Failed to execute!",
+    "key": "Failed to execute!",
+    "places": [
+      "src/mudakop/tabs/diagnostic/initController.ts:227",
+      "src/mudakop/tabs/diagnostic/initController.ts:231",
+      "src/mudakop/tabs/diagnostic/initController.ts:261",
+      "src/mudakop/tabs/diagnostic/initController.ts:265",
+      "src/mudakop/tabs/diagnostic/initController.ts:302",
+      "src/mudakop/tabs/diagnostic/initController.ts:306"
+    ]
+  },
+  {
+    "call": "Fastest",
+    "key": "Fastest",
+    "places": [
+      "src/mudakop/methods/custom/getDashboardSections.ts:181",
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:59"
+    ]
+  },
+  {
+    "call": "Fully Routed IPs",
+    "key": "Fully Routed IPs",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:673"
+    ]
+  },
+  {
+    "call": "Get global check",
+    "key": "Get global check",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:98"
+    ]
+  },
+  {
+    "call": "Global check",
+    "key": "Global check",
+    "places": [
+      "src/mudakop/tabs/diagnostic/initController.ts:222"
+    ]
+  },
+  {
+    "call": "Interface Monitoring",
+    "key": "Interface Monitoring",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:213"
+    ]
+  },
+  {
+    "call": "Interface Monitoring Delay",
+    "key": "Interface Monitoring Delay",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:245"
+    ]
+  },
+  {
+    "call": "Interface monitoring for Bad WAN",
+    "key": "Interface monitoring for Bad WAN",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:214"
+    ]
+  },
+  {
+    "call": "Invalid DNS server format. Examples: 8.8.8.8 or 2606:4700:4700::1111 or dns.example.com or dns.example.com/nicedns for DoH",
+    "key": "Invalid DNS server format. Examples: 8.8.8.8 or 2606:4700:4700::1111 or dns.example.com or dns.example.com/nicedns for DoH",
+    "places": [
+      "src/validators/validateDns.ts:38"
+    ]
+  },
+  {
+    "call": "Invalid domain address",
+    "key": "Invalid domain address",
+    "places": [
+      "src/validators/validateDomain.ts:18",
+      "src/validators/validateDomain.ts:27"
+    ]
+  },
+  {
+    "call": "Invalid format. Use X::X or X::X/Y",
+    "key": "Invalid format. Use X::X or X::X/Y",
+    "places": [
+      "src/validators/validateSubnet.ts:52"
+    ]
+  },
+  {
+    "call": "Invalid format. Use X.X.X.X or X.X.X.X/Y",
+    "key": "Invalid format. Use X.X.X.X or X.X.X.X/Y",
+    "places": [
+      "src/validators/validateSubnet.ts:16"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: insecure must be 0 or 1",
+    "key": "Invalid HY2 URL: insecure must be 0 or 1",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:90"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: invalid port number",
+    "key": "Invalid HY2 URL: invalid port number",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:77"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: missing credentials/server",
+    "key": "Invalid HY2 URL: missing credentials/server",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:30"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: missing host",
+    "key": "Invalid HY2 URL: missing host",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:47"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: missing host & port",
+    "key": "Invalid HY2 URL: missing host & port",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:41"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: missing password",
+    "key": "Invalid HY2 URL: missing password",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:36"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: missing port",
+    "key": "Invalid HY2 URL: missing port",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:50"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: must not contain spaces",
+    "key": "Invalid HY2 URL: must not contain spaces",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:18"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: must start with hysteria2:// or hy2://",
+    "key": "Invalid HY2 URL: must start with hysteria2:// or hy2://",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:12"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: obfs-password required when obfs is set",
+    "key": "Invalid HY2 URL: obfs-password required when obfs is set",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:108"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: parsing failed",
+    "key": "Invalid HY2 URL: parsing failed",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:122"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: sni cannot be empty",
+    "key": "Invalid HY2 URL: sni cannot be empty",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:116"
+    ]
+  },
+  {
+    "call": "Invalid HY2 URL: unsupported obfs type",
+    "key": "Invalid HY2 URL: unsupported obfs type",
+    "places": [
+      "src/validators/validateHysteriaUrl.ts:98"
+    ]
+  },
+  {
+    "call": "Invalid IP address",
+    "key": "Invalid IP address",
+    "places": [
+      "src/validators/validateIp.ts:31",
+      "src/validators/validateIp.ts:47"
+    ]
+  },
+  {
+    "call": "Invalid IPv6 address",
+    "key": "Invalid IPv6 address",
+    "places": [
+      "src/validators/validateDns.ts:17",
+      "src/validators/validateIp.ts:39",
+      "src/validators/validateSubnet.ts:59"
+    ]
+  },
+  {
+    "call": "Invalid JSON format",
+    "key": "Invalid JSON format",
+    "places": [
+      "src/validators/validateEndpointJson.ts:9",
+      "src/validators/validateOutboundJson.ts:9"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: invalid host format",
+    "key": "Invalid Naive URL: invalid host format",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:79"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: invalid IPv6 address",
+    "key": "Invalid Naive URL: invalid IPv6 address",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:53"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: invalid port number",
+    "key": "Invalid Naive URL: invalid port number",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:91"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: IPv6 address must be wrapped in brackets",
+    "key": "Invalid Naive URL: IPv6 address must be wrapped in brackets",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:62"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: missing host",
+    "key": "Invalid Naive URL: missing host",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:38"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: missing hostname or IP",
+    "key": "Invalid Naive URL: missing hostname or IP",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:72"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: must not contain spaces",
+    "key": "Invalid Naive URL: must not contain spaces",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:22"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: must start with naive+https:// or naive+quic://",
+    "key": "Invalid Naive URL: must start with naive+https:// or naive+quic://",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:15"
+    ]
+  },
+  {
+    "call": "Invalid Naive URL: parsing failed",
+    "key": "Invalid Naive URL: parsing failed",
+    "places": [
+      "src/validators/validateNaiveUrl.ts:96"
+    ]
+  },
+  {
+    "call": "Invalid path format. Path must start with \"/\" and contain valid characters",
+    "key": "Invalid path format. Path must start with \"/\" and contain valid characters",
+    "places": [
+      "src/validators/validatePath.ts:22"
+    ]
+  },
+  {
+    "call": "Invalid port number. Must be between 1 and 65535",
+    "key": "Invalid port number. Must be between 1 and 65535",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:85"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: decoded credentials must contain method:password",
+    "key": "Invalid Shadowsocks URL: decoded credentials must contain method:password",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:37"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: missing credentials",
+    "key": "Invalid Shadowsocks URL: missing credentials",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:27"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: missing method and password separator \":\"",
+    "key": "Invalid Shadowsocks URL: missing method and password separator \":\"",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:46"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: missing port",
+    "key": "Invalid Shadowsocks URL: missing port",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:76"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: missing server",
+    "key": "Invalid Shadowsocks URL: missing server",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:67"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: missing server address",
+    "key": "Invalid Shadowsocks URL: missing server address",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:58"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: must not contain spaces",
+    "key": "Invalid Shadowsocks URL: must not contain spaces",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:16"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: must start with ss://",
+    "key": "Invalid Shadowsocks URL: must start with ss://",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:8"
+    ]
+  },
+  {
+    "call": "Invalid Shadowsocks URL: parsing failed",
+    "key": "Invalid Shadowsocks URL: parsing failed",
+    "places": [
+      "src/validators/validateShadowsocksUrl.ts:91"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: invalid host format",
+    "key": "Invalid SOCKS URL: invalid host format",
+    "places": [
+      "src/validators/validateSocksUrl.ts:73"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: invalid port number",
+    "key": "Invalid SOCKS URL: invalid port number",
+    "places": [
+      "src/validators/validateSocksUrl.ts:63"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: missing host and port",
+    "key": "Invalid SOCKS URL: missing host and port",
+    "places": [
+      "src/validators/validateSocksUrl.ts:42"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: missing hostname or IP",
+    "key": "Invalid SOCKS URL: missing hostname or IP",
+    "places": [
+      "src/validators/validateSocksUrl.ts:51"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: missing port",
+    "key": "Invalid SOCKS URL: missing port",
+    "places": [
+      "src/validators/validateSocksUrl.ts:56"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: missing username",
+    "key": "Invalid SOCKS URL: missing username",
+    "places": [
+      "src/validators/validateSocksUrl.ts:34"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: must not contain spaces",
+    "key": "Invalid SOCKS URL: must not contain spaces",
+    "places": [
+      "src/validators/validateSocksUrl.ts:19"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: must start with socks4://, socks4a://, or socks5://",
+    "key": "Invalid SOCKS URL: must start with socks4://, socks4a://, or socks5://",
+    "places": [
+      "src/validators/validateSocksUrl.ts:10"
+    ]
+  },
+  {
+    "call": "Invalid SOCKS URL: parsing failed",
+    "key": "Invalid SOCKS URL: parsing failed",
+    "places": [
+      "src/validators/validateSocksUrl.ts:77"
+    ]
+  },
+  {
+    "call": "Invalid Trojan URL: must not contain spaces",
+    "key": "Invalid Trojan URL: must not contain spaces",
+    "places": [
+      "src/validators/validateTrojanUrl.ts:15"
+    ]
+  },
+  {
+    "call": "Invalid Trojan URL: must start with trojan://",
+    "key": "Invalid Trojan URL: must start with trojan://",
+    "places": [
+      "src/validators/validateTrojanUrl.ts:8"
+    ]
+  },
+  {
+    "call": "Invalid Trojan URL: parsing failed",
+    "key": "Invalid Trojan URL: parsing failed",
+    "places": [
+      "src/validators/validateTrojanUrl.ts:56"
+    ]
+  },
+  {
+    "call": "Invalid URL format",
+    "key": "Invalid URL format",
+    "places": [
+      "src/validators/validateUrl.ts:8",
+      "src/validators/validateUrl.ts:31"
+    ]
+  },
+  {
+    "call": "Invalid VLESS URL: parsing failed",
+    "key": "Invalid VLESS URL: parsing failed",
+    "places": [
+      "src/validators/validateVlessUrl.ts:110"
+    ]
+  },
+  {
+    "call": "IP address 0.0.0.0 is not allowed",
+    "key": "IP address 0.0.0.0 is not allowed",
+    "places": [
+      "src/validators/validateSubnet.ts:23"
+    ]
+  },
+  {
+    "call": "IPv6 address :: is not allowed",
+    "key": "IPv6 address :: is not allowed",
+    "places": [
+      "src/validators/validateSubnet.ts:63"
+    ]
+  },
+  {
+    "call": "IPv6 prefix length must be between 0 and 128",
+    "key": "IPv6 prefix length must be between 0 and 128",
+    "places": [
+      "src/validators/validateSubnet.ts:70",
+      "src/validators/validateSubnet.ts:79"
+    ]
+  },
+  {
+    "call": "Issues detected",
+    "key": "Issues detected",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getMeta.ts:20"
+    ]
+  },
+  {
+    "call": "Latest",
+    "key": "Latest",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getMudakopVersionRow.ts:48"
+    ]
+  },
+  {
+    "call": "List Update Frequency",
+    "key": "List Update Frequency",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:300"
+    ]
+  },
+  {
+    "call": "Local Domain Lists",
+    "key": "Local Domain Lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:581"
+    ]
+  },
+  {
+    "call": "Local Subnet Lists",
+    "key": "Local Subnet Lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:604"
+    ]
+  },
+  {
+    "call": "Log Level",
+    "key": "Log Level",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:408"
+    ]
+  },
+  {
+    "call": "Main DNS",
+    "key": "Main DNS",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:72"
+    ]
+  },
+  {
+    "call": "Memory Usage",
+    "key": "Memory Usage",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:311"
+    ]
+  },
+  {
+    "call": "Mixed Proxy Port",
+    "key": "Mixed Proxy Port",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:713"
+    ]
+  },
+  {
+    "call": "Monitored Interfaces",
+    "key": "Monitored Interfaces",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:222"
+    ]
+  },
+  {
+    "call": "Must be a number in the range of 50 - 1000",
+    "key": "Must be a number in the range of 50 - 1000",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:192"
+    ]
+  },
+  {
+    "call": "Network Interface",
+    "key": "Network Interface",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:241"
+    ]
+  },
+  {
+    "call": "No other marking rules found",
+    "key": "No other marking rules found",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:105"
+    ]
+  },
+  {
+    "call": "Not implement yet",
+    "key": "Not implement yet",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderCheckSection.ts:189"
+    ]
+  },
+  {
+    "call": "Not responding",
+    "key": "Not responding",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:75",
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:81",
+      "src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:100"
+    ]
+  },
+  {
+    "call": "Not running",
+    "key": "Not running",
+    "places": [
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:55",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:63",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:71",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:79",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:87"
+    ]
+  },
+  {
+    "call": "Operation timed out",
+    "key": "Operation timed out",
+    "places": [
+      "src/helpers/withTimeout.ts:7"
+    ]
+  },
+  {
+    "call": "Outbound Config",
+    "key": "Outbound Config",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:29"
+    ]
+  },
+  {
+    "call": "Outbound Configuration",
+    "key": "Outbound Configuration",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:66"
+    ]
+  },
+  {
+    "call": "Outdated",
+    "key": "Outdated",
+    "places": [
+      "src/mudakop/tabs/diagnostic/helpers/getMudakopVersionRow.ts:38"
+    ]
+  },
+  {
+    "call": "Output Network Interface",
+    "key": "Output Network Interface",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:159"
+    ]
+  },
+  {
+    "call": "Path cannot be empty",
+    "key": "Path cannot be empty",
+    "places": [
+      "src/validators/validatePath.ts:7"
+    ]
+  },
+  {
+    "call": "Path must be absolute (start with /)",
+    "key": "Path must be absolute (start with /)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:390"
+    ]
+  },
+  {
+    "call": "Path must contain at least one directory (like /tmp/cache.db)",
+    "key": "Path must contain at least one directory (like /tmp/cache.db)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:399"
+    ]
+  },
+  {
+    "call": "Path must end with cache.db",
+    "key": "Path must end with cache.db",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:394"
+    ]
+  },
+  {
+    "call": "Pending",
+    "key": "Pending",
+    "places": [
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:103",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:111",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:119",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:127",
+      "src/mudakop/tabs/diagnostic/diagnostic.store.ts:135"
+    ]
+  },
+  {
+    "call": "mudakop",
+    "key": "mudakop",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:343"
+    ]
+  },
+  {
+    "call": "mudakop Settings",
+    "key": "mudakop Settings",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:26"
+    ]
+  },
+  {
+    "call": "mudakop will not modify your DHCP configuration",
+    "key": "mudakop will not modify your DHCP configuration",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:351"
+    ]
+  },
+  {
+    "call": "Proxy Configuration URL",
+    "key": "Proxy Configuration URL",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:37"
+    ]
+  },
+  {
+    "call": "Regional options cannot be used together",
+    "key": "Regional options cannot be used together",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:369"
+    ]
+  },
+  {
+    "call": "Remote Domain Lists",
+    "key": "Remote Domain Lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:627"
+    ]
+  },
+  {
+    "call": "Remote Subnet Lists",
+    "key": "Remote Subnet Lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650"
+    ]
+  },
+  {
+    "call": "Resolve real IP for routing",
+    "key": "Resolve real IP for routing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:725"
+    ]
+  },
+  {
+    "call": "Restart mudakop",
+    "key": "Restart mudakop",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:49"
+    ]
+  },
+  {
+    "call": "Route IPv6 traffic in addition to IPv4. Requires working IPv6 on both the WAN and the proxy/VPN server. Leave disabled if unsure: with this off, mudakop answers AAAA queries empty and only IPv4 is routed",
+    "key": "Route IPv6 traffic in addition to IPv4. Requires working IPv6 on both the WAN and the proxy/VPN server. Leave disabled if unsure: with this off, mudakop answers AAAA queries empty and only IPv4 is routed",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:69"
+    ]
+  },
+  {
+    "call": "Routing Excluded IPs",
+    "key": "Routing Excluded IPs",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:437"
+    ]
+  },
+  {
+    "call": "Rules mangle counters",
+    "key": "Rules mangle counters",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:79"
+    ]
+  },
+  {
+    "call": "Rules mangle exist",
+    "key": "Rules mangle exist",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:74"
+    ]
+  },
+  {
+    "call": "Rules mangle output counters",
+    "key": "Rules mangle output counters",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:89"
+    ]
+  },
+  {
+    "call": "Rules mangle output exist",
+    "key": "Rules mangle output exist",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:84"
+    ]
+  },
+  {
+    "call": "Rules proxy counters",
+    "key": "Rules proxy counters",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:99"
+    ]
+  },
+  {
+    "call": "Rules proxy exist",
+    "key": "Rules proxy exist",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:94"
+    ]
+  },
+  {
+    "call": "Run Diagnostic",
+    "key": "Run Diagnostic",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderRunAction.ts:15"
+    ]
+  },
+  {
+    "call": "Russia inside restrictions",
+    "key": "Russia inside restrictions",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:388"
+    ]
+  },
+  {
+    "call": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
+    "key": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:281"
+    ]
+  },
+  {
+    "call": "Sections",
+    "key": "Sections",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:36"
+    ]
+  },
+  {
+    "call": "Select a predefined list for routing",
+    "key": "Select a predefined list for routing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:336"
+    ]
+  },
+  {
+    "call": "Select between VPN and Proxy connection methods for traffic routing",
+    "key": "Select between VPN and Proxy connection methods for traffic routing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:13"
+    ]
+  },
+  {
+    "call": "Select DNS protocol to use",
+    "key": "Select DNS protocol to use",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:13"
+    ]
+  },
+  {
+    "call": "Select how often the domain or subnet lists are updated automatically",
+    "key": "Select how often the domain or subnet lists are updated automatically",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:301"
+    ]
+  },
+  {
+    "call": "Select how to configure the proxy",
+    "key": "Select how to configure the proxy",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:24"
+    ]
+  },
+  {
+    "call": "Select network interface for VPN connection",
+    "key": "Select network interface for VPN connection",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:242"
+    ]
+  },
+  {
+    "call": "Select or enter DNS server address",
+    "key": "Select or enter DNS server address",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:314",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:25"
+    ]
+  },
+  {
+    "call": "Select or enter path for sing-box cache file. Change this ONLY if you know what you are doing",
+    "key": "Select or enter path for sing-box cache file. Change this ONLY if you know what you are doing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:373"
+    ]
+  },
+  {
+    "call": "Select path for sing-box config file. Change this ONLY if you know what you are doing",
+    "key": "Select path for sing-box config file. Change this ONLY if you know what you are doing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:360"
+    ]
+  },
+  {
+    "call": "Select the DNS protocol type for the domain resolver",
+    "key": "Select the DNS protocol type for the domain resolver",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:301"
+    ]
+  },
+  {
+    "call": "Select the list type for adding custom domains",
+    "key": "Select the list type for adding custom domains",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:424"
+    ]
+  },
+  {
+    "call": "Select the list type for adding custom subnets",
+    "key": "Select the list type for adding custom subnets",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:504"
+    ]
+  },
+  {
+    "call": "Select the log level for sing-box",
+    "key": "Select the log level for sing-box",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:409"
+    ]
+  },
+  {
+    "call": "Select the network interface from which the traffic will originate",
+    "key": "Select the network interface from which the traffic will originate",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:114"
+    ]
+  },
+  {
+    "call": "Select the network interface to which the traffic will originate",
+    "key": "Select the network interface to which the traffic will originate",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:160"
+    ]
+  },
+  {
+    "call": "Select the WAN interfaces to be monitored",
+    "key": "Select the WAN interfaces to be monitored",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:223"
+    ]
+  },
+  {
+    "call": "Selector",
+    "key": "Selector",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:27"
+    ]
+  },
+  {
+    "call": "Selector Proxy Links",
+    "key": "Selector Proxy Links",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:116"
+    ]
+  },
+  {
+    "call": "Services info",
+    "key": "Services info",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:340"
+    ]
+  },
+  {
+    "call": "Settings",
+    "key": "Settings",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:49"
+    ]
+  },
+  {
+    "call": "Show sing-box config",
+    "key": "Show sing-box config",
+    "places": [
+      "src/mudakop/tabs/diagnostic/initController.ts:290",
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:116"
+    ]
+  },
+  {
+    "call": "Sing-box",
+    "key": "Sing-box",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:354"
+    ]
+  },
+  {
+    "call": "Sing-box autostart disabled",
+    "key": "Sing-box autostart disabled",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:77"
+    ]
+  },
+  {
+    "call": "Sing-box does not return FakeIP addresses",
+    "key": "Sing-box does not return FakeIP addresses",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:62"
+    ]
+  },
+  {
+    "call": "Sing-box does not return IPv6 FakeIP addresses",
+    "key": "Sing-box does not return IPv6 FakeIP addresses",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:70"
+    ]
+  },
+  {
+    "call": "Sing-box installed",
+    "key": "Sing-box installed",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:62"
+    ]
+  },
+  {
+    "call": "Sing-box listening ports",
+    "key": "Sing-box listening ports",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:87"
+    ]
+  },
+  {
+    "call": "Sing-box process running",
+    "key": "Sing-box process running",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:82"
+    ]
+  },
+  {
+    "call": "Sing-box returns FakeIP addresses",
+    "key": "Sing-box returns FakeIP addresses",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:61"
+    ]
+  },
+  {
+    "call": "Sing-box returns IPv6 FakeIP addresses",
+    "key": "Sing-box returns IPv6 FakeIP addresses",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:69"
+    ]
+  },
+  {
+    "call": "Sing-box service exist",
+    "key": "Sing-box service exist",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:72"
+    ]
+  },
+  {
+    "call": "Sing-box version is compatible (newer than 1.12.4)",
+    "key": "Sing-box version is compatible (newer than 1.12.4)",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:67"
+    ]
+  },
+  {
+    "call": "Source Network Interface",
+    "key": "Source Network Interface",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:113"
+    ]
+  },
+  {
+    "call": "Specify a local IP address to be excluded from routing",
+    "key": "Specify a local IP address to be excluded from routing",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:438"
+    ]
+  },
+  {
+    "call": "Specify local IP addresses or subnets whose traffic will always be routed through the configured route. IPv6 entries are only routed when IPv6 support is enabled in the settings",
+    "key": "Specify local IP addresses or subnets whose traffic will always be routed through the configured route. IPv6 entries are only routed when IPv6 support is enabled in the settings",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:674"
+    ]
+  },
+  {
+    "call": "Specify remote URLs to download and use domain lists",
+    "key": "Specify remote URLs to download and use domain lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:628"
+    ]
+  },
+  {
+    "call": "Specify remote URLs to download and use subnet lists",
+    "key": "Specify remote URLs to download and use subnet lists",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:651"
+    ]
+  },
+  {
+    "call": "Specify the path to the list file located on the router filesystem",
+    "key": "Specify the path to the list file located on the router filesystem",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:582",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:605"
+    ]
+  },
+  {
+    "call": "Start mudakop",
+    "key": "Start mudakop",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:69"
+    ]
+  },
+  {
+    "call": "Stop mudakop",
+    "key": "Stop mudakop",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:59"
+    ]
+  },
+  {
+    "call": "Successfully copied!",
+    "key": "Successfully copied!",
+    "places": [
+      "src/helpers/copyToClipboard.ts:10"
+    ]
+  },
+  {
+    "call": "System info",
+    "key": "System info",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:304"
+    ]
+  },
+  {
+    "call": "System information",
+    "key": "System information",
+    "places": [
+      "src/mudakop/tabs/diagnostic/partials/renderSystemInfo.ts:21"
+    ]
+  },
+  {
+    "call": "Table exist",
+    "key": "Table exist",
+    "places": [
+      "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:69"
+    ]
+  },
+  {
+    "call": "Test latency",
+    "key": "Test latency",
+    "places": [
+      "src/mudakop/tabs/dashboard/partials/renderSections.ts:108"
+    ]
+  },
+  {
+    "call": "Text List",
+    "key": "Text List",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:428",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:508"
+    ]
+  },
+  {
+    "call": "The DNS server used to look up the IP address of an upstream DNS server",
+    "key": "The DNS server used to look up the IP address of an upstream DNS server",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:46"
+    ]
+  },
+  {
+    "call": "The interval between connectivity tests",
+    "key": "The interval between connectivity tests",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:163"
+    ]
+  },
+  {
+    "call": "The maximum difference in response times (ms) allowed when comparing servers",
+    "key": "The maximum difference in response times (ms) allowed when comparing servers",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:176"
+    ]
+  },
+  {
+    "call": "The URL used to test server connectivity",
+    "key": "The URL used to test server connectivity",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:199"
+    ]
+  },
+  {
+    "call": "Time in seconds for DNS record caching (default: 60)",
+    "key": "Time in seconds for DNS record caching (default: 60)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:93"
+    ]
+  },
+  {
+    "call": "Traffic",
+    "key": "Traffic",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:238"
+    ]
+  },
+  {
+    "call": "Traffic Total",
+    "key": "Traffic Total",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:268"
+    ]
+  },
+  {
+    "call": "TTL must be a positive number",
+    "key": "TTL must be a positive number",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:104"
+    ]
+  },
+  {
+    "call": "TTL value cannot be empty",
+    "key": "TTL value cannot be empty",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:99"
+    ]
+  },
+  {
+    "call": "UDP (Unprotected DNS)",
+    "key": "UDP (Unprotected DNS)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:305",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:17"
+    ]
+  },
+  {
+    "call": "UDP over TCP",
+    "key": "UDP over TCP",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:226"
+    ]
+  },
+  {
+    "call": "unknown",
+    "key": "unknown",
+    "places": [
+      "src/mudakop/tabs/diagnostic/initController.ts:38",
+      "src/mudakop/tabs/diagnostic/initController.ts:39",
+      "src/mudakop/tabs/diagnostic/initController.ts:40",
+      "src/mudakop/tabs/diagnostic/initController.ts:41",
+      "src/mudakop/tabs/diagnostic/initController.ts:42",
+      "src/mudakop/tabs/diagnostic/initController.ts:43",
+      "src/mudakop/tabs/diagnostic/helpers/getMudakopVersionRow.ts:7"
+    ]
+  },
+  {
+    "call": "Uplink",
+    "key": "Uplink",
+    "places": [
+      "src/mudakop/tabs/dashboard/initController.ts:240",
+      "src/mudakop/tabs/dashboard/initController.ts:271"
+    ]
+  },
+  {
+    "call": "URL must start with vless://, ss://, trojan://, socks4/5://, hysteria2://hy2://, or naive+https://naive+quic://",
+    "key": "URL must start with vless://, ss://, trojan://, socks4/5://, hysteria2://hy2://, or naive+https://naive+quic://",
+    "places": [
+      "src/validators/validateProxyUrl.ts:42"
+    ]
+  },
+  {
+    "call": "URL must use one of the following protocols:",
+    "key": "URL must use one of the following protocols:",
+    "places": [
+      "src/validators/validateUrl.ts:17"
+    ]
+  },
+  {
+    "call": "URLTest",
+    "key": "URLTest",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:28"
+    ]
+  },
+  {
+    "call": "URLTest Check Interval",
+    "key": "URLTest Check Interval",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:162"
+    ]
+  },
+  {
+    "call": "URLTest Proxy Links",
+    "key": "URLTest Proxy Links",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:139"
+    ]
+  },
+  {
+    "call": "URLTest Testing URL",
+    "key": "URLTest Testing URL",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:198"
+    ]
+  },
+  {
+    "call": "URLTest Tolerance",
+    "key": "URLTest Tolerance",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:175"
+    ]
+  },
+  {
+    "call": "User Domain List Type",
+    "key": "User Domain List Type",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:423"
+    ]
+  },
+  {
+    "call": "User Domains",
+    "key": "User Domains",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:435"
+    ]
+  },
+  {
+    "call": "User Domains List",
+    "key": "User Domains List",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:461"
+    ]
+  },
+  {
+    "call": "User Subnet List Type",
+    "key": "User Subnet List Type",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:503"
+    ]
+  },
+  {
+    "call": "User Subnets",
+    "key": "User Subnets",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:515"
+    ]
+  },
+  {
+    "call": "User Subnets List",
+    "key": "User Subnets List",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:541"
+    ]
+  },
+  {
+    "call": "Valid",
+    "key": "Valid",
+    "places": [
+      "src/validators/validateDns.ts:14",
+      "src/validators/validateDns.ts:22",
+      "src/validators/validateDns.ts:29",
+      "src/validators/validateDns.ts:33",
+      "src/validators/validateDomain.ts:13",
+      "src/validators/validateDomain.ts:30",
+      "src/validators/validateEndpointJson.ts:25",
+      "src/validators/validateHysteriaUrl.ts:120",
+      "src/validators/validateIp.ts:28",
+      "src/validators/validateIp.ts:36",
+      "src/validators/validateIp.ts:44",
+      "src/validators/validateNaiveUrl.ts:99",
+      "src/validators/validateOutboundJson.ts:7",
+      "src/validators/validatePath.ts:16",
+      "src/validators/validateShadowsocksUrl.ts:95",
+      "src/validators/validateSocksUrl.ts:80",
+      "src/validators/validateSubnet.ts:43",
+      "src/validators/validateSubnet.ts:84",
+      "src/validators/validateTrojanUrl.ts:59",
+      "src/validators/validateUrl.ts:28",
+      "src/validators/validateVlessUrl.ts:108"
+    ]
+  },
+  {
+    "call": "Validation errors:",
+    "key": "Validation errors:",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:494",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:572"
+    ]
+  },
+  {
+    "call": "View logs",
+    "key": "View logs",
+    "places": [
+      "src/mudakop/tabs/diagnostic/initController.ts:256",
+      "src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:107"
+    ]
+  },
+  {
+    "call": "vless://, ss://, trojan://, socks4/5://, hy2/hysteria2://, naive+https/quic:// links",
+    "key": "vless://, ss://, trojan://, socks4/5://, hy2/hysteria2://, naive+https/quic:// links",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:38",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:117",
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:140"
+    ]
+  },
+  {
+    "call": "Warning: %s cannot be used together with %s. Previous selections have been removed.",
+    "key": "Warning: %s cannot be used together with %s. Previous selections have been removed.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:371"
+    ]
+  },
+  {
+    "call": "Warning: Russia inside can only be used with %s. %s already in Russia inside and have been removed from selection.",
+    "key": "Warning: Russia inside can only be used with %s. %s already in Russia inside and have been removed from selection.",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:390"
+    ]
+  },
+  {
+    "call": "Which address families sing-box resolves for domains handled by mudakop",
+    "key": "Which address families sing-box resolves for domains handled by mudakop",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:80"
+    ]
+  },
+  {
+    "call": "YACD Secret Key",
+    "key": "YACD Secret Key",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:280"
+    ]
+  },
+  {
+    "call": "You can select Output Network Interface, by default autodetect",
+    "key": "You can select Output Network Interface, by default autodetect",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:151"
+    ]
+  }
+]
