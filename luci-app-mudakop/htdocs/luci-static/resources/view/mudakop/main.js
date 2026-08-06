@@ -1072,53 +1072,6 @@ var STATUS_COLORS = {
 var MUDAKOP_LUCI_APP_VERSION = "__COMPILED_VERSION_VARIABLE__";
 var FAKEIP_CHECK_DOMAIN = "fakeip.mudakop.fyi";
 var IP_CHECK_DOMAIN = "ip.mudakop.fyi";
-var REGIONAL_OPTIONS = [
-  "russia_inside",
-  "russia_outside",
-  "ukraine_inside"
-];
-var ALLOWED_WITH_RUSSIA_INSIDE = [
-  "russia_inside",
-  "meta",
-  "twitter",
-  "discord",
-  "telegram",
-  "cloudflare",
-  "google_ai",
-  "google_play",
-  "hetzner",
-  "ovh",
-  "hodca",
-  "roblox",
-  "digitalocean",
-  "cloudfront"
-];
-var DOMAIN_LIST_OPTIONS = {
-  russia_inside: "Russia inside",
-  russia_outside: "Russia outside",
-  ukraine_inside: "Ukraine",
-  geoblock: "Geo Block",
-  block: "Block",
-  porn: "Porn",
-  news: "News",
-  anime: "Anime",
-  youtube: "Youtube",
-  discord: "Discord",
-  meta: "Meta",
-  twitter: "Twitter (X)",
-  hdrezka: "HDRezka",
-  tiktok: "Tik-Tok",
-  telegram: "Telegram",
-  cloudflare: "Cloudflare",
-  google_ai: "Google AI",
-  google_play: "Google Play",
-  hodca: "H.O.D.C.A",
-  roblox: "Roblox",
-  hetzner: "Hetzner ASN",
-  ovh: "OVH ASN",
-  digitalocean: "Digital Ocean ASN",
-  cloudfront: "CloudFront ASN"
-};
 var UPDATE_INTERVAL_OPTIONS = {
   "1h": "Every hour",
   "3h": "Every 3 hours",
@@ -4966,7 +4919,6 @@ function insertIfObj(condition, object) {
 if (typeof structuredClone !== "function")
   globalThis.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
 return baseclass.extend({
-  ALLOWED_WITH_RUSSIA_INSIDE,
   BOOTSTRAP_DNS_SERVER_OPTIONS,
   BUTTON_FEEDBACK_TIMEOUT,
   CACHE_TIMEOUT,
@@ -4977,7 +4929,6 @@ return baseclass.extend({
   DIAGNOSTICS_UPDATE_INTERVAL,
   DNS_SERVER_OPTIONS,
   DNS_STRATEGY_OPTIONS,
-  DOMAIN_LIST_OPTIONS,
   DashboardTab,
   DiagnosticTab,
   ERROR_POLL_INTERVAL,
@@ -4991,7 +4942,6 @@ return baseclass.extend({
   NAIVE_SCHEME_REGEX,
   MUDAKOP_LUCI_APP_VERSION,
   mudakopShellMethods,
-  REGIONAL_OPTIONS,
   STATUS_COLORS,
   TabService,
   TabServiceInstance,

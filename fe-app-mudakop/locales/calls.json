@@ -162,13 +162,6 @@
     ]
   },
   {
-    "call": "Community Lists",
-    "key": "Community Lists",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:335"
-    ]
-  },
-  {
     "call": "Config File Path",
     "key": "Config File Path",
     "places": [
@@ -1278,13 +1271,6 @@
     ]
   },
   {
-    "call": "Regional options cannot be used together",
-    "key": "Regional options cannot be used together",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:369"
-    ]
-  },
-  {
     "call": "Remote Domain Lists",
     "key": "Remote Domain Lists",
     "places": [
@@ -1376,13 +1362,6 @@
     ]
   },
   {
-    "call": "Russia inside restrictions",
-    "key": "Russia inside restrictions",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:388"
-    ]
-  },
-  {
     "call": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
     "key": "Secret key for authenticating remote access to YACD when WAN access is enabled.",
     "places": [
@@ -1394,13 +1373,6 @@
     "key": "Sections",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:36"
-    ]
-  },
-  {
-    "call": "Select a predefined list for routing",
-    "key": "Select a predefined list for routing",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:336"
     ]
   },
   {
@@ -1962,20 +1934,6 @@
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:38",
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:117",
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:140"
-    ]
-  },
-  {
-    "call": "Warning: %s cannot be used together with %s. Previous selections have been removed.",
-    "key": "Warning: %s cannot be used together with %s. Previous selections have been removed.",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:371"
-    ]
-  },
-  {
-    "call": "Warning: Russia inside can only be used with %s. %s already in Russia inside and have been removed from selection.",
-    "key": "Warning: Russia inside can only be used with %s. %s already in Russia inside and have been removed from selection.",
-    "places": [
-      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:390"
     ]
   },
   {

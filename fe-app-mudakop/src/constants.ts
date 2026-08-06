@@ -12,56 +12,6 @@ export const MUDAKOP_LUCI_APP_VERSION = '__COMPILED_VERSION_VARIABLE__';
 export const FAKEIP_CHECK_DOMAIN = 'fakeip.mudakop.fyi';
 export const IP_CHECK_DOMAIN = 'ip.mudakop.fyi';
 
-export const REGIONAL_OPTIONS = [
-  'russia_inside',
-  'russia_outside',
-  'ukraine_inside',
-];
-
-export const ALLOWED_WITH_RUSSIA_INSIDE = [
-  'russia_inside',
-  'meta',
-  'twitter',
-  'discord',
-  'telegram',
-  'cloudflare',
-  'google_ai',
-  'google_play',
-  'hetzner',
-  'ovh',
-  'hodca',
-  'roblox',
-  'digitalocean',
-  'cloudfront',
-];
-
-export const DOMAIN_LIST_OPTIONS = {
-  russia_inside: 'Russia inside',
-  russia_outside: 'Russia outside',
-  ukraine_inside: 'Ukraine',
-  geoblock: 'Geo Block',
-  block: 'Block',
-  porn: 'Porn',
-  news: 'News',
-  anime: 'Anime',
-  youtube: 'Youtube',
-  discord: 'Discord',
-  meta: 'Meta',
-  twitter: 'Twitter (X)',
-  hdrezka: 'HDRezka',
-  tiktok: 'Tik-Tok',
-  telegram: 'Telegram',
-  cloudflare: 'Cloudflare',
-  google_ai: 'Google AI',
-  google_play: 'Google Play',
-  hodca: 'H.O.D.C.A',
-  roblox: 'Roblox',
-  hetzner: 'Hetzner ASN',
-  ovh: 'OVH ASN',
-  digitalocean: 'Digital Ocean ASN',
-  cloudfront: 'CloudFront ASN',
-};
-
 export const UPDATE_INTERVAL_OPTIONS = {
   '1h': 'Every hour',
   '3h': 'Every 3 hours',

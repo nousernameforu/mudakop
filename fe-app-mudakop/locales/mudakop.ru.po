@@ -83,9 +83,6 @@ msgstr "CIDR должен быть между 0 и 32"
 msgid "Close"
 msgstr "Закрыть"
 
-msgid "Community Lists"
-msgstr "Списки сообщества"
-
 msgid "Config File Path"
 msgstr "Путь к файлу конфигурации"
 
@@ -548,9 +545,6 @@ msgstr "mudakop не будет изменять вашу конфигураци
 msgid "Proxy Configuration URL"
 msgstr "URL конфигурации прокси"
 
-msgid "Regional options cannot be used together"
-msgstr "Нельзя использовать несколько региональных опций одновременно"
-
 msgid "Remote Domain Lists"
 msgstr "Внешние списки доменов"
 
@@ -590,17 +584,11 @@ msgstr "Правила прокси существуют"
 msgid "Run Diagnostic"
 msgstr "Запустить диагностику"
 
-msgid "Russia inside restrictions"
-msgstr "Ограничения Russia inside"
-
 msgid "Secret key for authenticating remote access to YACD when WAN access is enabled."
 msgstr "Секретный ключ для аутентификации удаленного доступа к YACD при включенном доступе через WAN."
 
 msgid "Sections"
 msgstr "Секции"
-
-msgid "Select a predefined list for routing"
-msgstr "Выберите предопределенный список для маршрутизации"
 
 msgid "Select between VPN and Proxy connection methods for traffic routing"
 msgstr "Выберите между VPN и Proxy методами для маршрутизации трафика"
@@ -827,12 +815,6 @@ msgstr "Посмотреть логи"
 msgid "vless://, ss://, trojan://, socks4/5://, hy2/hysteria2://, naive+https/quic:// links"
 msgstr "Ссылки vless://, ss://, trojan://, socks4/5://, hy2/hysteria2://, naive+https/quic://"
 
-msgid "Warning: %s cannot be used together with %s. Previous selections have been removed."
-msgstr "Предупреждение: %s нельзя использовать вместе с %s. Предыдущие варианты были удалены."
-
-msgid "Warning: Russia inside can only be used with %s. %s already in Russia inside and have been removed from selection."
-msgstr "Предупреждение: Russia inside может быть использован только с %s. %s уже есть в Russia inside и будет удален из выбранных."
-
 msgid "Which address families sing-box resolves for domains handled by mudakop"
 msgstr "Какие семейства адресов sing-box резолвит для доменов, обрабатываемых mudakop"
 
@@ -841,3 +823,4 @@ msgstr "Секретный ключ YACD"
 
 msgid "You can select Output Network Interface, by default autodetect"
 msgstr "Вы можете выбрать выходной сетевой интерфейс, по умолчанию он определяется автоматически."
+

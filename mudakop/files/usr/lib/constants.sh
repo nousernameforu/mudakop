@@ -24,7 +24,6 @@ NFT_LOCALV4_SET_NAME="localv4"
 NFT_LOCALV6_SET_NAME="localv6"
 NFT_COMMON_SET_NAME="mudakop_subnets"
 NFT_COMMON_V6_SET_NAME="mudakop_subnets_v6"
-NFT_DISCORD_SET_NAME="mudakop_discord_subnets"
 NFT_INTERFACE_SET_NAME="interfaces"
 NFT_FAKEIP_MARK="0x00100000"
 NFT_OUTBOUND_MARK="0x00200000"
@@ -64,16 +63,6 @@ SB_EXCLUSION_RULE_TAG="exclusion-rule-tag"
 SB_CLASH_API_CONTROLLER_PORT=9090
 
 ## Lists
-GITHUB_RAW_URL="https://raw.githubusercontent.com/itdoginfo/allow-domains/main"
-SRS_MAIN_URL="https://github.com/itdoginfo/allow-domains/releases/latest/download"
-SUBNETS_TWITTER="${GITHUB_RAW_URL}/Subnets/IPv4/twitter.lst"
-SUBNETS_META="${GITHUB_RAW_URL}/Subnets/IPv4/meta.lst"
-SUBNETS_DISCORD="${GITHUB_RAW_URL}/Subnets/IPv4/discord.lst"
-SUBNETS_ROBLOX="${GITHUB_RAW_URL}/Subnets/IPv4/roblox.lst"
-SUBNETS_TELERAM="${GITHUB_RAW_URL}/Subnets/IPv4/telegram.lst"
-SUBNETS_CLOUDFLARE="${GITHUB_RAW_URL}/Subnets/IPv4/cloudflare.lst"
-SUBNETS_HETZNER="${GITHUB_RAW_URL}/Subnets/IPv4/hetzner.lst"
-SUBNETS_OVH="${GITHUB_RAW_URL}/Subnets/IPv4/ovh.lst"
-SUBNETS_DIGITALOCEAN="${GITHUB_RAW_URL}/Subnets/IPv4/digitalocean.lst"
-SUBNETS_CLOUDFRONT="${GITHUB_RAW_URL}/Subnets/IPv4/cloudfront.lst"
-COMMUNITY_SERVICES="russia_inside russia_outside ukraine_inside geoblock block porn news anime youtube hdrezka tiktok google_ai google_play hodca discord meta twitter cloudflare cloudfront digitalocean hetzner ovh telegram roblox"
+# Domain and subnet lists are supplied entirely by the user, as inline entries, local
+# files on the router, or remote URLs configured per section
+LIST_CONNECTIVITY_CHECK_URL="https://openwrt.org"
