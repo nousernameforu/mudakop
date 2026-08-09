@@ -1155,6 +1155,24 @@ configure_routing_for_section_lists() {
         config=$(sing_box_cm_add_resolve_rule "$config" "$route_rule_tag" "$(gen_id)" "$resolve_server")
         log "Added resolve rule for '$section' section using '$resolve_server'" "debug"
     fi
+
+    # Added last so it lands after any resolve rule and therefore matches exactly what the
+    # section route rule matches. Only proxy and vpn sections own their route rule: block
+    # and exclusion sections share SB_REJECT_RULE_TAG / SB_EXCLUSION_RULE_TAG, and shadowing
+    # a shared rule would block QUIC for every section of that type
+    local section_disable_quic
+    config_get_bool section_disable_quic "$section" "disable_quic" 0
+    if [ "$section_disable_quic" -eq 1 ]; then
+        case "$section_connection_type" in
+        proxy | vpn)
+            config=$(sing_box_cm_add_quic_reject_rule "$config" "$route_rule_tag" "$(gen_id)")
+            log "QUIC rejected for '$section' section"
+            ;;
+        *)
+            log "The disable_quic option applies to proxy and vpn sections only, ignoring it for '$section'" "warn"
+            ;;
+        esac
+    fi
 }
 
 prepare_source_ruleset() {
@@ -1309,6 +1327,13 @@ sing_box_configure_experimental() {
     local cache_file
     config_get cache_file "settings" "cache_path" "/tmp/sing-box/cache.db"
     config=$(sing_box_cm_configure_cache_file "$config" true "$cache_file" true)
+
+    local memory_limit
+    config_get memory_limit "settings" "memory_limit"
+    if [ -n "$memory_limit" ]; then
+        log "Configuring memory limit: $memory_limit"
+        config=$(sing_box_cm_configure_debug "$config" "$memory_limit")
+    fi
 
     log "Configuring Clash API"
     local enable_yacd enable_yacd_wan_access clash_api_controller_address

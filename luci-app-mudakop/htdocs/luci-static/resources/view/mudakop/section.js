@@ -641,6 +641,19 @@ function createSectionContent(section) {
   o.rmempty = false;
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
+
+  o = section.option(
+    form.Flag,
+    "disable_quic",
+    _("Disable QUIC"),
+    _(
+      "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled",
+    ),
+  );
+  o.default = "0";
+  o.rmempty = false;
+  o.depends("connection_type", "proxy");
+  o.depends("connection_type", "vpn");
 }
 
 const EntryPoint = {

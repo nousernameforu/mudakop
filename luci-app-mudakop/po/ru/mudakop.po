@@ -128,6 +128,9 @@ msgstr "Отключить автостарт"
 msgid "Disable QUIC"
 msgstr "Отключить QUIC"
 
+msgid "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled"
+msgstr "Отключить QUIC протокол только для трафика этой секции. Глобальная настройка «Отключить QUIC» по-прежнему применяется ко всему, когда включена"
+
 msgid "Disable the QUIC protocol to improve compatibility or fix issues with video streaming"
 msgstr "Отключить QUIC протокол для улучшения совместимости или исправления видео стриминга"
 
@@ -220,6 +223,9 @@ msgstr "Конфигурация точки подключения должна 
 
 msgid "Endpoint must contain a non-empty \"type\" field"
 msgstr "Конфигурация точки подключения должна содержать непустое поле \"type\""
+
+msgid "Enter a size with a unit, for example 64mb, 512kb or 1gb"
+msgstr "Укажите размер с единицей измерения, например 64mb, 512kb или 1gb"
 
 msgid "Enter complete endpoint configuration in JSON format, e.g. a WireGuard endpoint. The tag is assigned by mudakop and will be overwritten"
 msgstr "Введите полную конфигурацию точки подключения в формате JSON, например endpoint WireGuard. Тег назначается mudakop и будет перезаписан"
@@ -476,6 +482,9 @@ msgstr "Уровень логов"
 msgid "Main DNS"
 msgstr "Основной DNS"
 
+msgid "Memory Limit"
+msgstr "Лимит памяти"
+
 msgid "Memory Usage"
 msgstr "Использование памяти"
 
@@ -682,6 +691,9 @@ msgstr "Сервис sing-box существует"
 
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr "Версия Sing-box совместима (новее 1.12.4)"
+
+msgid "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap"
+msgstr "Мягкий лимит памяти для процесса sing-box, например 64mb. Оставьте пустым, чтобы не ограничивать. Сборка мусора становится агрессивнее по мере приближения к значению, поэтому это ориентир, а не жёсткий предел"
 
 msgid "Source Network Interface"
 msgstr "Сетевой интерфейс источника"

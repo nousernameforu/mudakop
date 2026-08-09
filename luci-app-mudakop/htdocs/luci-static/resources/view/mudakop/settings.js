@@ -403,6 +403,31 @@ function createSettingsContent(section) {
   };
 
   o = section.option(
+    form.Value,
+    "memory_limit",
+    _("Memory Limit"),
+    _(
+      "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap",
+    ),
+  );
+  o.value("64mb", "64 MB");
+  o.value("128mb", "128 MB");
+  o.value("256mb", "256 MB");
+  o.rmempty = true;
+  o.validate = function (section_id, value) {
+    // Optional
+    if (!value) {
+      return true;
+    }
+
+    if (!/^\d+(\.\d+)?(b|kb|mb|gb|kib|mib|gib)$/i.test(value)) {
+      return _("Enter a size with a unit, for example 64mb, 512kb or 1gb");
+    }
+
+    return true;
+  };
+
+  o = section.option(
     form.ListValue,
     "log_level",
     _("Log Level"),

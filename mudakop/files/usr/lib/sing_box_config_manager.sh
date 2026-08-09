@@ -1254,6 +1254,43 @@ sing_box_cm_add_resolve_rule() {
 }
 
 #######################################
+# Insert a QUIC reject rule immediately before a route rule.
+#
+# The new rule is a copy of the target route rule, so it matches exactly the same
+# traffic, with the action switched to reject and the match narrowed to QUIC. Copying
+# the whole rule rather than a fixed set of keys keeps the two in step whatever
+# matchers the route rule ended up with (rule_set, domain, ip_cidr, ...).
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   route_rule_tag: string, tag of the route rule to precede
+#   reject_rule_tag: string, tag for the new reject rule
+# Outputs:
+#   Updated JSON config to stdout
+#######################################
+sing_box_cm_add_quic_reject_rule() {
+    local config="$1"
+    local route_rule_tag="$2"
+    local reject_rule_tag="$3"
+
+    echo "$config" | jq \
+        --arg service_tag "$SERVICE_TAG" \
+        --arg route_tag "$route_rule_tag" \
+        --arg reject_tag "$reject_rule_tag" \
+        '.route.rules |= [
+            .[] |
+            if .[$service_tag] == $route_tag then
+                (
+                    del(.outbound)
+                    | .action = "reject"
+                    | .protocol = "quic"
+                    | .[$service_tag] = $reject_tag
+                ), .
+            else .
+            end
+        ]'
+}
+
+#######################################
 # Patch a routing rule in the route section of a sing-box JSON configuration.
 # Arguments:
 #   config: string (JSON), sing-box configuration to modify
@@ -1589,6 +1626,32 @@ sing_box_cm_configure_clash_api() {
         }
         + (if $external_ui != "" then { external_ui: $external_ui } else {} end)
         + (if $secret != "" then { secret: $secret } else {} end)'
+}
+
+#######################################
+# Configure the experimental debug section of a sing-box JSON configuration.
+#
+# memory_limit is a soft target for the Go runtime rather than a hard cap: as usage
+# approaches it the collector runs more aggressively, but the process is not killed.
+# The key is only written when a value is given, so the debug section stays absent
+# from the generated config when the option is unset.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   memory_limit: string, soft memory limit such as "64mb"; omitted when empty
+# Outputs:
+#   Writes updated JSON configuration to stdout
+# Example:
+#   CONFIG=$(sing_box_cm_configure_debug "$CONFIG" "64mb")
+#######################################
+sing_box_cm_configure_debug() {
+    local config="$1"
+    local memory_limit="$2"
+
+    echo "$config" | jq \
+        --arg memory_limit "$memory_limit" \
+        'if $memory_limit != "" then
+            .experimental.debug.memory_limit = $memory_limit
+        else . end'
 }
 
 #######################################

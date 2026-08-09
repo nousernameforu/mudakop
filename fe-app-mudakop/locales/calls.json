@@ -263,7 +263,15 @@
     "call": "Disable QUIC",
     "key": "Disable QUIC",
     "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:648",
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:289"
+    ]
+  },
+  {
+    "call": "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled",
+    "key": "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650"
     ]
   },
   {
@@ -489,6 +497,13 @@
     "key": "Endpoint must contain a non-empty \"type\" field",
     "places": [
       "src/validators/validateEndpointJson.ts:21"
+    ]
+  },
+  {
+    "call": "Enter a size with a unit, for example 64mb, 512kb or 1gb",
+    "key": "Enter a size with a unit, for example 64mb, 512kb or 1gb",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:424"
     ]
   },
   {
@@ -1100,6 +1115,13 @@
     ]
   },
   {
+    "call": "Memory Limit",
+    "key": "Memory Limit",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:408"
+    ]
+  },
+  {
     "call": "Memory Usage",
     "key": "Memory Usage",
     "places": [
@@ -1592,6 +1614,13 @@
     "key": "Sing-box version is compatible (newer than 1.12.4)",
     "places": [
       "src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:67"
+    ]
+  },
+  {
+    "call": "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap",
+    "key": "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:410"
     ]
   },
   {

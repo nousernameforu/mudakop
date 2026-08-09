@@ -167,8 +167,13 @@ msgstr ""
 msgid "Disable autostart"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:648
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:289
 msgid "Disable QUIC"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650
+msgid "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:290
@@ -301,6 +306,10 @@ msgstr ""
 
 #: src/validators/validateEndpointJson.ts:21
 msgid "Endpoint must contain a non-empty \"type\" field"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:424
+msgid "Enter a size with a unit, for example 64mb, 512kb or 1gb"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:90
@@ -656,6 +665,10 @@ msgstr ""
 msgid "Main DNS"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:408
+msgid "Memory Limit"
+msgstr ""
+
 #: src/mudakop/tabs/dashboard/initController.ts:311
 msgid "Memory Usage"
 msgstr ""
@@ -942,6 +955,10 @@ msgstr ""
 
 #: src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:67
 msgid "Sing-box version is compatible (newer than 1.12.4)"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:410
+msgid "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:113

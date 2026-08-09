@@ -1,0 +1,13 @@
+# This repository is developed on Windows (core.autocrlf=true) but everything under
+# mudakop/ and luci-app-mudakop/root/ is executed on the router by ash. A CRLF shebang
+# makes the kernel look for an interpreter literally named "/bin/ash\r", which does not
+# exist, and the shell reports that as "not found". Sourced .sh files are just as
+# affected: a trailing CR ends up inside variable values.
+#
+# Normalise to LF in the repository and check out LF everywhere, so the platform the
+# checkout happens on cannot change what ships in the package.
+* text=auto eol=lf
+
+# Build artefacts are binary and must never be line-ending converted
+*.apk binary
+*.ipk binary
