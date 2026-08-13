@@ -65,6 +65,7 @@ export namespace Mudakop {
     SHOW_SING_BOX_CONFIG = 'show_sing_box_config',
     CHECK_LOGS = 'check_logs',
     GET_SYSTEM_INFO = 'get_system_info',
+    CHECK_AWG_SUPPORT = 'check_awg_support',
   }
 
   export enum AvailableClashAPIMethods {
@@ -124,6 +125,11 @@ export namespace Mudakop {
     interface: string;
   }
 
+  export interface ConfigAmneziaWgSection {
+    connection_type: 'amneziawg';
+    awg_peer_address?: string;
+  }
+
   export interface ConfigBlockSection {
     connection_type: 'block';
   }
@@ -139,6 +145,7 @@ export namespace Mudakop {
     | ConfigProxyOutboundSection
     | ConfigProxyEndpointSection
     | ConfigVpnSection
+    | ConfigAmneziaWgSection
     | ConfigBlockSection
     | ConfigExclusionSection;
 
@@ -190,6 +197,11 @@ export namespace Mudakop {
     sing_box_autostart_disabled: 0 | 1;
     sing_box_process_running: 0 | 1;
     sing_box_ports_listening: 0 | 1;
+  }
+
+  // True when the installed sing-box carries the with_awg build tag, i.e. sing-box-lx
+  export interface AwgSupportResult {
+    supported: boolean;
   }
 
   export interface FakeIPCheckResult {

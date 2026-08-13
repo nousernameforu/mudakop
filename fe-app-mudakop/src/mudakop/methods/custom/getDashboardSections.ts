@@ -189,6 +189,30 @@ export async function getDashboardSections(): Promise<IGetDashboardSectionsRespo
         }
       }
 
+      // AmneziaWG registers a wireguard endpoint under the same <section>-out tag as
+      // the endpoint proxy type, so it resolves against the Clash API the same way
+      if (section.connection_type === 'amneziawg') {
+        const outbound = proxies.find(
+          (proxy) => proxy.code === `${section['.name']}-out`,
+        );
+
+        return {
+          withTagSelect: false,
+          code: outbound?.code || section['.name'],
+          displayName: section['.name'],
+          outbounds: [
+            {
+              code: outbound?.code || section['.name'],
+              displayName:
+                section.awg_peer_address || outbound?.value?.name || '',
+              latency: outbound?.value?.history?.[0]?.delay || 0,
+              type: outbound?.value?.type || '',
+              selected: true,
+            },
+          ],
+        };
+      }
+
       if (section.connection_type === 'vpn') {
         const outbound = proxies.find(
           (proxy) => proxy.code === `${section['.name']}-out`,

@@ -84,4 +84,8 @@ export const mudakopShellMethods = {
     callBaseMethod<Mudakop.GetSystemInfo>(
       Mudakop.AvailableMethods.GET_SYSTEM_INFO,
     ),
+  checkAwgSupport: async () =>
+    callBaseMethod<Mudakop.AwgSupportResult>(
+      Mudakop.AvailableMethods.CHECK_AWG_SUPPORT,
+    ),
 };

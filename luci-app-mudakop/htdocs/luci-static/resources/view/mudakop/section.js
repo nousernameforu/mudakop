@@ -2,10 +2,477 @@
 "require form";
 "require baseclass";
 "require ui";
+"require uci";
 "require tools.widgets as widgets";
 "require view.mudakop.main as main";
 
-function createSectionContent(section) {
+// Maps an AmneziaWG .conf key onto the uci option that holds it. Only the keys a .conf
+// can actually carry are listed: the id/ip/ib junk generator is a sing-box-lx concept
+// with no .conf equivalent, so importing never touches it
+const AWG_CONF_INTERFACE_KEYS = {
+  privatekey: "awg_private_key",
+  mtu: "awg_mtu",
+  jc: "awg_jc",
+  jmin: "awg_jmin",
+  jmax: "awg_jmax",
+  s1: "awg_s1",
+  s2: "awg_s2",
+  s3: "awg_s3",
+  s4: "awg_s4",
+  h1: "awg_h1",
+  h2: "awg_h2",
+  h3: "awg_h3",
+  h4: "awg_h4",
+  i1: "awg_i1",
+  i2: "awg_i2",
+  i3: "awg_i3",
+  i4: "awg_i4",
+  i5: "awg_i5",
+};
+
+const AWG_CONF_PEER_KEYS = {
+  publickey: "awg_peer_public_key",
+  presharedkey: "awg_peer_pre_shared_key",
+  persistentkeepalive: "awg_peer_persistent_keepalive",
+};
+
+// Splits "host:port", including the bracketed IPv6 form "[2001:db8::1]:51820"
+function splitEndpoint(value) {
+  const bracketed = value.match(/^\[(.+)\]:(\d+)$/);
+  if (bracketed) {
+    return { address: bracketed[1], port: bracketed[2] };
+  }
+
+  const idx = value.lastIndexOf(":");
+  if (idx === -1) {
+    return { address: value, port: "" };
+  }
+
+  return { address: value.slice(0, idx), port: value.slice(idx + 1) };
+}
+
+function splitList(value) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+// Parses a WireGuard/AmneziaWG .conf into { iface, peer } key/value maps
+function parseAmneziaConf(text) {
+  const result = { iface: {}, peer: {} };
+  let current = null;
+
+  text.split(/\r?\n/).forEach((rawLine) => {
+    const line = rawLine.replace(/[#;].*$/, "").trim();
+    if (!line) {
+      return;
+    }
+
+    const header = line.match(/^\[(\w+)\]$/);
+    if (header) {
+      current = header[1].toLowerCase();
+      return;
+    }
+
+    const pair = line.match(/^([A-Za-z0-9_]+)\s*=\s*(.*)$/);
+    if (!pair || !current) {
+      return;
+    }
+
+    const key = pair[1].toLowerCase();
+    const value = pair[2].trim();
+
+    if (current === "interface") {
+      result.iface[key] = value;
+    } else if (current === "peer") {
+      result.peer[key] = value;
+    }
+  });
+
+  return result;
+}
+
+// Maps a parsed .conf onto uci option names. The id/ip/ib generator has no .conf
+// equivalent, so importing never produces those keys
+function confToAwgValues(parsed) {
+  const values = {};
+
+  Object.keys(AWG_CONF_INTERFACE_KEYS).forEach((key) => {
+    if (parsed.iface[key]) {
+      values[AWG_CONF_INTERFACE_KEYS[key]] = parsed.iface[key];
+    }
+  });
+
+  Object.keys(AWG_CONF_PEER_KEYS).forEach((key) => {
+    if (parsed.peer[key]) {
+      values[AWG_CONF_PEER_KEYS[key]] = parsed.peer[key];
+    }
+  });
+
+  if (parsed.iface.address) {
+    values.awg_addresses = splitList(parsed.iface.address);
+  }
+
+  if (parsed.peer.allowedips) {
+    values.awg_peer_allowed_ips = splitList(parsed.peer.allowedips);
+  }
+
+  if (parsed.peer.endpoint) {
+    const endpoint = splitEndpoint(parsed.peer.endpoint);
+    values.awg_peer_address = endpoint.address;
+    if (endpoint.port) {
+      values.awg_peer_port = endpoint.port;
+    }
+  }
+
+  // A .conf can only describe junk packets as I1-I5
+  if (Object.keys(parsed.iface).some((k) => /^i[1-5]$/.test(k))) {
+    values.awg_junk_mode = "packets";
+  }
+
+  return values;
+}
+
+function createSectionContent(section, options = {}) {
+  const { amneziaWgAvailable = false } = options;
+
+  // Field schema for the AmneziaWG editor. Declaring it once keeps the modal, the .conf
+  // importer and the uci writer working from a single source of truth instead of two
+  // dozen near-identical widget blocks
+  const AWG_GROUPS = [
+    {
+      title: _("Interface"),
+      fields: [
+        {
+          name: "awg_private_key",
+          label: _("Private Key"),
+          password: true,
+          required: true,
+        },
+        {
+          name: "awg_addresses",
+          label: _("Interface Addresses"),
+          list: true,
+          required: true,
+          placeholder: "10.5.4.2/32, fd42:5:4::2/128",
+        },
+        { name: "awg_mtu", label: _("MTU"), placeholder: "1280" },
+      ],
+    },
+    {
+      title: _("Peer"),
+      fields: [
+        {
+          name: "awg_peer_address",
+          label: _("Peer Address"),
+          required: true,
+          placeholder: "185.23.236.193",
+        },
+        {
+          name: "awg_peer_port",
+          label: _("Peer Port"),
+          required: true,
+          placeholder: "51820",
+        },
+        {
+          name: "awg_peer_public_key",
+          label: _("Peer Public Key"),
+          required: true,
+        },
+        {
+          name: "awg_peer_pre_shared_key",
+          label: _("Peer Pre-shared Key"),
+          password: true,
+        },
+        {
+          name: "awg_peer_allowed_ips",
+          label: _("Allowed IPs"),
+          list: true,
+          required: true,
+          placeholder: "0.0.0.0/0, ::/0",
+        },
+        {
+          name: "awg_peer_persistent_keepalive",
+          label: _("Persistent Keepalive"),
+          placeholder: "25",
+        },
+      ],
+    },
+    {
+      title: _("Obfuscation"),
+      fields: ["jc", "jmin", "jmax", "s1", "s2", "s3", "s4"]
+        .map((f) => ({ name: "awg_" + f, label: f.toUpperCase() }))
+        .concat(
+          ["h1", "h2", "h3", "h4"].map((f) => ({
+            name: "awg_" + f,
+            label: f.toUpperCase(),
+            placeholder: "39602205-139602204",
+          })),
+        ),
+    },
+  ];
+
+  const AWG_JUNK_PACKET_FIELDS = ["i1", "i2", "i3", "i4", "i5"].map((f) => ({
+    name: "awg_" + f,
+    label: f.toUpperCase(),
+  }));
+
+  const AWG_JUNK_GENERATED_FIELDS = [
+    {
+      name: "awg_id",
+      label: "ID",
+      placeholder: "www.ozon.ru",
+    },
+    { name: "awg_ip", label: "IP", placeholder: "quic" },
+    { name: "awg_ib", label: "IB", placeholder: "firefox" },
+  ];
+
+  function showAmneziaWgModal(map, section_id) {
+    const inputs = {};
+
+    function renderField(field) {
+      const stored = uci.get("mudakop", section_id, field.name);
+      const initial = Array.isArray(stored) ? stored.join(", ") : stored || "";
+
+      const input = E("input", {
+        type: field.password ? "password" : "text",
+        class: "cbi-input-text",
+        value: initial,
+        placeholder: field.placeholder || "",
+        style: "width: 100%",
+      });
+
+      inputs[field.name] = {
+        input,
+        list: !!field.list,
+        required: !!field.required,
+        label: field.label,
+      };
+
+      return E("div", { class: "cbi-value" }, [
+        E("label", { class: "cbi-value-title" }, field.label),
+        E("div", { class: "cbi-value-field" }, input),
+      ]);
+    }
+
+    function renderGroup(title, fields) {
+      return E("div", { style: "margin-bottom: 14px" }, [
+        E("h4", { style: "margin: 0 0 6px" }, title),
+        E("div", {}, fields.map(renderField)),
+      ]);
+    }
+
+    const junkPacketsBox = E(
+      "div",
+      {},
+      AWG_JUNK_PACKET_FIELDS.map(renderField),
+    );
+    const junkGeneratedBox = E(
+      "div",
+      {},
+      AWG_JUNK_GENERATED_FIELDS.map(renderField),
+    );
+
+    const junkSelect = E("select", { class: "cbi-input-select" }, [
+      E("option", { value: "packets" }, _("I1-I5 templates")),
+      E("option", { value: "generated" }, _("Generated (id/ip/ib)")),
+    ]);
+    junkSelect.value =
+      uci.get("mudakop", section_id, "awg_junk_mode") || "packets";
+
+    function syncJunkMode() {
+      const generated = junkSelect.value === "generated";
+      junkPacketsBox.style.display = generated ? "none" : "";
+      junkGeneratedBox.style.display = generated ? "" : "none";
+    }
+
+    junkSelect.addEventListener("change", syncJunkMode);
+
+    // --- import panel, collapsed until asked for -------------------------------
+    const importText = E("textarea", {
+      class: "cbi-input-textarea",
+      style: "width: 100%; min-height: 200px; font-family: monospace",
+      placeholder:
+        "[Interface]\nPrivateKey = ...\nAddress = 10.5.4.2/32\nJc = 5\n\n[Peer]\nPublicKey = ...\nEndpoint = 1.2.3.4:51820\nAllowedIPs = 0.0.0.0/0",
+    });
+
+    const importFile = E("input", {
+      type: "file",
+      accept: ".conf,text/plain",
+      change: function (ev) {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          importText.value = String(reader.result || "");
+        };
+        reader.onerror = () => {
+          ui.addNotification(
+            null,
+            E("p", {}, _("Could not read the selected file")),
+            "error",
+          );
+        };
+        reader.readAsText(file);
+      },
+    });
+
+    function fillFromConf() {
+      const text = importText.value || "";
+
+      if (!text.trim()) {
+        ui.addNotification(
+          null,
+          E("p", {}, _("Nothing to import: paste a configuration or choose a file")),
+          "warning",
+        );
+        return;
+      }
+
+      const parsed = parseAmneziaConf(text);
+
+      if (!parsed.iface.privatekey || !parsed.peer.publickey) {
+        ui.addNotification(
+          null,
+          E("p", {}, _("This does not look like a WireGuard or AmneziaWG configuration: no PrivateKey or PublicKey found")),
+          "error",
+        );
+        return;
+      }
+
+      const values = confToAwgValues(parsed);
+      let filled = 0;
+
+      Object.keys(values).forEach((name) => {
+        if (name === "awg_junk_mode") {
+          junkSelect.value = values[name];
+          syncJunkMode();
+          return;
+        }
+
+        if (!inputs[name]) {
+          return;
+        }
+
+        const value = values[name];
+        inputs[name].input.value = Array.isArray(value)
+          ? value.join(", ")
+          : value;
+        filled++;
+      });
+
+      ui.addNotification(
+        null,
+        E("p", {}, _("Filled %d field(s) from the file. Review them, then press Save").format(filled)),
+        "info",
+      );
+    }
+
+    const importPanel = E(
+      "div",
+      { style: "display: none; margin: 8px 0 16px; padding: 10px; border: 1px solid var(--border-color-medium, #ccc)" },
+      [
+        E("div", { style: "margin-bottom: 8px" }, importFile),
+        importText,
+        E("div", { style: "margin-top: 8px" }, [
+          E(
+            "button",
+            { class: "btn cbi-button-action", click: fillFromConf },
+            _("Fill fields"),
+          ),
+        ]),
+      ],
+    );
+
+    const importToggle = E(
+      "button",
+      {
+        class: "btn",
+        click: function () {
+          importPanel.style.display =
+            importPanel.style.display === "none" ? "" : "none";
+        },
+      },
+      _("Import from .conf"),
+    );
+
+    // --- save ------------------------------------------------------------------
+    function save() {
+      const missing = Object.keys(inputs)
+        .filter((name) => inputs[name].required && !inputs[name].input.value.trim())
+        .map((name) => inputs[name].label);
+
+      if (missing.length) {
+        ui.addNotification(
+          null,
+          E("p", {}, _("Required fields are empty: %s").format(missing.join(", "))),
+          "error",
+        );
+        return;
+      }
+
+      Object.keys(inputs).forEach((name) => {
+        const meta = inputs[name];
+        const raw = meta.input.value.trim();
+
+        if (!raw) {
+          uci.unset("mudakop", section_id, name);
+          return;
+        }
+
+        uci.set("mudakop", section_id, name, meta.list ? splitList(raw) : raw);
+      });
+
+      // Values for the unselected junk mode are deliberately kept: the router only
+      // reads the mode in force, so switching back and forth does not lose them
+      uci.set("mudakop", section_id, "awg_junk_mode", junkSelect.value);
+
+      ui.hideModal();
+      ui.addNotification(
+        null,
+        E("p", {}, _("AmneziaWG configuration updated. Press Save & Apply to write it to the router")),
+        "info",
+      );
+
+      try {
+        map.renderContents();
+      } catch (e) {
+        // The summary line refreshes on the next page load
+      }
+    }
+
+    ui.showModal(_("AmneziaWG Configuration"), [
+      E("div", { style: "margin-bottom: 12px" }, [importToggle]),
+      importPanel,
+      E(
+        "div",
+        { style: "max-height: 60vh; overflow-y: auto" },
+        AWG_GROUPS.map((group) => renderGroup(group.title, group.fields)).concat([
+          E("div", { style: "margin-bottom: 14px" }, [
+            E("h4", { style: "margin: 0 0 6px" }, _("Junk Packets")),
+            E("div", { class: "cbi-value" }, [
+              E("label", { class: "cbi-value-title" }, _("Mode")),
+              E("div", { class: "cbi-value-field" }, junkSelect),
+            ]),
+            junkPacketsBox,
+            junkGeneratedBox,
+          ]),
+        ]),
+      ),
+      E("div", { class: "right", style: "margin-top: 10px" }, [
+        E("button", { class: "btn", click: ui.hideModal }, _("Cancel")),
+        " ",
+        E("button", { class: "btn cbi-button-positive", click: save }, _("Save")),
+      ]),
+    ]);
+
+    syncJunkMode();
+  }
+
   let o = section.option(
     form.ListValue,
     "connection_type",
@@ -14,6 +481,9 @@ function createSectionContent(section) {
   );
   o.value("proxy", "Proxy");
   o.value("vpn", "VPN");
+  if (amneziaWgAvailable) {
+    o.value("amneziawg", "AmneziaWG");
+  }
   o.value("block", "Block");
   o.value("exclusion", "Exclusion");
 
@@ -108,6 +578,33 @@ function createSectionContent(section) {
     }
 
     return validation.message;
+  };
+
+  // ---------------------------------------------------------------- AmneziaWG
+  // The whole tunnel lives in a modal: a couple of dozen inline options would bury the
+  // rest of the section form, and the fields only ever apply to this one type
+  o = section.option(form.DummyValue, "_awg_summary", _("AmneziaWG Tunnel"));
+  o.depends("connection_type", "amneziawg");
+  o.cfgvalue = function (section_id) {
+    const peer = uci.get("mudakop", section_id, "awg_peer_address");
+    const port = uci.get("mudakop", section_id, "awg_peer_port");
+
+    if (!peer) {
+      return _("Not configured yet");
+    }
+
+    return port ? "%s:%s".format(peer, port) : peer;
+  };
+
+  o = section.option(form.Button, "_awg_configure", " ");
+  o.depends("connection_type", "amneziawg");
+  o.inputtitle = _("Configure AmneziaWG");
+  o.inputstyle = "apply";
+  o.description = _(
+    "Edit the tunnel, or import an AmneziaWG .conf. A .conf carries I1-I5 junk packets; the id/ip/ib generator has no .conf equivalent and is entered by hand",
+  );
+  o.onclick = function (ev, section_id) {
+    showAmneziaWgModal(this.map, section_id);
   };
 
   o = section.option(
@@ -293,6 +790,7 @@ function createSectionContent(section) {
   // Endpoints are layer 3 like a VPN interface, so they resolve destinations locally.
   // The proxy protocols pass the domain to the remote server and need no resolver here
   o.depends({ connection_type: "proxy", proxy_config_type: "endpoint" });
+  o.depends("connection_type", "amneziawg");
 
   o = section.option(
     form.ListValue,
@@ -618,6 +1116,7 @@ function createSectionContent(section) {
   o.rmempty = false;
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
 
   o = section.option(
     form.Value,
@@ -641,6 +1140,7 @@ function createSectionContent(section) {
   o.rmempty = false;
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
 
   o = section.option(
     form.Flag,
@@ -654,6 +1154,7 @@ function createSectionContent(section) {
   o.rmempty = false;
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
 }
 
 const EntryPoint = {

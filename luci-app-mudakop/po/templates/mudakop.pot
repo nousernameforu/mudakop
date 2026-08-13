@@ -40,8 +40,24 @@ msgstr ""
 msgid "Additional marking rules found"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:394
+msgid "Allowed IPs"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:271
 msgid "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall."
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:337
+msgid "AmneziaWG Configuration"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:437
+msgid "AmneziaWG configuration updated. Press Save & Apply to write it to the router"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:586
+msgid "AmneziaWG Tunnel"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:227
@@ -74,6 +90,10 @@ msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:386
 msgid "Cache file path cannot be empty"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:191
+msgid "Cancel"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:27
@@ -123,6 +143,10 @@ msgstr ""
 msgid "Configuration Type"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:601
+msgid "Configure AmneziaWG"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:12
 msgid "Connection Type"
 msgstr ""
@@ -133,6 +157,10 @@ msgstr ""
 
 #: src/partials/modal/renderModal.ts:20
 msgid "Copy"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:174
+msgid "Could not read the selected file"
 msgstr ""
 
 #: src/mudakop/tabs/dashboard/partials/renderWidget.ts:22
@@ -254,6 +282,10 @@ msgstr ""
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:427
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:507
 msgid "Dynamic List"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:604
+msgid "Edit the tunnel, or import an AmneziaWG .conf. A .conf carries I1-I5 junk packets; the id/ip/ib generator has no .conf equivalent and is entered by hand"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:89
@@ -378,8 +410,20 @@ msgstr ""
 msgid "Fastest"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:385
+msgid "Fill fields"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:370
+msgid "Filled %d field(s) from the file. Review them, then press Save"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:673
 msgid "Fully Routed IPs"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:443
+msgid "Generated (id/ip/ib)"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:98
@@ -388,6 +432,22 @@ msgstr ""
 
 #: src/mudakop/tabs/diagnostic/initController.ts:222
 msgid "Global check"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:442
+msgid "I1-I5 templates"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:339
+msgid "Import from .conf"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:145
+msgid "Interface"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:356
+msgid "Interface Addresses"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:213
@@ -641,6 +701,10 @@ msgstr ""
 msgid "Issues detected"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:438
+msgid "Junk Packets"
+msgstr ""
+
 #: src/mudakop/tabs/diagnostic/helpers/getMudakopVersionRow.ts:48
 msgid "Latest"
 msgstr ""
@@ -677,8 +741,16 @@ msgstr ""
 msgid "Mixed Proxy Port"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:458
+msgid "Mode"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:222
 msgid "Monitored Interfaces"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:363
+msgid "MTU"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:192
@@ -691,6 +763,10 @@ msgstr ""
 
 #: src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:105
 msgid "No other marking rules found"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:593
+msgid "Not configured yet"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderCheckSection.ts:189
@@ -709,6 +785,14 @@ msgstr ""
 #: src/mudakop/tabs/diagnostic/diagnostic.store.ts:79
 #: src/mudakop/tabs/diagnostic/diagnostic.store.ts:87
 msgid "Not running"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:202
+msgid "Nothing to import: paste a configuration or choose a file"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:203
+msgid "Obfuscation"
 msgstr ""
 
 #: src/helpers/withTimeout.ts:7
@@ -747,6 +831,26 @@ msgstr ""
 msgid "Path must end with cache.db"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:164
+msgid "Peer"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:368
+msgid "Peer Address"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:373
+msgid "Peer Port"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:386
+msgid "Peer Pre-shared Key"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:379
+msgid "Peer Public Key"
+msgstr ""
+
 #: src/mudakop/tabs/diagnostic/diagnostic.store.ts:103
 #: src/mudakop/tabs/diagnostic/diagnostic.store.ts:111
 #: src/mudakop/tabs/diagnostic/diagnostic.store.ts:119
@@ -767,6 +871,14 @@ msgstr ""
 msgid "mudakop will not modify your DHCP configuration"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:403
+msgid "Persistent Keepalive"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:348
+msgid "Private Key"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:37
 msgid "Proxy Configuration URL"
 msgstr ""
@@ -777,6 +889,10 @@ msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650
 msgid "Remote Subnet Lists"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:412
+msgid "Required fields are empty: %s"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:725
@@ -821,6 +937,10 @@ msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderRunAction.ts:15
 msgid "Run Diagnostic"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:469
+msgid "Save"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:281
@@ -1033,6 +1153,10 @@ msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:199
 msgid "The URL used to test server connectivity"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:209
+msgid "This does not look like a WireGuard or AmneziaWG configuration: no PrivateKey or PublicKey found"
 msgstr ""
 
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:93

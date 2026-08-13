@@ -91,14 +91,14 @@ check_requirements() {
     if has_outbound_section; then
         log "Outbound section found" "debug"
     else
-        log "Outbound section not found. Please check your configuration file (missing proxy_string, selector_proxy_links, urltest_proxy_links, outbound_json, endpoint_json, or interface). Aborted." "error"
+        log "Outbound section not found. Please check your configuration file (missing proxy_string, selector_proxy_links, urltest_proxy_links, outbound_json, endpoint_json, awg_private_key, or interface). Aborted." "error"
         exit 1
     fi
 }
 
 _check_outbound_section() {
     local section="$1"
-    local proxy_string interface outbound_json endpoint_json urltest_proxy_links
+    local proxy_string interface outbound_json endpoint_json urltest_proxy_links awg_private_key
 
     config_get proxy_string "$section" "proxy_string"
     config_get selector_proxy_links "$section" "selector_proxy_links"
@@ -106,9 +106,11 @@ _check_outbound_section() {
     config_get outbound_json "$section" "outbound_json"
     config_get endpoint_json "$section" "endpoint_json"
     config_get interface "$section" "interface"
+    config_get awg_private_key "$section" "awg_private_key"
 
     if [ -n "$proxy_string" ] || [ -n "$selector_proxy_links" ] || [ -n "$urltest_proxy_links" ] ||
-        [ -n "$outbound_json" ] || [ -n "$endpoint_json" ] || [ -n "$interface" ]; then
+        [ -n "$outbound_json" ] || [ -n "$endpoint_json" ] || [ -n "$interface" ] ||
+        [ -n "$awg_private_key" ]; then
         section_exists=0
     fi
 }
@@ -884,6 +886,24 @@ configure_outbound_handler() {
         config=$(sing_box_cm_add_interface_outbound "$config" "$outbound_tag" "$interface_name" \
             "$SECTION_DOMAIN_RESOLVER_TAG")
         ;;
+    amneziawg)
+        log "Configuring AmneziaWG endpoint for the $section section"
+
+        if ! awg_supported; then
+            log "The installed sing-box has no AmneziaWG support (missing the with_awg build tag). Install sing-box-lx to use the AmneziaWG connection type. Aborted." "fatal"
+            exit 1
+        fi
+
+        local awg_endpoint awg_endpoint_tag
+        awg_endpoint="$(build_amneziawg_endpoint_json "$section")"
+
+        # Same shape as a raw endpoint: the resolver is created here, while destination
+        # domains are converted by the "resolve" route rule in configure_routing_for_section_lists
+        awg_endpoint_tag="$(get_outbound_tag_by_section "$section")"
+        configure_section_domain_resolver "$section" "$awg_endpoint_tag"
+
+        config=$(sing_box_cf_add_json_endpoint "$config" "$section" "$awg_endpoint")
+        ;;
     block)
         log "Connection type 'block' detected for the $section section – no outbound will be created (handled via reject route rules)"
         ;;
@@ -895,6 +915,130 @@ configure_outbound_handler() {
         exit 1
         ;;
     esac
+}
+
+# Splits a whitespace-separated uci list value into a JSON array of strings
+_json_array_from_words() {
+    printf '%s' "$1" | jq -R 'split(" ") | map(select(length > 0))'
+}
+
+# Sets a key on a JSON object only when the value is non-empty, so unset options are
+# left out of the generated endpoint instead of being emitted as "" or null
+_json_set_if_set() {
+    local json="$1"
+    local key="$2"
+    local value="$3"
+    local type="${4:-string}"
+
+    if [ -z "$value" ]; then
+        echo "$json"
+        return 0
+    fi
+
+    if [ "$type" = "number" ]; then
+        echo "$json" | jq --arg k "$key" --argjson v "$value" '.[$k] = $v'
+    else
+        echo "$json" | jq --arg k "$key" --arg v "$value" '.[$k] = $v'
+    fi
+}
+
+#######################################
+# Builds a sing-box-lx wireguard endpoint from a section's awg_* options.
+#
+# The AmneziaWG obfuscation parameters sit at the top level of the endpoint next to
+# mtu, not inside the peer. jc/jmin/jmax and s1-s4 are numbers, while h1-h4 are strings
+# because sing-box-lx accepts a range such as "39602205-139602204" there as well as a
+# plain value. The junk packets come either from i1-i5 (what an AmneziaWG .conf carries)
+# or from the id/ip/ib generator triple, never both
+# Arguments:
+#   section: string, uci section name
+# Outputs:
+#   Endpoint JSON to stdout; the tag is stamped later by sing_box_cf_add_json_endpoint
+#######################################
+build_amneziawg_endpoint_json() {
+    local section="$1"
+
+    local private_key addresses mtu
+    config_get private_key "$section" "awg_private_key"
+    config_get addresses "$section" "awg_addresses"
+    config_get mtu "$section" "awg_mtu"
+
+    local peer_address peer_port peer_public_key peer_pre_shared_key peer_allowed_ips peer_keepalive
+    config_get peer_address "$section" "awg_peer_address"
+    config_get peer_port "$section" "awg_peer_port"
+    config_get peer_public_key "$section" "awg_peer_public_key"
+    config_get peer_pre_shared_key "$section" "awg_peer_pre_shared_key"
+    config_get peer_allowed_ips "$section" "awg_peer_allowed_ips"
+    config_get peer_keepalive "$section" "awg_peer_persistent_keepalive"
+
+    if [ -z "$private_key" ] || [ -z "$addresses" ]; then
+        log "AmneziaWG section '$section' is missing the private key or interface address. Aborted." "fatal"
+        exit 1
+    fi
+
+    if [ -z "$peer_address" ] || [ -z "$peer_port" ] || [ -z "$peer_public_key" ]; then
+        log "AmneziaWG section '$section' is missing the peer address, port or public key. Aborted." "fatal"
+        exit 1
+    fi
+
+    local peer
+    peer=$(jq -n \
+        --arg address "$peer_address" \
+        --argjson port "$peer_port" \
+        --arg public_key "$peer_public_key" \
+        --argjson allowed_ips "$(_json_array_from_words "$peer_allowed_ips")" \
+        '{
+            address: $address,
+            port: $port,
+            public_key: $public_key,
+            allowed_ips: $allowed_ips
+        }')
+    peer=$(_json_set_if_set "$peer" "pre_shared_key" "$peer_pre_shared_key")
+    peer=$(_json_set_if_set "$peer" "persistent_keepalive_interval" "$peer_keepalive" number)
+
+    local endpoint
+    endpoint=$(jq -n \
+        --argjson address "$(_json_array_from_words "$addresses")" \
+        --arg private_key "$private_key" \
+        --argjson peer "$peer" \
+        '{
+            type: "wireguard",
+            address: $address,
+            private_key: $private_key,
+            peers: [$peer]
+        }')
+
+    endpoint=$(_json_set_if_set "$endpoint" "mtu" "$mtu" number)
+
+    local field value
+    for field in jc jmin jmax s1 s2 s3 s4; do
+        config_get value "$section" "awg_$field"
+        endpoint=$(_json_set_if_set "$endpoint" "$field" "$value" number)
+    done
+
+    for field in h1 h2 h3 h4; do
+        config_get value "$section" "awg_$field"
+        endpoint=$(_json_set_if_set "$endpoint" "$field" "$value")
+    done
+
+    local junk_mode
+    config_get junk_mode "$section" "awg_junk_mode" "packets"
+    case "$junk_mode" in
+    generated)
+        for field in id ip ib; do
+            config_get value "$section" "awg_$field"
+            endpoint=$(_json_set_if_set "$endpoint" "$field" "$value")
+        done
+        ;;
+    *)
+        for field in i1 i2 i3 i4 i5; do
+            config_get value "$section" "awg_$field"
+            endpoint=$(_json_set_if_set "$endpoint" "$field" "$value")
+        done
+        ;;
+    esac
+
+    echo "$endpoint"
 }
 
 sing_box_configure_dns() {
@@ -1085,7 +1229,7 @@ configure_routing_for_section_lists() {
     config_get_bool resolve_real_ip_for_routing "$section" "resolve_real_ip_for_routing" 0
 
     case "$section_connection_type" in
-    proxy | vpn)
+    proxy | vpn | amneziawg)
         route_rule_tag="$(gen_id)"
         outbound_tag=$(get_outbound_tag_by_section "$section")
         config=$(sing_box_cm_add_route_rule "$config" "$route_rule_tag" "$(get_tproxy_route_inbounds)" "$outbound_tag")
@@ -1138,12 +1282,19 @@ configure_routing_for_section_lists() {
     # destination has to be resolved before sing-box dials into them. That conversion is
     # driven by a route rule with action "resolve", not by domain_resolver on the endpoint,
     # which only ever resolves the endpoint's own peer address.
-    local proxy_config_type resolve_server section_resolver_tag
+    local proxy_config_type resolve_server section_resolver_tag is_raw_endpoint
     config_get proxy_config_type "$section" "proxy_config_type"
     section_resolver_tag="$(section_domain_resolver_tag "$section")"
 
-    if [ "$section_connection_type" = "proxy" ] && [ "$proxy_config_type" = "endpoint" ] &&
-        [ -n "$section_resolver_tag" ]; then
+    # AmneziaWG is a wireguard endpoint too, so it needs the same treatment as the
+    # endpoint proxy config type rather than the outbound-based ones
+    is_raw_endpoint=0
+    if { [ "$section_connection_type" = "proxy" ] && [ "$proxy_config_type" = "endpoint" ]; } ||
+        [ "$section_connection_type" = "amneziawg" ]; then
+        is_raw_endpoint=1
+    fi
+
+    if [ "$is_raw_endpoint" -eq 1 ] && [ -n "$section_resolver_tag" ]; then
         # A section-scoped resolver wins: it is the more specific choice, and its queries
         # are detoured through the tunnel so names resolve from the far end
         resolve_server="$section_resolver_tag"
@@ -1164,12 +1315,12 @@ configure_routing_for_section_lists() {
     config_get_bool section_disable_quic "$section" "disable_quic" 0
     if [ "$section_disable_quic" -eq 1 ]; then
         case "$section_connection_type" in
-        proxy | vpn)
+        proxy | vpn | amneziawg)
             config=$(sing_box_cm_add_quic_reject_rule "$config" "$route_rule_tag" "$(gen_id)")
             log "QUIC rejected for '$section' section"
             ;;
         *)
-            log "The disable_quic option applies to proxy and vpn sections only, ignoring it for '$section'" "warn"
+            log "The disable_quic option does not apply to '$section_connection_type' sections, ignoring it for '$section'" "warn"
             ;;
         esac
     fi
@@ -1640,7 +1791,8 @@ _determine_first_outbound_section() {
     local connection_type
     config_get connection_type "$section" "connection_type"
 
-    if [ "$connection_type" = "proxy" ] || [ "$connection_type" = "vpn" ]; then
+    if [ "$connection_type" = "proxy" ] || [ "$connection_type" = "vpn" ] ||
+        [ "$connection_type" = "amneziawg" ]; then
         [ -z "$first_section" ] && first_section="$1"
     fi
 }
@@ -1924,6 +2076,8 @@ show_config() {
         -e "s@\\(option dns_server '[^/]*\\)/[^']*'@\\1/MASKED'@g" \
         -e "s@\\(option domain_resolver_dns_server '[^/]*\\)/[^']*'@\\1/MASKED'@g" \
         -e 's/\(option yacd_secret_key\).*/\1 '\''MASKED'\''/g' \
+        -e 's/\(option awg_private_key\).*/\1 '\''MASKED'\''/g' \
+        -e 's/\(option awg_peer_pre_shared_key\).*/\1 '\''MASKED'\''/g' \
         "$MUDAKOP_CONFIG" > "$tmp_config"
 
     cat "$tmp_config"
@@ -2276,6 +2430,26 @@ check_sing_box() {
     fi
 
     echo "{\"sing_box_installed\":$sing_box_installed,\"sing_box_version_ok\":$sing_box_version_ok,\"sing_box_service_exist\":$sing_box_service_exist,\"sing_box_autostart_disabled\":$sing_box_autostart_disabled,\"sing_box_process_running\":$sing_box_process_running,\"sing_box_ports_listening\":$sing_box_ports_listening}" | jq .
+}
+
+#######################################
+# Reports whether the installed sing-box understands AmneziaWG endpoint fields.
+#
+# Mainline sing-box does not: jc/jmin/s1/h1/... are rejected by its schema, so the
+# whole configuration fails validation. The sing-box-lx fork implements them and
+# advertises the with_awg build tag, which `sing-box version` prints in its Tags line.
+# Checking the tag rather than the "-lx" version suffix keeps this working if another
+# build ever ships the feature
+#######################################
+awg_supported() {
+    sing-box version 2> /dev/null | grep -q "with_awg"
+}
+
+check_awg_support() {
+    local supported=false
+    awg_supported && supported=true
+
+    echo "{\"supported\":$supported}" | jq .
 }
 
 #######################################
@@ -2780,6 +2954,7 @@ Available commands:
     check_logs              Show mudakop logs from system journal
     check_sing_box_logs     Show sing-box logs
     check_fakeip            Test FakeIP on router
+    check_awg_support       Report whether sing-box supports AmneziaWG (with_awg)
     clash_api               Clash API interface for managing proxies and groups
     show_config             Display current mudakop configuration
     show_version            Show mudakop version
@@ -2833,6 +3008,9 @@ check_sing_box_logs)
     ;;
 check_fakeip)
     check_fakeip
+    ;;
+check_awg_support)
+    check_awg_support
     ;;
 clash_api)
     clash_api "$2" "$3" "$4"

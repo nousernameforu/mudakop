@@ -42,10 +42,38 @@
     ]
   },
   {
+    "call": "Allowed IPs",
+    "key": "Allowed IPs",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:394"
+    ]
+  },
+  {
     "call": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
     "key": "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall.",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:271"
+    ]
+  },
+  {
+    "call": "AmneziaWG Configuration",
+    "key": "AmneziaWG Configuration",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:337"
+    ]
+  },
+  {
+    "call": "AmneziaWG configuration updated. Press Save & Apply to write it to the router",
+    "key": "AmneziaWG configuration updated. Press Save & Apply to write it to the router",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:437"
+    ]
+  },
+  {
+    "call": "AmneziaWG Tunnel",
+    "key": "AmneziaWG Tunnel",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:586"
     ]
   },
   {
@@ -102,6 +130,13 @@
     "key": "Cache file path cannot be empty",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:386"
+    ]
+  },
+  {
+    "call": "Cancel",
+    "key": "Cancel",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:191"
     ]
   },
   {
@@ -183,6 +218,13 @@
     ]
   },
   {
+    "call": "Configure AmneziaWG",
+    "key": "Configure AmneziaWG",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:601"
+    ]
+  },
+  {
     "call": "Connection Type",
     "key": "Connection Type",
     "places": [
@@ -201,6 +243,13 @@
     "key": "Copy",
     "places": [
       "src/partials/modal/renderModal.ts:20"
+    ]
+  },
+  {
+    "call": "Could not read the selected file",
+    "key": "Could not read the selected file",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:174"
     ]
   },
   {
@@ -406,6 +455,13 @@
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:427",
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:507"
+    ]
+  },
+  {
+    "call": "Edit the tunnel, or import an AmneziaWG .conf. A .conf carries I1-I5 junk packets; the id/ip/ib generator has no .conf equivalent and is entered by hand",
+    "key": "Edit the tunnel, or import an AmneziaWG .conf. A .conf carries I1-I5 junk packets; the id/ip/ib generator has no .conf equivalent and is entered by hand",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:604"
     ]
   },
   {
@@ -618,10 +674,31 @@
     ]
   },
   {
+    "call": "Fill fields",
+    "key": "Fill fields",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:385"
+    ]
+  },
+  {
+    "call": "Filled %d field(s) from the file. Review them, then press Save",
+    "key": "Filled %d field(s) from the file. Review them, then press Save",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:370"
+    ]
+  },
+  {
     "call": "Fully Routed IPs",
     "key": "Fully Routed IPs",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:673"
+    ]
+  },
+  {
+    "call": "Generated (id/ip/ib)",
+    "key": "Generated (id/ip/ib)",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:443"
     ]
   },
   {
@@ -636,6 +713,34 @@
     "key": "Global check",
     "places": [
       "src/mudakop/tabs/diagnostic/initController.ts:222"
+    ]
+  },
+  {
+    "call": "I1-I5 templates",
+    "key": "I1-I5 templates",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:442"
+    ]
+  },
+  {
+    "call": "Import from .conf",
+    "key": "Import from .conf",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:339"
+    ]
+  },
+  {
+    "call": "Interface",
+    "key": "Interface",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:145"
+    ]
+  },
+  {
+    "call": "Interface Addresses",
+    "key": "Interface Addresses",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:356"
     ]
   },
   {
@@ -1073,6 +1178,13 @@
     ]
   },
   {
+    "call": "Junk Packets",
+    "key": "Junk Packets",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:438"
+    ]
+  },
+  {
     "call": "Latest",
     "key": "Latest",
     "places": [
@@ -1136,10 +1248,24 @@
     ]
   },
   {
+    "call": "Mode",
+    "key": "Mode",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:458"
+    ]
+  },
+  {
     "call": "Monitored Interfaces",
     "key": "Monitored Interfaces",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:222"
+    ]
+  },
+  {
+    "call": "MTU",
+    "key": "MTU",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:363"
     ]
   },
   {
@@ -1161,6 +1287,13 @@
     "key": "No other marking rules found",
     "places": [
       "src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:105"
+    ]
+  },
+  {
+    "call": "Not configured yet",
+    "key": "Not configured yet",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:593"
     ]
   },
   {
@@ -1188,6 +1321,20 @@
       "src/mudakop/tabs/diagnostic/diagnostic.store.ts:71",
       "src/mudakop/tabs/diagnostic/diagnostic.store.ts:79",
       "src/mudakop/tabs/diagnostic/diagnostic.store.ts:87"
+    ]
+  },
+  {
+    "call": "Nothing to import: paste a configuration or choose a file",
+    "key": "Nothing to import: paste a configuration or choose a file",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:202"
+    ]
+  },
+  {
+    "call": "Obfuscation",
+    "key": "Obfuscation",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:203"
     ]
   },
   {
@@ -1254,6 +1401,41 @@
     ]
   },
   {
+    "call": "Peer",
+    "key": "Peer",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:164"
+    ]
+  },
+  {
+    "call": "Peer Address",
+    "key": "Peer Address",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:368"
+    ]
+  },
+  {
+    "call": "Peer Port",
+    "key": "Peer Port",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:373"
+    ]
+  },
+  {
+    "call": "Peer Pre-shared Key",
+    "key": "Peer Pre-shared Key",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:386"
+    ]
+  },
+  {
+    "call": "Peer Public Key",
+    "key": "Peer Public Key",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:379"
+    ]
+  },
+  {
     "call": "Pending",
     "key": "Pending",
     "places": [
@@ -1286,6 +1468,20 @@
     ]
   },
   {
+    "call": "Persistent Keepalive",
+    "key": "Persistent Keepalive",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:403"
+    ]
+  },
+  {
+    "call": "Private Key",
+    "key": "Private Key",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:348"
+    ]
+  },
+  {
     "call": "Proxy Configuration URL",
     "key": "Proxy Configuration URL",
     "places": [
@@ -1304,6 +1500,13 @@
     "key": "Remote Subnet Lists",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650"
+    ]
+  },
+  {
+    "call": "Required fields are empty: %s",
+    "key": "Required fields are empty: %s",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:412"
     ]
   },
   {
@@ -1381,6 +1584,13 @@
     "key": "Run Diagnostic",
     "places": [
       "src/mudakop/tabs/diagnostic/partials/renderRunAction.ts:15"
+    ]
+  },
+  {
+    "call": "Save",
+    "key": "Save",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:469"
     ]
   },
   {
@@ -1749,6 +1959,13 @@
     "key": "The URL used to test server connectivity",
     "places": [
       "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:199"
+    ]
+  },
+  {
+    "call": "This does not look like a WireGuard or AmneziaWG configuration: no PrivateKey or PublicKey found",
+    "key": "This does not look like a WireGuard or AmneziaWG configuration: no PrivateKey or PublicKey found",
+    "places": [
+      "../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:209"
     ]
   },
   {

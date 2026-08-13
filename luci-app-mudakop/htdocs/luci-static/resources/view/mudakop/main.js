@@ -796,6 +796,7 @@ var Mudakop;
     AvailableMethods2["SHOW_SING_BOX_CONFIG"] = "show_sing_box_config";
     AvailableMethods2["CHECK_LOGS"] = "check_logs";
     AvailableMethods2["GET_SYSTEM_INFO"] = "get_system_info";
+    AvailableMethods2["CHECK_AWG_SUPPORT"] = "check_awg_support";
   })(AvailableMethods = Mudakop2.AvailableMethods || (Mudakop2.AvailableMethods = {}));
   let AvailableClashAPIMethods;
   ((AvailableClashAPIMethods2) => {
@@ -870,6 +871,9 @@ var mudakopShellMethods = {
   checkLogs: async () => callBaseMethod(Mudakop.AvailableMethods.CHECK_LOGS),
   getSystemInfo: async () => callBaseMethod(
     Mudakop.AvailableMethods.GET_SYSTEM_INFO
+  ),
+  checkAwgSupport: async () => callBaseMethod(
+    Mudakop.AvailableMethods.CHECK_AWG_SUPPORT
   )
 };
 
@@ -1016,6 +1020,25 @@ async function getDashboardSections() {
           ]
         };
       }
+    }
+    if (section.connection_type === "amneziawg") {
+      const outbound = proxies.find(
+        (proxy) => proxy.code === `${section[".name"]}-out`
+      );
+      return {
+        withTagSelect: false,
+        code: outbound?.code || section[".name"],
+        displayName: section[".name"],
+        outbounds: [
+          {
+            code: outbound?.code || section[".name"],
+            displayName: section.awg_peer_address || outbound?.value?.name || "",
+            latency: outbound?.value?.history?.[0]?.delay || 0,
+            type: outbound?.value?.type || "",
+            selected: true
+          }
+        ]
+      };
     }
     if (section.connection_type === "vpn") {
       const outbound = proxies.find(
