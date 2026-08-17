@@ -36,11 +36,19 @@ msgstr ""
 msgid "Active Connections"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:542
+msgid "Add to list"
+msgstr ""
+
 #: src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:106
 msgid "Additional marking rules found"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:394
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:76
+msgid "Advanced"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:870
 msgid "Allowed IPs"
 msgstr ""
 
@@ -48,28 +56,36 @@ msgstr ""
 msgid "Allows access to YACD from the WAN. Make sure to open the appropriate port in your firewall."
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:337
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1128
 msgid "AmneziaWG Configuration"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:437
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1117
 msgid "AmneziaWG configuration updated. Press Save & Apply to write it to the router"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:586
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1266
 msgid "AmneziaWG Tunnel"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:227
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1298
+msgid "An https:// link to a subscription. Importing fetches it through the router and offers its servers for the list below"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1467
 msgid "Applicable for SOCKS and Shadowsocks proxy"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:480
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1633
 msgid "At least one valid domain must be specified. Comments-only content is not allowed."
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:560
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1713
 msgid "At least one valid subnet or IP must be specified. Comments-only content is not allowed."
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1345
+msgid "Auto Update Subscription"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:43
@@ -84,19 +100,21 @@ msgstr ""
 msgid "Bootstrap DNS server"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:372
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:389
 msgid "Cache File Path"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:386
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:403
 msgid "Cache file path cannot be empty"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:191
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:680
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1147
 msgid "Cancel"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/checks/runDnsCheck.ts:27
+#: src/mudakop/tabs/diagnostic/checks/runFakeIPCheck.ts:27
 #: src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:28
 #: src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:27
 #: src/mudakop/tabs/diagnostic/checks/runSingBoxCheck.ts:25
@@ -131,27 +149,31 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:359
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:376
 msgid "Config File Path"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:27
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:49
 msgid "Configuration for mudakop service"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:23
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1173
 msgid "Configuration Type"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:601
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1281
 msgid "Configure AmneziaWG"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:12
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:17
+msgid "Connection"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1159
 msgid "Connection Type"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:26
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1176
 msgid "Connection URL"
 msgstr ""
 
@@ -159,7 +181,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:174
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:996
 msgid "Could not read the selected file"
 msgstr ""
 
@@ -167,7 +189,7 @@ msgstr ""
 msgid "Currently unavailable"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:80
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:102
 msgid "Dashboard"
 msgstr ""
 
@@ -187,7 +209,7 @@ msgstr ""
 msgid "DHCP has DNS server"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:65
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:87
 msgid "Diagnostics"
 msgstr ""
 
@@ -195,12 +217,12 @@ msgstr ""
 msgid "Disable autostart"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:648
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1891
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:289
 msgid "Disable QUIC"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1892
 msgid "Disable the QUIC protocol for this section's traffic only. The global Disable QUIC setting still applies to everything when enabled"
 msgstr ""
 
@@ -208,8 +230,8 @@ msgstr ""
 msgid "Disable the QUIC protocol to improve compatibility or fix issues with video streaming"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:426
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:506
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1579
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1659
 msgid "Disabled"
 msgstr ""
 
@@ -217,17 +239,17 @@ msgstr ""
 msgid "DNS on router"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:303
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1544
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:15
 msgid "DNS over HTTPS (DoH)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:304
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1545
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:16
 msgid "DNS over TLS (DoT)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:300
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1541
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:12
 msgid "DNS Protocol Type"
 msgstr ""
@@ -236,7 +258,7 @@ msgstr ""
 msgid "DNS Rewrite TTL"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:313
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1554
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:24
 msgid "DNS Server"
 msgstr ""
@@ -249,11 +271,12 @@ msgstr ""
 msgid "DNS Strategy"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:287
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:42
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1527
 msgid "Domain Resolver"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:350
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:367
 msgid "Dont Touch My DHCP!"
 msgstr ""
 
@@ -266,25 +289,29 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:312
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:329
 msgid "Download Lists via Proxy/VPN"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:321
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:338
 msgid "Download Lists via specific proxy section"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:313
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:322
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:330
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:339
 msgid "Downloading all lists via specific Proxy/VPN"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:427
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:507
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:651
+msgid "Downloading the subscription…"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1580
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1660
 msgid "Dynamic List"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:604
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1283
 msgid "Edit the tunnel, or import an AmneziaWG .conf. A .conf carries I1-I5 junk packets; the id/ip/ib generator has no .conf equivalent and is entered by hand"
 msgstr ""
 
@@ -292,11 +319,11 @@ msgstr ""
 msgid "Enable autostart"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:288
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1528
 msgid "Enable built-in DNS resolver for domains handled by this section"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:726
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1880
 msgid "Enable DNS resolve to get real IP when routing"
 msgstr ""
 
@@ -304,7 +331,7 @@ msgstr ""
 msgid "Enable IPv6"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:700
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1853
 msgid "Enable Mixed Proxy"
 msgstr ""
 
@@ -312,7 +339,7 @@ msgstr ""
 msgid "Enable Output Network Interface"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:701
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1854
 msgid "Enable the mixed proxy, allowing this section to route traffic through both HTTP and SOCKS proxies"
 msgstr ""
 
@@ -324,11 +351,11 @@ msgstr ""
 msgid "Enable YACD WAN Access"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:30
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1180
 msgid "Endpoint Config"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:89
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1239
 msgid "Endpoint Configuration"
 msgstr ""
 
@@ -340,56 +367,80 @@ msgstr ""
 msgid "Endpoint must contain a non-empty \"type\" field"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:424
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:441
 msgid "Enter a size with a unit, for example 64mb, 512kb or 1gb"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:90
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:644
+msgid "Enter a subscription URL starting with http:// or https://"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1240
 msgid "Enter complete endpoint configuration in JSON format, e.g. a WireGuard endpoint. The tag is assigned by mudakop and will be overwritten"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:67
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1217
 msgid "Enter complete outbound configuration in JSON format"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:462
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1615
 msgid "Enter domain names separated by commas, spaces, or newlines. You can add comments using //"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:436
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1589
 msgid "Enter domain names without protocols, e.g. example.com or sub.example.com"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:516
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1669
 msgid "Enter subnets in CIDR notation (e.g. 103.21.244.0/22 or 2001:db8::/32) or single IP addresses. IPv6 entries are only routed when IPv6 support is enabled in the settings"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:542
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1695
 msgid "Enter subnets in CIDR notation or single IP addresses, separated by commas, spaces, or newlines. IPv6 entries are only routed when IPv6 support is enabled in the settings. You can add comments using //"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:166
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1406
 msgid "Every 1 minute"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:167
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:320
+msgid "Every 12 hours"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:322
+msgid "Every 3 days"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:319
+msgid "Every 3 hours"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1407
 msgid "Every 3 minutes"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:165
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1405
 msgid "Every 30 seconds"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:168
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1408
 msgid "Every 5 minutes"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:426
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:321
+msgid "Every day"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:468
 msgid "Exclude NTP"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:427
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:469
 msgid "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:65
+msgid "External Lists"
 msgstr ""
 
 #: src/helpers/copyToClipboard.ts:12
@@ -405,24 +456,40 @@ msgstr ""
 msgid "Failed to execute!"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:659
+msgid "Failed to read the subscription"
+msgstr ""
+
 #: src/mudakop/methods/custom/getDashboardSections.ts:181
 #: src/mudakop/tabs/diagnostic/checks/runSectionsCheck.ts:59
 msgid "Fastest"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:385
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:666
+msgid "Fetch"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1065
 msgid "Fill fields"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:370
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1050
 msgid "Filled %d field(s) from the file. Review them, then press Save"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:673
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:612
+msgid "Found %d server(s)"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:611
+msgid "Found %d server(s), %d of them removed by you before"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1826
 msgid "Fully Routed IPs"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:443
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:959
 msgid "Generated (id/ip/ib)"
 msgstr ""
 
@@ -434,19 +501,31 @@ msgstr ""
 msgid "Global check"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:442
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:958
 msgid "I1-I5 templates"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:339
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1080
 msgid "Import from .conf"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:145
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1333
+msgid "Import subscription"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:669
+msgid "Import Subscription"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:516
+msgid "Imported %d server(s). Press Save & Apply to use them"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:825
 msgid "Interface"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:356
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:835
 msgid "Interface Addresses"
 msgstr ""
 
@@ -701,8 +780,12 @@ msgstr ""
 msgid "Issues detected"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:438
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1136
 msgid "Junk Packets"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:375
+msgid "Last refresh: %s · %d server(s) offered, %d removed by you"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/helpers/getMudakopVersionRow.ts:48
@@ -713,15 +796,15 @@ msgstr ""
 msgid "List Update Frequency"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:581
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1734
 msgid "Local Domain Lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:604
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1757
 msgid "Local Subnet Lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:408
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:450
 msgid "Log Level"
 msgstr ""
 
@@ -729,7 +812,7 @@ msgstr ""
 msgid "Main DNS"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:408
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:425
 msgid "Memory Limit"
 msgstr ""
 
@@ -737,11 +820,11 @@ msgstr ""
 msgid "Memory Usage"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:713
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1867
 msgid "Mixed Proxy Port"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:458
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1138
 msgid "Mode"
 msgstr ""
 
@@ -749,23 +832,43 @@ msgstr ""
 msgid "Monitored Interfaces"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:363
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:840
 msgid "MTU"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:192
+#: src/mudakop/tabs/dashboard/initController.ts:343
+msgid "mudakop"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:48
+msgid "mudakop Settings"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:368
+msgid "mudakop will not modify your DHCP configuration"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1432
 msgid "Must be a number in the range of 50 - 1000"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:241
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1481
 msgid "Network Interface"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:318
+msgid "Never"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/checks/runNftCheck.ts:105
 msgid "No other marking rules found"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:593
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:484
+msgid "No servers selected"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1273
 msgid "Not configured yet"
 msgstr ""
 
@@ -787,23 +890,31 @@ msgstr ""
 msgid "Not running"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:202
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:365
+msgid "Nothing imported yet"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1010
 msgid "Nothing to import: paste a configuration or choose a file"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:203
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:883
 msgid "Obfuscation"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1335
+msgid "Only the protocols mudakop supports are offered: vless, ss, trojan, socks4/5, hysteria2 and naive. Base64 and plain text subscriptions are both understood"
 msgstr ""
 
 #: src/helpers/withTimeout.ts:7
 msgid "Operation timed out"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:29
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1179
 msgid "Outbound Config"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:66
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1216
 msgid "Outbound Configuration"
 msgstr ""
 
@@ -819,35 +930,35 @@ msgstr ""
 msgid "Path cannot be empty"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:390
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:407
 msgid "Path must be absolute (start with /)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:399
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:416
 msgid "Path must contain at least one directory (like /tmp/cache.db)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:394
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:411
 msgid "Path must end with cache.db"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:164
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:844
 msgid "Peer"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:368
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:848
 msgid "Peer Address"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:373
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:854
 msgid "Peer Port"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:386
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:865
 msgid "Peer Pre-shared Key"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:379
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:860
 msgid "Peer Public Key"
 msgstr ""
 
@@ -859,43 +970,39 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: src/mudakop/tabs/dashboard/initController.ts:343
-msgid "mudakop"
-msgstr ""
-
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:26
-msgid "mudakop Settings"
-msgstr ""
-
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:351
-msgid "mudakop will not modify your DHCP configuration"
-msgstr ""
-
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:403
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:877
 msgid "Persistent Keepalive"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:348
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:829
 msgid "Private Key"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:37
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1187
 msgid "Proxy Configuration URL"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:627
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1346
+msgid "Refresh this subscription on a schedule: new servers are added, retired ones are removed, and servers you delete from the list below stay deleted. The interval is set in Settings"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1780
 msgid "Remote Domain Lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:650
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1803
 msgid "Remote Subnet Lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:412
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:530
+msgid "Replace list"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1092
 msgid "Required fields are empty: %s"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:725
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1879
 msgid "Resolve real IP for routing"
 msgstr ""
 
@@ -907,7 +1014,7 @@ msgstr ""
 msgid "Route IPv6 traffic in addition to IPv4. Requires working IPv6 on both the WAN and the proxy/VPN server. Leave disabled if unsure: with this off, mudakop answers AAAA queries empty and only IPv4 is routed"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:437
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:479
 msgid "Routing Excluded IPs"
 msgstr ""
 
@@ -939,7 +1046,7 @@ msgstr ""
 msgid "Run Diagnostic"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:469
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1149
 msgid "Save"
 msgstr ""
 
@@ -947,11 +1054,11 @@ msgstr ""
 msgid "Secret key for authenticating remote access to YACD when WAN access is enabled."
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:36
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:58
 msgid "Sections"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:13
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1160
 msgid "Select between VPN and Proxy connection methods for traffic routing"
 msgstr ""
 
@@ -959,44 +1066,48 @@ msgstr ""
 msgid "Select DNS protocol to use"
 msgstr ""
 
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:316
+msgid "Select how often subscriptions with auto update enabled are refreshed"
+msgstr ""
+
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:301
 msgid "Select how often the domain or subnet lists are updated automatically"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:24
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1174
 msgid "Select how to configure the proxy"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:242
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1482
 msgid "Select network interface for VPN connection"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:314
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1555
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:25
 msgid "Select or enter DNS server address"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:373
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:390
 msgid "Select or enter path for sing-box cache file. Change this ONLY if you know what you are doing"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:360
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:377
 msgid "Select path for sing-box config file. Change this ONLY if you know what you are doing"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:301
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1542
 msgid "Select the DNS protocol type for the domain resolver"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:424
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1577
 msgid "Select the list type for adding custom domains"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:504
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1657
 msgid "Select the list type for adding custom subnets"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:409
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:451
 msgid "Select the log level for sing-box"
 msgstr ""
 
@@ -1012,11 +1123,12 @@ msgstr ""
 msgid "Select the WAN interfaces to be monitored"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:27
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1177
 msgid "Selector"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:116
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:671
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1356
 msgid "Selector Proxy Links"
 msgstr ""
 
@@ -1024,7 +1136,7 @@ msgstr ""
 msgid "Services info"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:49
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/mudakop.js:71
 msgid "Settings"
 msgstr ""
 
@@ -1077,7 +1189,11 @@ msgstr ""
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:410
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:629
+msgid "Skipped %d entr(ies) using a protocol mudakop cannot build an outbound from"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:426
 msgid "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap"
 msgstr ""
 
@@ -1085,24 +1201,24 @@ msgstr ""
 msgid "Source Network Interface"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:438
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:480
 msgid "Specify a local IP address to be excluded from routing"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:674
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1827
 msgid "Specify local IP addresses or subnets whose traffic will always be routed through the configured route. IPv6 entries are only routed when IPv6 support is enabled in the settings"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:628
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1781
 msgid "Specify remote URLs to download and use domain lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:651
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1804
 msgid "Specify remote URLs to download and use subnet lists"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:582
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:605
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1735
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1758
 msgid "Specify the path to the list file located on the router filesystem"
 msgstr ""
 
@@ -1112,6 +1228,27 @@ msgstr ""
 
 #: src/mudakop/tabs/diagnostic/partials/renderAvailableActions.ts:59
 msgid "Stop mudakop"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1323
+msgid "Subscription"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:315
+msgid "Subscription Update Frequency"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:674
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1297
+msgid "Subscription URL"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1311
+msgid "Subscription URL must start with http:// or https://"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:451
+msgid "Subscriptions are only available for the Selector and URLTest configuration types"
 msgstr ""
 
 #: src/helpers/copyToClipboard.ts:10
@@ -1134,8 +1271,8 @@ msgstr ""
 msgid "Test latency"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:428
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:508
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1581
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1661
 msgid "Text List"
 msgstr ""
 
@@ -1143,19 +1280,23 @@ msgstr ""
 msgid "The DNS server used to look up the IP address of an upstream DNS server"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:163
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1403
 msgid "The interval between connectivity tests"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:176
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1416
 msgid "The maximum difference in response times (ms) allowed when comparing servers"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:199
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:670
+msgid "The router downloads the subscription and lists the servers it carries. Pick the ones to put into the %s list"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1439
 msgid "The URL used to test server connectivity"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:209
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1021
 msgid "This does not look like a WireGuard or AmneziaWG configuration: no PrivateKey or PublicKey found"
 msgstr ""
 
@@ -1179,13 +1320,17 @@ msgstr ""
 msgid "TTL value cannot be empty"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:305
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1546
 #: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/settings.js:17
 msgid "UDP (Unprotected DNS)"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:226
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1466
 msgid "UDP over TCP"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:439
+msgid "Unexpected response from the router"
 msgstr ""
 
 #: src/mudakop/tabs/diagnostic/initController.ts:38
@@ -1211,47 +1356,52 @@ msgstr ""
 msgid "URL must use one of the following protocols:"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:28
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1178
 msgid "URLTest"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:162
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1402
 msgid "URLTest Check Interval"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:139
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:671
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1379
 msgid "URLTest Proxy Links"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:198
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1438
 msgid "URLTest Testing URL"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:175
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1415
 msgid "URLTest Tolerance"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:423
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1576
 msgid "User Domain List Type"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:435
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1588
 msgid "User Domains"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:461
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:52
+msgid "User Domains and Subnets"
+msgstr ""
+
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1614
 msgid "User Domains List"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:503
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1656
 msgid "User Subnet List Type"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:515
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1668
 msgid "User Subnets"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:541
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1694
 msgid "User Subnets List"
 msgstr ""
 
@@ -1279,8 +1429,8 @@ msgstr ""
 msgid "Valid"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:494
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:572
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1647
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1725
 msgid "Validation errors:"
 msgstr ""
 
@@ -1289,9 +1439,9 @@ msgstr ""
 msgid "View logs"
 msgstr ""
 
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:38
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:117
-#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:140
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1188
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1357
+#: ../luci-app-mudakop/htdocs/luci-static/resources/view/mudakop/section.js:1380
 msgid "vless://, ss://, trojan://, socks4/5://, hy2/hysteria2://, naive+https/quic:// links"
 msgstr ""
 

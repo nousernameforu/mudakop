@@ -149,6 +149,7 @@ start_main() {
     # sing-box
     sing_box_init_config
     config_foreach add_cron_job "section"
+    add_subscription_cron_job
     /etc/init.d/sing-box start
 
     log "Nice"
@@ -169,6 +170,7 @@ stop_main() {
     fi
 
     remove_cron_job
+    remove_subscription_cron_job
 
     rm -f "$TMP_RULESET_FOLDER"/*
 
@@ -533,6 +535,70 @@ add_cron_job() {
 remove_cron_job() {
     (crontab -l | grep -v "/usr/bin/mudakop list_update") | crontab -
     log "The cron job removed"
+}
+
+_has_subscription_auto_update() {
+    local section="$1"
+    local subscription_url auto_update
+
+    config_get subscription_url "$section" "subscription_url"
+    config_get_bool auto_update "$section" "subscription_auto_update" 0
+
+    if [ -n "$subscription_url" ] && [ "$auto_update" -eq 1 ]; then
+        subscription_auto_update_found=1
+    fi
+}
+
+#######################################
+# Schedules the subscription refresh. One job covers every section, like the list
+# update does, and it runs on its own interval because a refresh that finds new servers
+# costs a reload, while a list update does not
+#######################################
+add_subscription_cron_job() {
+    local subscription_update_interval cron_job
+    local subscription_auto_update_found=0
+
+    config_foreach _has_subscription_auto_update "section"
+
+    if [ "$subscription_auto_update_found" -eq 0 ]; then
+        return
+    fi
+
+    config_get subscription_update_interval "settings" "subscription_update_interval" "1d"
+
+    # Offset from the list update so the two never start together
+    case "$subscription_update_interval" in
+    "off")
+        return
+        ;;
+    "3h")
+        cron_job="41 */3 * * * /usr/bin/mudakop subscription_update"
+        ;;
+    "12h")
+        cron_job="41 */12 * * * /usr/bin/mudakop subscription_update"
+        ;;
+    "1d")
+        cron_job="41 4 * * * /usr/bin/mudakop subscription_update"
+        ;;
+    "3d")
+        cron_job="41 4 */3 * * /usr/bin/mudakop subscription_update"
+        ;;
+    *)
+        log "Invalid subscription_update_interval value: $subscription_update_interval"
+        return
+        ;;
+    esac
+
+    remove_subscription_cron_job
+    crontab -l | {
+        cat
+        echo "$cron_job"
+    } | crontab -
+    log "The subscription cron job has been created: $cron_job"
+}
+
+remove_subscription_cron_job() {
+    (crontab -l | grep -v "/usr/bin/mudakop subscription_update") | crontab -
 }
 
 list_update() {
@@ -2073,6 +2139,9 @@ show_config() {
         -e '/option endpoint_json/,/^}/c\	option endpoint_json '\''MASKED'\''' \
         -e 's/\(list urltest_proxy_links\).*/\1 '\''MASKED'\''/g' \
         -e 's/\(list selector_proxy_links\).*/\1 '\''MASKED'\''/g' \
+        -e 's/\(option subscription_url\).*/\1 '\''MASKED'\''/g' \
+        -e 's/\(list subscription_links\).*/\1 '\''MASKED'\''/g' \
+        -e 's/\(list subscription_excluded\).*/\1 '\''MASKED'\''/g' \
         -e "s@\\(option dns_server '[^/]*\\)/[^']*'@\\1/MASKED'@g" \
         -e "s@\\(option domain_resolver_dns_server '[^/]*\\)/[^']*'@\\1/MASKED'@g" \
         -e 's/\(option yacd_secret_key\).*/\1 '\''MASKED'\''/g' \
@@ -2450,6 +2519,273 @@ check_awg_support() {
     awg_supported && supported=true
 
     echo "{\"supported\":$supported}" | jq .
+}
+
+#######################################
+# Reads text on stdin and prints the proxy links it contains, one per line.
+# Everything the outbound builder cannot consume is dropped.
+#
+# Whitespace left inside a link, which providers routinely put in the "#name" fragment,
+# is percent encoded: the section link lists are word split when the outbounds are
+# built, so a link carrying a raw space would fall apart there
+#######################################
+_subscription_filter_links() {
+    tr -d '\r' \
+        | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+        | grep -E "$SUBSCRIPTION_LINK_REGEX" \
+        | sed -e 's/[[:space:]]/%20/g'
+}
+
+_subscription_failure() {
+    jq -n --arg error "$1" '{success: false, error: $error}'
+    return 1
+}
+
+#######################################
+# Downloads a subscription and reports the proxy links it carries.
+#
+# Two payload shapes are handled: the base64 blob most providers serve, and a plain
+# newline separated link list. Anything else (Clash YAML, a sing-box config) yields no
+# links and is treated as a failure. Links using a protocol mudakop cannot build an
+# outbound from are counted as skipped rather than failing the whole fetch.
+#
+# Everything is reported through stdout rather than through globals: both callers read
+# this function inside a command substitution, and a variable set in that subshell never
+# reaches them
+# Arguments:
+#   $1 - subscription URL, http:// or https://
+# Outputs:
+#   {"success":true,"links":[...],"count":n,"skipped":n} or {"success":false,"error":"..."}
+#######################################
+fetch_subscription() {
+    local url="$1"
+    local proxy_address body text links uri_lines count skipped
+
+    if [ -z "$url" ]; then
+        _subscription_failure "Subscription URL is required"
+        return 1
+    fi
+
+    case "$url" in
+    http://* | https://*) ;;
+    *)
+        _subscription_failure "Subscription URL must start with http:// or https://"
+        return 1
+        ;;
+    esac
+
+    # A subscription host is often exactly the kind of address that only answers from
+    # behind the proxy, so honour the same setting the list downloads use, and fall back
+    # to a direct fetch when the proxy itself is what is unreachable
+    proxy_address="$(get_service_proxy_address)"
+
+    if [ -n "$proxy_address" ]; then
+        body="$(curl -fsSL --max-time "$SUBSCRIPTION_FETCH_TIMEOUT" \
+            --proxy "http://$proxy_address" \
+            --user-agent "$SUBSCRIPTION_USER_AGENT" "$url" 2> /dev/null)"
+    fi
+
+    if [ -z "$body" ]; then
+        body="$(curl -fsSL --max-time "$SUBSCRIPTION_FETCH_TIMEOUT" \
+            --user-agent "$SUBSCRIPTION_USER_AGENT" "$url" 2> /dev/null)"
+    fi
+
+    if [ -z "$body" ]; then
+        _subscription_failure "Could not download the subscription, or the server returned an empty body"
+        return 1
+    fi
+
+    # Try base64 first, including the URL safe alphabet, and keep the decoded form only
+    # when it actually yields links. A plain text payload decodes to garbage, which the
+    # filter then rejects, so the original body is used instead
+    text="$(printf '%s' "$body" | tr -d '\r\n' | tr -- '-_' '+/' | base64 -d 2> /dev/null)"
+
+    if [ -z "$(printf '%s\n' "$text" | _subscription_filter_links)" ]; then
+        text="$body"
+    fi
+
+    links="$(printf '%s\n' "$text" | _subscription_filter_links)"
+
+    if [ -z "$links" ]; then
+        _subscription_failure "No supported proxy links found in the subscription"
+        return 1
+    fi
+
+    uri_lines="$(printf '%s\n' "$text" | tr -d '\r' | sed 's/^[[:space:]]*//' \
+        | grep -cE '^[a-z][a-z0-9+.-]*://')"
+    count="$(printf '%s\n' "$links" | grep -c .)"
+    skipped=$((uri_lines - count))
+
+    printf '%s\n' "$links" | jq -R -s --argjson skipped "$skipped" \
+        '{success: true, skipped: $skipped, links: (split("\n") | map(select(length > 0)))}
+            | .count = (.links | length)'
+}
+
+# Collapses a uci list into a single space separated line, so two of them can be
+# compared without caring how they were assembled
+_normalize_list() {
+    local item
+    local normalized=""
+
+    for item in $1; do
+        normalized="$normalized $item"
+    done
+
+    echo "${normalized# }"
+}
+
+_list_contains() {
+    local needle="$1"
+    local haystack="$2"
+    local item
+
+    for item in $haystack; do
+        if [ "$item" = "$needle" ]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+_uci_write_list() {
+    local section="$1"
+    local option="$2"
+    local values="$3"
+    local item
+
+    uci -q delete "mudakop.$section.$option"
+
+    for item in $values; do
+        uci add_list "mudakop.$section.$option=$item"
+    done
+}
+
+#######################################
+# Refreshes one section against its subscription.
+#
+# The link list the section actually uses stays the single source of truth: it is what
+# the user edits in LuCI, what the outbounds are built from, and what the dashboard
+# names its servers after. Two bookkeeping lists sit beside it, both written only from
+# here and from the import dialog:
+#
+#   subscription_links     the last set the provider served
+#   subscription_excluded  servers the user does not want
+#
+# A server the provider still serves but that is missing from the section list can only
+# have got there by the user deleting the row, so it is remembered as excluded and stays
+# gone through every later refresh. Servers the provider has retired are dropped, new
+# ones are added unless they are excluded, and a failed download changes nothing at all.
+# Globals:
+#   SUBSCRIPTION_DIRTY: set to 1 when uci was written
+#   SUBSCRIPTION_RELOAD_NEEDED: set to 1 when the section link list changed
+#######################################
+_subscription_update_section() {
+    local section="$1"
+    local connection_type proxy_config_type subscription_url auto_update
+    local links_option effective snapshot excluded fetched
+    local link updated_effective updated_excluded response
+
+    config_get connection_type "$section" "connection_type"
+    config_get proxy_config_type "$section" "proxy_config_type"
+    config_get subscription_url "$section" "subscription_url"
+    config_get_bool auto_update "$section" "subscription_auto_update" 0
+
+    if [ "$connection_type" != "proxy" ] || [ -z "$subscription_url" ] || [ "$auto_update" -ne 1 ]; then
+        return 0
+    fi
+
+    case "$proxy_config_type" in
+    selector) links_option="selector_proxy_links" ;;
+    urltest) links_option="urltest_proxy_links" ;;
+    *)
+        log "Section $section has a subscription but is not a selector or urltest section, skipping" "warn"
+        return 0
+        ;;
+    esac
+
+    if ! response="$(fetch_subscription "$subscription_url")"; then
+        log "Subscription refresh for $section failed: $(echo "$response" | jq -r '.error // "unknown error"'). Keeping the current servers" "warn"
+        return 0
+    fi
+
+    fetched="$(echo "$response" | jq -r '.links | join(" ")')"
+
+    config_get effective "$section" "$links_option"
+    config_get snapshot "$section" "subscription_links"
+    config_get excluded "$section" "subscription_excluded"
+
+    # Rows the user deleted by hand: the provider served them last time, they are not in
+    # the section list, and nothing has marked them unwanted yet
+    updated_excluded="$excluded"
+    for link in $snapshot; do
+        if ! _list_contains "$link" "$effective" && ! _list_contains "$link" "$updated_excluded"; then
+            updated_excluded="$updated_excluded $link"
+            log "Server removed by hand in $section, keeping it out of later refreshes" "debug"
+        fi
+    done
+
+    # Anything the provider has retired goes, whatever the user did with it
+    updated_effective=""
+    for link in $effective; do
+        if _list_contains "$link" "$snapshot" && ! _list_contains "$link" "$fetched"; then
+            continue
+        fi
+
+        updated_effective="$updated_effective $link"
+    done
+
+    for link in $fetched; do
+        if ! _list_contains "$link" "$updated_excluded" && ! _list_contains "$link" "$updated_effective"; then
+            updated_effective="$updated_effective $link"
+        fi
+    done
+
+    _uci_write_list "$section" "subscription_links" "$fetched"
+    _uci_write_list "$section" "subscription_excluded" "$updated_excluded"
+    uci set "mudakop.$section.subscription_updated=$(date +%s)"
+    SUBSCRIPTION_DIRTY=1
+
+    # Both sides keep the order they had, so only a real membership change shows up
+    if [ "$(_normalize_list "$updated_effective")" = "$(_normalize_list "$effective")" ]; then
+        log "Subscription for $section is unchanged" "debug"
+        return 0
+    fi
+
+    _uci_write_list "$section" "$links_option" "$updated_effective"
+    SUBSCRIPTION_RELOAD_NEEDED=1
+    log "Subscription servers for $section changed"
+}
+
+#######################################
+# Cron entry point: refreshes every section that has subscription auto update turned on,
+# and reloads only when the servers a section uses actually changed. Reloading rebuilds
+# the sing-box configuration and drops open connections, so an unchanged subscription,
+# which is the normal case, must stay free
+#######################################
+subscription_update() {
+    SUBSCRIPTION_DIRTY=0
+    SUBSCRIPTION_RELOAD_NEEDED=0
+
+    log "Starting subscription update"
+
+    config_foreach _subscription_update_section "section"
+
+    if [ "$SUBSCRIPTION_DIRTY" -eq 0 ]; then
+        log "No subscription to update"
+        return 0
+    fi
+
+    # The config in memory was loaded before these writes, and the reload below rebuilds
+    # the sing-box configuration from it, so it has to be read back first
+    uci commit "mudakop" && config_load "$MUDAKOP_CONFIG"
+
+    if [ "$SUBSCRIPTION_RELOAD_NEEDED" -eq 0 ]; then
+        log "Subscription servers are unchanged, no reload needed"
+        return 0
+    fi
+
+    reload
 }
 
 #######################################
@@ -2955,6 +3291,8 @@ Available commands:
     check_sing_box_logs     Show sing-box logs
     check_fakeip            Test FakeIP on router
     check_awg_support       Report whether sing-box supports AmneziaWG (with_awg)
+    fetch_subscription URL  List the proxy links carried by a subscription URL
+    subscription_update     Refresh sections that have subscription auto update enabled
     clash_api               Clash API interface for managing proxies and groups
     show_config             Display current mudakop configuration
     show_version            Show mudakop version
@@ -3011,6 +3349,12 @@ check_fakeip)
     ;;
 check_awg_support)
     check_awg_support
+    ;;
+fetch_subscription)
+    fetch_subscription "$2"
+    ;;
+subscription_update)
+    subscription_update
     ;;
 clash_api)
     clash_api "$2" "$3" "$4"

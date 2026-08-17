@@ -32,8 +32,14 @@ msgstr "✘ Остановлен"
 msgid "Active Connections"
 msgstr "Активные соединения"
 
+msgid "Add to list"
+msgstr "Добавить в список"
+
 msgid "Additional marking rules found"
 msgstr "Найдены дополнительные правила маркировки"
+
+msgid "Advanced"
+msgstr "Дополнительно"
 
 msgid "Allowed IPs"
 msgstr "Разрешённые IP"
@@ -50,6 +56,9 @@ msgstr "Конфигурация AmneziaWG обновлена. Нажмите «
 msgid "AmneziaWG Tunnel"
 msgstr "Туннель AmneziaWG"
 
+msgid "An https:// link to a subscription. Importing fetches it through the router and offers its servers for the list below"
+msgstr "Ссылка https:// на подписку. При импорте роутер скачает её и предложит серверы для списка ниже"
+
 msgid "Applicable for SOCKS and Shadowsocks proxy"
 msgstr "Применимо для SOCKS и Shadowsocks прокси"
 
@@ -58,6 +67,9 @@ msgstr "Необходимо указать хотя бы один действ�
 
 msgid "At least one valid subnet or IP must be specified. Comments-only content is not allowed."
 msgstr "Необходимо указать хотя бы одну действительную подсеть или IP. Только комментарии недопустимы."
+
+msgid "Auto Update Subscription"
+msgstr "Автообновление подписки"
 
 msgid "Available actions"
 msgstr "Доступные действия"
@@ -109,6 +121,9 @@ msgstr "Тип конфигурации"
 
 msgid "Configure AmneziaWG"
 msgstr "Настроить AmneziaWG"
+
+msgid "Connection"
+msgstr "Подключение"
 
 msgid "Connection Type"
 msgstr "Тип подключения"
@@ -203,6 +218,9 @@ msgstr "Скачивать списки через выбранную секци
 msgid "Downloading all lists via specific Proxy/VPN"
 msgstr "Загрузка всех списков через указанный прокси/VPN"
 
+msgid "Downloading the subscription…"
+msgstr "Загрузка подписки…"
+
 msgid "Dynamic List"
 msgstr "Динамический список"
 
@@ -251,6 +269,9 @@ msgstr "Конфигурация точки подключения должна 
 msgid "Enter a size with a unit, for example 64mb, 512kb or 1gb"
 msgstr "Укажите размер с единицей измерения, например 64mb, 512kb или 1gb"
 
+msgid "Enter a subscription URL starting with http:// or https://"
+msgstr "Введите ссылку на подписку, начинающуюся с http:// или https://"
+
 msgid "Enter complete endpoint configuration in JSON format, e.g. a WireGuard endpoint. The tag is assigned by mudakop and will be overwritten"
 msgstr "Введите полную конфигурацию точки подключения в формате JSON, например endpoint WireGuard. Тег назначается mudakop и будет перезаписан"
 
@@ -272,6 +293,15 @@ msgstr "Введите подсети в нотации CIDR или отдель
 msgid "Every 1 minute"
 msgstr "Каждую минуту"
 
+msgid "Every 12 hours"
+msgstr "Каждые 12 часов"
+
+msgid "Every 3 days"
+msgstr "Каждые 3 дня"
+
+msgid "Every 3 hours"
+msgstr "Каждые 3 часа"
+
 msgid "Every 3 minutes"
 msgstr "Каждые 3 минуты"
 
@@ -281,11 +311,17 @@ msgstr "Каждые 30 секунд"
 msgid "Every 5 minutes"
 msgstr "Каждые 5 минут"
 
+msgid "Every day"
+msgstr "Каждый день"
+
 msgid "Exclude NTP"
 msgstr "Исключить NTP"
 
 msgid "Exclude NTP protocol traffic from the tunnel to prevent it from being routed through the proxy or VPN"
 msgstr "Исключите трафик протокола NTP из туннеля, чтобы предотвратить его маршрутизацию через прокси-сервер или VPN."
+
+msgid "External Lists"
+msgstr "Внешние списки"
 
 msgid "Failed to copy!"
 msgstr "Не удалось скопировать!"
@@ -293,14 +329,26 @@ msgstr "Не удалось скопировать!"
 msgid "Failed to execute!"
 msgstr "Не удалось выполнить!"
 
+msgid "Failed to read the subscription"
+msgstr "Не удалось прочитать подписку"
+
 msgid "Fastest"
 msgstr "Самый быстрый"
+
+msgid "Fetch"
+msgstr "Загрузить"
 
 msgid "Fill fields"
 msgstr "Заполнить поля"
 
 msgid "Filled %d field(s) from the file. Review them, then press Save"
 msgstr "Заполнено полей из файла: %d. Проверьте их и нажмите «Сохранить»"
+
+msgid "Found %d server(s)"
+msgstr "Найдено серверов: %d"
+
+msgid "Found %d server(s), %d of them removed by you before"
+msgstr "Найдено серверов: %d, из них ранее удалено вами: %d"
 
 msgid "Fully Routed IPs"
 msgstr "Полностью маршрутизированные IP-адреса"
@@ -319,6 +367,15 @@ msgstr "Шаблоны I1-I5"
 
 msgid "Import from .conf"
 msgstr "Импорт из .conf"
+
+msgid "Import subscription"
+msgstr "Импортировать подписку"
+
+msgid "Import Subscription"
+msgstr "Импорт подписки"
+
+msgid "Imported %d server(s). Press Save & Apply to use them"
+msgstr "Импортировано серверов: %d. Нажмите «Сохранить и применить», чтобы использовать их"
 
 msgid "Interface"
 msgstr "Интерфейс"
@@ -512,6 +569,9 @@ msgstr "Обнаружены проблемы"
 msgid "Junk Packets"
 msgstr "Мусорные пакеты"
 
+msgid "Last refresh: %s · %d server(s) offered, %d removed by you"
+msgstr "Последнее обновление: %s · предложено серверов: %d, удалено вами: %d"
+
 msgid "Latest"
 msgstr "Последняя"
 
@@ -548,14 +608,29 @@ msgstr "Наблюдаемые интерфейсы"
 msgid "MTU"
 msgstr "MTU"
 
+msgid "mudakop"
+msgstr "mudakop"
+
+msgid "mudakop Settings"
+msgstr "Настройки mudakop"
+
+msgid "mudakop will not modify your DHCP configuration"
+msgstr "mudakop не будет изменять вашу конфигурацию DHCP."
+
 msgid "Must be a number in the range of 50 - 1000"
 msgstr "Должно быть числом от 50 до 1000"
 
 msgid "Network Interface"
 msgstr "Сетевой интерфейс"
 
+msgid "Never"
+msgstr "Никогда"
+
 msgid "No other marking rules found"
 msgstr "Другие правила маркировки не найдены"
+
+msgid "No servers selected"
+msgstr "Не выбрано ни одного сервера"
 
 msgid "Not configured yet"
 msgstr "Ещё не настроено"
@@ -569,11 +644,17 @@ msgstr "Не отвечает"
 msgid "Not running"
 msgstr "Не запущено"
 
+msgid "Nothing imported yet"
+msgstr "Ничего не импортировано"
+
 msgid "Nothing to import: paste a configuration or choose a file"
 msgstr "Нечего импортировать: вставьте конфигурацию или выберите файл"
 
 msgid "Obfuscation"
 msgstr "Обфускация"
+
+msgid "Only the protocols mudakop supports are offered: vless, ss, trojan, socks4/5, hysteria2 and naive. Base64 and plain text subscriptions are both understood"
+msgstr "Предлагаются только поддерживаемые mudakop протоколы: vless, ss, trojan, socks4/5, hysteria2 и naive. Понимаются подписки в base64 и в виде обычного текста"
 
 msgid "Operation timed out"
 msgstr "Время ожидания истекло"
@@ -620,15 +701,6 @@ msgstr "Публичный ключ пира"
 msgid "Pending"
 msgstr "Ожидает запуска"
 
-msgid "mudakop"
-msgstr "mudakop"
-
-msgid "mudakop Settings"
-msgstr "Настройки mudakop"
-
-msgid "mudakop will not modify your DHCP configuration"
-msgstr "mudakop не будет изменять вашу конфигурацию DHCP."
-
 msgid "Persistent Keepalive"
 msgstr "Persistent Keepalive"
 
@@ -638,11 +710,17 @@ msgstr "Приватный ключ"
 msgid "Proxy Configuration URL"
 msgstr "URL конфигурации прокси"
 
+msgid "Refresh this subscription on a schedule: new servers are added, retired ones are removed, and servers you delete from the list below stay deleted. The interval is set in Settings"
+msgstr "Обновлять подписку по расписанию: новые серверы добавляются, снятые с обслуживания удаляются, а серверы, удалённые вами из списка ниже, больше не возвращаются. Интервал задаётся в настройках"
+
 msgid "Remote Domain Lists"
 msgstr "Внешние списки доменов"
 
 msgid "Remote Subnet Lists"
 msgstr "Внешние списки подсетей"
+
+msgid "Replace list"
+msgstr "Заменить список"
 
 msgid "Required fields are empty: %s"
 msgstr "Не заполнены обязательные поля: %s"
@@ -694,6 +772,9 @@ msgstr "Выберите между VPN и Proxy методами для мар�
 
 msgid "Select DNS protocol to use"
 msgstr "Выберите протокол DNS"
+
+msgid "Select how often subscriptions with auto update enabled are refreshed"
+msgstr "Выберите, как часто обновляются подписки с включённым автообновлением"
 
 msgid "Select how often the domain or subnet lists are updated automatically"
 msgstr "Выберите частоту автоматического обновления списков доменов или подсетей."
@@ -782,6 +863,9 @@ msgstr "Сервис sing-box существует"
 msgid "Sing-box version is compatible (newer than 1.12.4)"
 msgstr "Версия Sing-box совместима (новее 1.12.4)"
 
+msgid "Skipped %d entr(ies) using a protocol mudakop cannot build an outbound from"
+msgstr "Пропущено записей: %d — их протокол не поддерживается mudakop"
+
 msgid "Soft memory limit for the sing-box process, e.g. 64mb. Leave empty for no limit. Garbage collection gets more aggressive as usage approaches the value, so this is a target rather than a hard cap"
 msgstr "Мягкий лимит памяти для процесса sing-box, например 64mb. Оставьте пустым, чтобы не ограничивать. Сборка мусора становится агрессивнее по мере приближения к значению, поэтому это ориентир, а не жёсткий предел"
 
@@ -808,6 +892,21 @@ msgstr "Запустить mudakop"
 
 msgid "Stop mudakop"
 msgstr "Остановить mudakop"
+
+msgid "Subscription"
+msgstr "Подписка"
+
+msgid "Subscription Update Frequency"
+msgstr "Частота обновления подписок"
+
+msgid "Subscription URL"
+msgstr "Ссылка на подписку"
+
+msgid "Subscription URL must start with http:// or https://"
+msgstr "Ссылка на подписку должна начинаться с http:// или https://"
+
+msgid "Subscriptions are only available for the Selector and URLTest configuration types"
+msgstr "Подписки доступны только для типов конфигурации Selector и URLTest"
 
 msgid "Successfully copied!"
 msgstr "Успешно скопировано!"
@@ -836,6 +935,9 @@ msgstr "Интервал между тестами подключения"
 msgid "The maximum difference in response times (ms) allowed when comparing servers"
 msgstr "Максимально допустимая разница во времени отклика (мс) при сравнении серверов"
 
+msgid "The router downloads the subscription and lists the servers it carries. Pick the ones to put into the %s list"
+msgstr "Роутер скачает подписку и покажет серверы из неё. Выберите те, которые нужно добавить в список «%s»"
+
 msgid "The URL used to test server connectivity"
 msgstr "URL-адрес, используемый для проверки подключения к серверу"
 
@@ -862,6 +964,9 @@ msgstr "UDP (Незащищённый DNS)"
 
 msgid "UDP over TCP"
 msgstr "UDP через TCP"
+
+msgid "Unexpected response from the router"
+msgstr "Неожиданный ответ от роутера"
 
 msgid "unknown"
 msgstr "неизвестно"
@@ -895,6 +1000,9 @@ msgstr "Тип пользовательского списка доменов"
 
 msgid "User Domains"
 msgstr "Пользовательские домены"
+
+msgid "User Domains and Subnets"
+msgstr "Пользовательские домены и подсети"
 
 msgid "User Domains List"
 msgstr "Список пользовательских доменов"

@@ -1,10 +1,701 @@
 "use strict";
 "require form";
 "require baseclass";
+"require fs";
 "require ui";
 "require uci";
 "require tools.widgets as widgets";
 "require view.mudakop.main as main";
+
+// A section carries five dozen options, most of which are irrelevant for any given
+// connection type, so the rows are folded into collapsible groups. The names must match
+// the options declared in createSectionContent; anything missing from a group is simply
+// left where it was rendered
+const FIELD_GROUPS = [
+  {
+    name: "connection",
+    title: _("Connection"),
+    collapsed: false,
+    options: [
+      "connection_type",
+      "proxy_config_type",
+      "proxy_string",
+      "outbound_json",
+      "endpoint_json",
+      "_awg_summary",
+      "_awg_configure",
+      "subscription_url",
+      "_subscription_status",
+      "_subscription_import",
+      "subscription_auto_update",
+      "selector_proxy_links",
+      "urltest_proxy_links",
+      "urltest_check_interval",
+      "urltest_tolerance",
+      "urltest_testing_url",
+      "enable_udp_over_tcp",
+      "interface",
+    ],
+  },
+  {
+    name: "resolver",
+    title: _("Domain Resolver"),
+    collapsed: true,
+    options: [
+      "domain_resolver_enabled",
+      "domain_resolver_dns_type",
+      "domain_resolver_dns_server",
+    ],
+  },
+  {
+    name: "routing",
+    title: _("User Domains and Subnets"),
+    collapsed: true,
+    options: [
+      "user_domain_list_type",
+      "user_domains",
+      "user_domains_text",
+      "user_subnet_list_type",
+      "user_subnets",
+      "user_subnets_text",
+    ],
+  },
+  {
+    name: "lists",
+    title: _("External Lists"),
+    collapsed: true,
+    options: [
+      "local_domain_lists",
+      "local_subnet_lists",
+      "remote_domain_lists",
+      "remote_subnet_lists",
+    ],
+  },
+  {
+    name: "advanced",
+    title: _("Advanced"),
+    collapsed: true,
+    options: [
+      "fully_routed_ips",
+      "mixed_proxy_enabled",
+      "mixed_proxy_port",
+      "resolve_real_ip_for_routing",
+      "disable_quic",
+    ],
+  },
+];
+
+// Which option a subscription import feeds, per proxy configuration type. Only the
+// group types take a list of servers; the single-outbound types have nothing to fill
+const SUBSCRIPTION_TARGETS = {
+  selector: "selector_proxy_links",
+  urltest: "urltest_proxy_links",
+};
+
+// Collapsed state lives here rather than in the DOM: LuCI rebuilds the whole map on
+// save, add and remove, and re-collapsing everything under the user would be rude. It
+// is mirrored into localStorage so a reload, or coming back to the page tomorrow, finds
+// the groups folded the way they were left. Keys are "<section id>/<group name>"
+const COLLAPSE_STORAGE_KEY = "mudakop.collapsed";
+
+function loadCollapseState() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(COLLAPSE_STORAGE_KEY));
+
+    return stored && typeof stored === "object" ? stored : {};
+  } catch (e) {
+    // Unreadable or unavailable storage only costs the remembered state
+    return {};
+  }
+}
+
+const collapseState = loadCollapseState();
+
+function persistCollapseState() {
+  try {
+    localStorage.setItem(COLLAPSE_STORAGE_KEY, JSON.stringify(collapseState));
+  } catch (e) {
+    // Storage can be full or disabled; the state still holds for this page
+  }
+}
+
+function setCollapsed(key, collapsed) {
+  collapseState[key] = collapsed;
+  persistCollapseState();
+}
+
+// Drops what is left over from sections that have since been renamed or removed, so the
+// stored state cannot grow without bound
+function pruneCollapseState(sectionIds) {
+  const stale = Object.keys(collapseState).filter(
+    (key) => sectionIds.indexOf(key.split("/")[0]) === -1,
+  );
+
+  if (!stale.length) {
+    return;
+  }
+
+  stale.forEach((key) => delete collapseState[key]);
+  persistCollapseState();
+}
+
+const SECTION_STYLES = `
+.mudakop-group {
+  border: 1px solid var(--border-color-medium, #ddd);
+  border-radius: 4px;
+  margin: 0 0 8px;
+}
+.mudakop-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 10px;
+  font-weight: 600;
+  background: var(--background-color-medium, rgba(0, 0, 0, 0.03));
+}
+.mudakop-group-body {
+  padding: 8px 10px 2px;
+}
+.mudakop-group.mudakop-collapsed > .mudakop-group-body {
+  display: none;
+}
+.mudakop-chevron {
+  display: inline-block;
+  transition: transform 0.15s ease;
+  font-size: 80%;
+  opacity: 0.7;
+}
+.mudakop-collapsed .mudakop-chevron {
+  transform: rotate(-90deg);
+}
+.mudakop-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+.mudakop-sub-row:not(:last-child) {
+  border-bottom: 1px solid var(--border-color-low, rgba(0, 0, 0, 0.06));
+}
+.mudakop-sub-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mudakop-sub-meta {
+  font-size: 85%;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+`;
+
+function injectSectionStyles() {
+  if (document.getElementById("mudakop-section-styles")) {
+    return;
+  }
+
+  document.head.appendChild(
+    E("style", { id: "mudakop-section-styles" }, SECTION_STYLES),
+  );
+}
+
+function isCollapsed(key, fallback) {
+  return Object.prototype.hasOwnProperty.call(collapseState, key)
+    ? collapseState[key]
+    : fallback;
+}
+
+// Keeps a group out of the way while every option inside it is switched off by a
+// dependency, and pops it back open when a widget in it fails validation, so an error
+// can never hide behind a collapsed header
+function watchGroup(container, body, key) {
+  function sync() {
+    const rows = body.querySelectorAll(".cbi-value");
+    const visible = Array.prototype.some.call(
+      rows,
+      (row) => !row.classList.contains("hidden"),
+    );
+
+    container.style.display = visible ? "" : "none";
+
+    if (body.querySelector(".cbi-input-invalid")) {
+      container.classList.remove("mudakop-collapsed");
+      setCollapsed(key, false);
+    }
+  }
+
+  // Dependencies toggle the "hidden" class on a row, validation toggles
+  // "cbi-input-invalid" on an input, and a widget such as a dynamic list swaps whole
+  // nodes in and out, so both kinds of mutation matter here
+  new MutationObserver(sync).observe(body, {
+    attributes: true,
+    attributeFilter: ["class"],
+    childList: true,
+    subtree: true,
+  });
+
+  sync();
+}
+
+function groupSectionRows(node, section_id) {
+  const rows = {};
+
+  node.querySelectorAll(".cbi-value[data-name]").forEach((row) => {
+    rows[row.getAttribute("data-name")] = row;
+  });
+
+  FIELD_GROUPS.forEach((group) => {
+    const groupRows = group.options
+      .map((name) => rows[name])
+      .filter((row) => !!row);
+
+    if (!groupRows.length) {
+      return;
+    }
+
+    const key = section_id + "/" + group.name;
+    const body = E("div", { class: "mudakop-group-body" }, groupRows);
+    const container = E("div", { class: "mudakop-group" }, [
+      E(
+        "div",
+        {
+          class: "mudakop-group-header",
+          click: function () {
+            setCollapsed(key, container.classList.toggle("mudakop-collapsed"));
+          },
+        },
+        [
+          E("span", { class: "mudakop-chevron" }, "▾"),
+          E("span", {}, group.title),
+        ],
+      ),
+      body,
+    ]);
+
+    if (isCollapsed(key, group.collapsed)) {
+      container.classList.add("mudakop-collapsed");
+    }
+
+    node.appendChild(container);
+    watchGroup(container, body, key);
+  });
+}
+
+function applyCollapsibleLayout(root) {
+  injectSectionStyles();
+
+  const sectionIds = [];
+
+  root.querySelectorAll(".cbi-section-node[data-section-id]").forEach((node) => {
+    const section_id = node.getAttribute("data-section-id");
+    sectionIds.push(section_id);
+
+    if (node.classList.contains("mudakop-grouped")) {
+      return;
+    }
+
+    node.classList.add("mudakop-grouped");
+
+    groupSectionRows(node, section_id);
+  });
+
+  pruneCollapseState(sectionIds);
+}
+
+// ------------------------------------------------------------------ subscriptions
+function lookupWidget(map, section_id, name) {
+  const found = map.lookupOption(name, section_id);
+  const option = found && found[0];
+
+  return option ? option.getUIElement(section_id) : null;
+}
+
+// Prefers what is in the form over what is in uci, so an import works with a
+// subscription URL or a configuration type the user has not saved yet
+function readOptionValue(map, section_id, name) {
+  const widget = lookupWidget(map, section_id, name);
+  const value = widget ? widget.getValue() : uci.get("mudakop", section_id, name);
+
+  return value == null ? "" : value;
+}
+
+function toList(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  return value ? [value] : [];
+}
+
+function readProxyLinks(map, section_id, name) {
+  return toList(readOptionValue(map, section_id, name));
+}
+
+// Writes to both uci and the widget: uci alone would be overwritten by the form on
+// save, and the widget alone would leave the summary line stale.
+//
+// An empty value is unset rather than set: ubus rejects an empty string or an empty list
+// with "Invalid argument", which fails the whole form save, and an absent option is what
+// "nothing here" means in uci anyway
+function writeOptionValue(map, section_id, name, value) {
+  const list = Array.isArray(value);
+  const empty = list ? value.length === 0 : value == null || String(value) === "";
+
+  if (empty) {
+    uci.unset("mudakop", section_id, name);
+  } else {
+    uci.set("mudakop", section_id, name, value);
+  }
+
+  const widget = lookupWidget(map, section_id, name);
+  if (widget) {
+    widget.setValue(empty && list ? [] : empty ? "" : value);
+  }
+}
+
+function formatSubscriptionStamp(value) {
+  const seconds = parseInt(value, 10);
+
+  if (!seconds || isNaN(seconds)) {
+    return "";
+  }
+
+  return new Date(seconds * 1000).toLocaleString();
+}
+
+function subscriptionStatusText(section_id) {
+  const stamp = formatSubscriptionStamp(
+    uci.get("mudakop", section_id, "subscription_updated"),
+  );
+
+  if (!stamp) {
+    return _("Nothing imported yet");
+  }
+
+  const served = toList(
+    uci.get("mudakop", section_id, "subscription_links"),
+  ).length;
+  const hidden = toList(
+    uci.get("mudakop", section_id, "subscription_excluded"),
+  ).length;
+
+  return _("Last refresh: %s · %d server(s) offered, %d removed by you").format(
+    stamp,
+    served,
+    hidden,
+  );
+}
+
+function setSubscriptionStatusText(section_id, text) {
+  const row = document.getElementById(
+    "cbi-mudakop-%s-_subscription_status".format(section_id),
+  );
+  const field = row && row.querySelector(".cbi-value-field");
+
+  if (field) {
+    field.textContent = text;
+  }
+}
+
+// Pulls out what can be shown about a link without decoding credentials: the protocol,
+// the "#name" the provider attached, and the host:port it points at
+function describeProxyLink(link) {
+  const separator = link.indexOf("://");
+  const scheme = separator === -1 ? "" : link.slice(0, separator);
+  const rest = separator === -1 ? link : link.slice(separator + 3);
+  const hash = rest.indexOf("#");
+
+  let name = "";
+  if (hash !== -1) {
+    const raw = rest.slice(hash + 1);
+    try {
+      name = decodeURIComponent(raw);
+    } catch (e) {
+      name = raw;
+    }
+  }
+
+  const body = hash === -1 ? rest : rest.slice(0, hash);
+  const authority = body.split("?")[0].split("/")[0];
+  const at = authority.lastIndexOf("@");
+
+  return {
+    scheme,
+    name,
+    address: at === -1 ? authority : authority.slice(at + 1),
+  };
+}
+
+// The router does the downloading: the browser cannot reach a subscription host that is
+// only routed through the router, and would be blocked by CORS even when it can. Args
+// are passed to execv, not to a shell, so the URL needs no escaping
+async function fetchSubscription(url) {
+  let response;
+
+  try {
+    response = await fs.exec("/usr/bin/mudakop", ["fetch_subscription", url]);
+  } catch (e) {
+    return { success: false, error: e.message || String(e) };
+  }
+
+  try {
+    return JSON.parse(response.stdout || "");
+  } catch (e) {
+    return {
+      success: false,
+      error: response.stderr || _("Unexpected response from the router"),
+    };
+  }
+}
+
+function showSubscriptionModal(map, section_id) {
+  const proxyConfigType = readOptionValue(map, section_id, "proxy_config_type");
+  const target = SUBSCRIPTION_TARGETS[proxyConfigType];
+
+  if (!target) {
+    ui.addNotification(
+      null,
+      E("p", {}, _("Subscriptions are only available for the Selector and URLTest configuration types")),
+      "error",
+    );
+    return;
+  }
+
+  // Every rendered server row, so the buttons below can collect what is ticked
+  let entries = [];
+
+  const urlInput = E("input", {
+    type: "text",
+    class: "cbi-input-text",
+    style: "width: 100%",
+    value: readOptionValue(map, section_id, "subscription_url") || "",
+    placeholder: "https://example.com/subscription",
+  });
+
+  const resultBox = E("div", { style: "margin-top: 12px" });
+
+  function selectedLinks() {
+    return entries
+      .filter((entry) => entry.checkbox.checked)
+      .map((entry) => entry.link);
+  }
+
+  // Leaves the section in the state the scheduled refresh expects: the link list holds
+  // what the section uses, subscription_links holds everything the provider served, and
+  // subscription_excluded holds the rest. A server left unticked here is a rejection,
+  // and it stays rejected through every later refresh
+  function apply(mode) {
+    const links = selectedLinks();
+
+    if (!links.length) {
+      ui.addNotification(null, E("p", {}, _("No servers selected")), "warning");
+      return;
+    }
+
+    const fetched = entries.map((entry) => entry.link);
+    const existing = mode === "replace" ? [] : readProxyLinks(map, section_id, target);
+    const merged = existing.concat(
+      links.filter((link) => existing.indexOf(link) === -1),
+    );
+
+    // Deriving the exclusions from the resulting list rather than from the ticks keeps
+    // "Add to list" honest: it never rejects a server the section already had
+    const excluded = readProxyLinks(map, section_id, "subscription_excluded")
+      .concat(fetched)
+      .filter((link, index, all) => all.indexOf(link) === index)
+      .filter((link) => merged.indexOf(link) === -1);
+
+    writeOptionValue(map, section_id, target, merged);
+    writeOptionValue(map, section_id, "subscription_links", fetched);
+    writeOptionValue(map, section_id, "subscription_excluded", excluded);
+    writeOptionValue(map, section_id, "subscription_url", urlInput.value.trim());
+    uci.set(
+      "mudakop",
+      section_id,
+      "subscription_updated",
+      String(Math.floor(Date.now() / 1000)),
+    );
+    setSubscriptionStatusText(section_id, subscriptionStatusText(section_id));
+
+    ui.hideModal();
+    ui.addNotification(
+      null,
+      E("p", {}, _("Imported %d server(s). Press Save & Apply to use them").format(links.length)),
+      "info",
+    );
+  }
+
+  const replaceButton = E(
+    "button",
+    {
+      class: "btn cbi-button-positive",
+      disabled: "disabled",
+      click: function () {
+        apply("replace");
+      },
+    },
+    _("Replace list"),
+  );
+
+  const appendButton = E(
+    "button",
+    {
+      class: "btn cbi-button-action",
+      disabled: "disabled",
+      click: function () {
+        apply("append");
+      },
+    },
+    _("Add to list"),
+  );
+
+  function setButtonsEnabled(enabled) {
+    [replaceButton, appendButton].forEach((button) => {
+      if (enabled) {
+        button.removeAttribute("disabled");
+      } else {
+        button.setAttribute("disabled", "disabled");
+      }
+    });
+  }
+
+  function showMessage(text, style) {
+    resultBox.textContent = "";
+    resultBox.appendChild(E("p", { class: style || "" }, text));
+  }
+
+  function renderServers(data) {
+    const links = data.links || [];
+    const current = readProxyLinks(map, section_id, target);
+    const excluded = readProxyLinks(map, section_id, "subscription_excluded");
+
+    // A server already in the list stays ticked, one turned down before stays unticked,
+    // and anything the provider has added since is offered ticked
+    entries = links.map((link) => {
+      const wanted =
+        current.indexOf(link) !== -1 || excluded.indexOf(link) === -1;
+
+      return {
+        link,
+        wanted,
+        checkbox: E(
+          "input",
+          wanted ? { type: "checkbox", checked: "checked" } : { type: "checkbox" },
+        ),
+      };
+    });
+
+    const selectAll = E("input", {
+      type: "checkbox",
+      checked: "checked",
+      change: function (ev) {
+        entries.forEach((entry) => {
+          entry.checkbox.checked = ev.target.checked;
+        });
+      },
+    });
+
+    const rows = entries.map((entry) => {
+      const meta = describeProxyLink(entry.link);
+
+      return E("label", { class: "mudakop-sub-row" }, [
+        entry.checkbox,
+        E("span", { class: "mudakop-sub-name" }, meta.name || meta.address),
+        E("span", { class: "mudakop-sub-meta" }, "%s · %s".format(meta.scheme, meta.address)),
+      ]);
+    });
+
+    const rejected = entries.filter((entry) => !entry.wanted).length;
+
+    resultBox.textContent = "";
+    resultBox.appendChild(
+      E("label", { class: "mudakop-sub-row" }, [
+        selectAll,
+        E(
+          "span",
+          { class: "mudakop-sub-name" },
+          rejected
+            ? _("Found %d server(s), %d of them removed by you before").format(links.length, rejected)
+            : _("Found %d server(s)").format(links.length),
+        ),
+      ]),
+    );
+    resultBox.appendChild(
+      E(
+        "div",
+        {
+          style:
+            "max-height: 45vh; overflow-y: auto; border: 1px solid var(--border-color-medium, #ccc); padding: 4px 8px",
+        },
+        rows,
+      ),
+    );
+
+    if (data.skipped) {
+      resultBox.appendChild(
+        E("p", {}, _("Skipped %d entr(ies) using a protocol mudakop cannot build an outbound from").format(data.skipped)),
+      );
+    }
+
+    setButtonsEnabled(links.length > 0);
+  }
+
+  const fetchButton = E(
+    "button",
+    {
+      class: "btn cbi-button-action",
+      click: async function () {
+        const url = urlInput.value.trim();
+
+        if (!/^https?:\/\//i.test(url)) {
+          showMessage(_("Enter a subscription URL starting with http:// or https://"));
+          return;
+        }
+
+        entries = [];
+        setButtonsEnabled(false);
+        fetchButton.setAttribute("disabled", "disabled");
+        showMessage(_("Downloading the subscription…"));
+
+        try {
+          const data = await fetchSubscription(url);
+
+          if (data && data.success) {
+            renderServers(data);
+          } else {
+            showMessage((data && data.error) || _("Failed to read the subscription"));
+          }
+        } finally {
+          fetchButton.removeAttribute("disabled");
+        }
+      },
+    },
+    _("Fetch"),
+  );
+
+  ui.showModal(_("Import Subscription"), [
+    E("p", {}, _("The router downloads the subscription and lists the servers it carries. Pick the ones to put into the %s list").format(
+      proxyConfigType === "urltest" ? _("URLTest Proxy Links") : _("Selector Proxy Links"),
+    )),
+    E("div", { class: "cbi-value" }, [
+      E("label", { class: "cbi-value-title" }, _("Subscription URL")),
+      E("div", { class: "cbi-value-field" }, urlInput),
+    ]),
+    E("div", {}, [fetchButton]),
+    resultBox,
+    E("div", { class: "right", style: "margin-top: 10px" }, [
+      E("button", { class: "btn", click: ui.hideModal }, _("Cancel")),
+      " ",
+      appendButton,
+      " ",
+      replaceButton,
+    ]),
+  ]);
+}
 
 // Maps an AmneziaWG .conf key onto the uci option that holds it. Only the keys a .conf
 // can actually carry are listed: the id/ip/ib junk generator is a sing-box-lx concept
@@ -607,6 +1298,69 @@ function createSectionContent(section, options = {}) {
     showAmneziaWgModal(this.map, section_id);
   };
 
+  // --------------------------------------------------------------- subscriptions
+  // The links themselves still live in the selector/urltest lists, so nothing on the
+  // router side has to know about subscriptions: importing is only a way of filling
+  // those lists without pasting a few dozen links by hand
+  o = section.option(
+    form.Value,
+    "subscription_url",
+    _("Subscription URL"),
+    _("An https:// link to a subscription. Importing fetches it through the router and offers its servers for the list below"),
+  );
+  o.depends("proxy_config_type", "selector");
+  o.depends("proxy_config_type", "urltest");
+  o.placeholder = "https://example.com/subscription";
+  o.rmempty = true;
+  o.validate = function (section_id, value) {
+    // Optional
+    if (!value || value.length === 0) {
+      return true;
+    }
+
+    if (!/^https?:\/\//i.test(value)) {
+      return _("Subscription URL must start with http:// or https://");
+    }
+
+    const validation = main.validateUrl(value);
+
+    if (validation.valid) {
+      return true;
+    }
+
+    return validation.message;
+  };
+
+  o = section.option(form.DummyValue, "_subscription_status", _("Subscription"));
+  o.depends("proxy_config_type", "selector");
+  o.depends("proxy_config_type", "urltest");
+  o.cfgvalue = function (section_id) {
+    return subscriptionStatusText(section_id);
+  };
+
+  o = section.option(form.Button, "_subscription_import", " ");
+  o.depends("proxy_config_type", "selector");
+  o.depends("proxy_config_type", "urltest");
+  o.inputtitle = _("Import subscription");
+  o.inputstyle = "apply";
+  o.description = _(
+    "Only the protocols mudakop supports are offered: vless, ss, trojan, socks4/5, hysteria2 and naive. Base64 and plain text subscriptions are both understood",
+  );
+  o.onclick = function (ev, section_id) {
+    showSubscriptionModal(this.map, section_id);
+  };
+
+  o = section.option(
+    form.Flag,
+    "subscription_auto_update",
+    _("Auto Update Subscription"),
+    _("Refresh this subscription on a schedule: new servers are added, retired ones are removed, and servers you delete from the list below stay deleted. The interval is set in Settings"),
+  );
+  o.depends("proxy_config_type", "selector");
+  o.depends("proxy_config_type", "urltest");
+  o.default = "0";
+  o.rmempty = false;
+
   o = section.option(
     form.DynamicList,
     "selector_proxy_links",
@@ -1155,6 +1909,22 @@ function createSectionContent(section, options = {}) {
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
   o.depends("connection_type", "amneziawg");
+
+  // The rows only exist once the section has rendered, and LuCI re-renders the whole
+  // map on save, add and remove, so the grouping is reapplied on every render
+  const renderSection = section.render.bind(section);
+  section.render = function () {
+    return Promise.resolve(renderSection.apply(null, arguments)).then((node) => {
+      try {
+        applyCollapsibleLayout(node);
+      } catch (e) {
+        // A failed grouping must not cost the user the form itself
+        console.error("Failed to build collapsible groups:", e);
+      }
+
+      return node;
+    });
+  };
 }
 
 const EntryPoint = {

@@ -102,7 +102,7 @@ sing_box_cf_add_proxy_outbound() {
         )"
         ;;
     vless)
-        local tag host port uuid flow packet_encoding
+        local tag host port uuid flow packet_encoding encryption
         tag=$(get_outbound_tag_by_section "$section")
         host=$(url_get_host "$url")
         port=$(url_get_port "$url")
@@ -110,9 +110,26 @@ sing_box_cf_add_proxy_outbound() {
         flow=$(url_get_query_param "$url" "flow")
         packet_encoding=$(url_get_query_param "$url" "packetEncoding")
 
-        config=$(sing_box_cm_add_vless_outbound "$config" "$tag" "$host" "$port" "$uuid" "$flow" "" "$packet_encoding")
+        # Read undecoded: the value is base64url, so it needs no decoding, and decoding
+        # would turn any "+" it carries into a space
+        encryption=$(url_get_query_param "$raw_url" "encryption")
+
+        # "none" is what an ordinary link carries, and the field is off by default
+        if [ "$encryption" = "none" ]; then
+            encryption=""
+        fi
+
+        # XTLS-Vision cannot run over XHTTP. A link claiming both is a mistake on the
+        # server side, and honouring the flow would break a connection that otherwise works
+        if [ "$(url_get_query_param "$url" "type")" = "xhttp" ] && [ -n "$flow" ]; then
+            log "Ignoring flow '$flow' on an XHTTP link: the two are incompatible" "warn"
+            flow=""
+        fi
+
+        config=$(sing_box_cm_add_vless_outbound "$config" "$tag" "$host" "$port" "$uuid" "$flow" "" \
+            "$packet_encoding" "$encryption")
         config=$(_add_outbound_security "$config" "$tag" "$url")
-        config=$(_add_outbound_transport "$config" "$tag" "$url")
+        config=$(_add_outbound_transport "$config" "$tag" "$url" "$raw_url")
         ;;
     ss)
         local userinfo tag host port method password udp_over_tcp
@@ -153,7 +170,7 @@ sing_box_cf_add_proxy_outbound() {
 
         config=$(sing_box_cm_add_trojan_outbound "$config" "$tag" "$host" "$port" "$password")
         config=$(_add_outbound_security "$config" "$tag" "$url")
-        config=$(_add_outbound_transport "$config" "$tag" "$url")
+        config=$(_add_outbound_transport "$config" "$tag" "$url" "$raw_url")
         ;;
     naive+https | naive+quic)
         local tag host port userinfo username password server_name insecure quic extra_headers
@@ -329,15 +346,165 @@ _get_insecure_query_param_from_url() {
     echo "$insecure"
 }
 
+#######################################
+# Builds the transport object for an XHTTP link.
+#
+# The fields arrive two ways, per the sing-box-lx link parsing spec: as flat camelCase
+# query parameters, and inside "extra", a percent-encoded JSON blob that takes priority
+# over the flat ones. Both are mapped onto the snake_case keys the core expects, through
+# a whitelist: sing-box refuses a configuration carrying a field it does not know, so
+# passing an unrecognised key straight through would break the whole config rather than
+# just this outbound.
+# Arguments:
+#   url: string, the decoded proxy URL
+#   raw_url: string, the same URL before decoding, which still holds "extra" intact
+# Outputs:
+#   Writes the transport JSON object to stdout
+#######################################
+_build_xhttp_transport_options() {
+    local url="$1"
+    local raw_url="$2"
+
+    local flat extra path
+
+    # A real world path arrives as "/GaMeOpTiMiZeR?ed=2048": everything from the question
+    # mark on belongs to another transport's parameters, not to the path
+    path="$(url_get_query_param "$url" "path")"
+    path="${path%%\?*}"
+
+    flat="$(
+        jq -n \
+            --arg host "$(url_get_query_param "$url" "host")" \
+            --arg path "$path" \
+            --arg mode "$(url_get_query_param "$url" "mode")" \
+            --arg xPaddingBytes "$(url_get_query_param "$url" "xPaddingBytes")" \
+            --arg noGRPCHeader "$(url_get_query_param "$url" "noGRPCHeader")" \
+            --arg sessionPlacement "$(url_get_query_param "$url" "sessionPlacement")" \
+            --arg sessionKey "$(url_get_query_param "$url" "sessionKey")" \
+            --arg seqPlacement "$(url_get_query_param "$url" "seqPlacement")" \
+            --arg seqKey "$(url_get_query_param "$url" "seqKey")" \
+            --arg uplinkDataPlacement "$(url_get_query_param "$url" "uplinkDataPlacement")" \
+            --arg uplinkDataKey "$(url_get_query_param "$url" "uplinkDataKey")" \
+            --arg uplinkChunkSize "$(url_get_query_param "$url" "uplinkChunkSize")" \
+            --arg uplinkHTTPMethod "$(url_get_query_param "$url" "uplinkHTTPMethod")" \
+            --arg xPaddingObfsMode "$(url_get_query_param "$url" "xPaddingObfsMode")" \
+            --arg xPaddingKey "$(url_get_query_param "$url" "xPaddingKey")" \
+            --arg xPaddingHeader "$(url_get_query_param "$url" "xPaddingHeader")" \
+            --arg xPaddingPlacement "$(url_get_query_param "$url" "xPaddingPlacement")" \
+            --arg xPaddingMethod "$(url_get_query_param "$url" "xPaddingMethod")" \
+            --arg scMaxEachPostBytes "$(url_get_query_param "$url" "scMaxEachPostBytes")" \
+            --arg scMinPostsIntervalMs "$(url_get_query_param "$url" "scMinPostsIntervalMs")" \
+            '$ARGS.named | with_entries(select(.value != ""))'
+    )"
+
+    # Taken from the raw URL: decoding the link first turns the encoded JSON into
+    # something the query parameter reader can no longer delimit
+    extra="$(url_decode "$(url_get_query_param "$raw_url" "extra")")"
+
+    if [ -n "$extra" ] && ! echo "$extra" | jq -e 'type == "object"' > /dev/null 2>&1; then
+        log "Ignoring the 'extra' parameter of an XHTTP link: not a JSON object" "warn"
+        extra=""
+    fi
+
+    jq -n \
+        --argjson flat "$flat" \
+        --argjson extra "$(if [ -n "$extra" ]; then echo "$extra"; else echo "{}"; fi)" \
+        '
+        def known:
+            {
+                host: "host", path: "path", mode: "mode",
+                xPaddingBytes: "x_padding_bytes", noGRPCHeader: "no_grpc_header",
+                headers: "headers",
+                sessionPlacement: "session_placement", sessionKey: "session_key",
+                seqPlacement: "seq_placement", seqKey: "seq_key",
+                uplinkDataPlacement: "uplink_data_placement", uplinkDataKey: "uplink_data_key",
+                uplinkChunkSize: "uplink_chunk_size", uplinkHTTPMethod: "uplink_http_method",
+                xPaddingObfsMode: "x_padding_obfs_mode", xPaddingKey: "x_padding_key",
+                xPaddingHeader: "x_padding_header", xPaddingPlacement: "x_padding_placement",
+                xPaddingMethod: "x_padding_method",
+                scMaxEachPostBytes: "sc_max_each_post_bytes",
+                scMinPostsIntervalMs: "sc_min_posts_interval_ms",
+                xmux: "xmux"
+            };
+
+        def known_xmux:
+            {
+                maxConcurrency: "max_concurrency", maxConnections: "max_connections",
+                cMaxReuseTimes: "c_max_reuse_times", hMaxRequestTimes: "h_max_request_times",
+                hMaxReusableSecs: "h_max_reusable_secs", hKeepAlivePeriod: "h_keep_alive_period"
+            };
+
+        # A key already in the shape the core wants is kept as it is, so a link written
+        # against sing-box rather than against Xray survives the mapping too
+        def remap($map):
+            with_entries(
+                .key as $key
+                | if $map | has($key) then .key = $map[$key]
+                  elif ($map | to_entries | map(.value) | index($key)) then .
+                  else empty
+                  end
+            );
+
+        # Ranges are documented as "min-max" strings, but subscriptions routinely send a
+        # bare number, sometimes even as a float
+        def as_range:
+            if type == "number" then (floor | tostring)
+            elif type == "array" then (map(tostring) | join("-"))
+            else tostring
+            end;
+
+        def as_bool:
+            if type == "boolean" then .
+            else (. | ascii_downcase | . == "true" or . == "1")
+            end;
+
+        ($flat + $extra)
+        | remap(known)
+        | (if has("xmux") and (.xmux | type == "object")
+            then .xmux |= (remap(known_xmux)
+                | with_entries(
+                    if .key == "h_keep_alive_period"
+                    then .value |= (if type == "number" then floor else (tonumber | floor) end)
+                    else .value |= as_range
+                    end))
+            else del(.xmux)
+          end)
+        | (if has("x_padding_bytes") then .x_padding_bytes |= as_range else . end)
+        | (if has("uplink_chunk_size") then .uplink_chunk_size |= as_range else . end)
+        | (if has("sc_max_each_post_bytes") then .sc_max_each_post_bytes |= as_range else . end)
+        | (if has("sc_min_posts_interval_ms") then .sc_min_posts_interval_ms |= as_range else . end)
+        | (if has("no_grpc_header") then .no_grpc_header |= as_bool else . end)
+        | (if has("x_padding_obfs_mode") then .x_padding_obfs_mode |= as_bool else . end)
+        | (if has("headers") and (.headers | type != "object") then del(.headers) else . end)
+        '
+}
+
 _add_outbound_transport() {
     local config="$1"
     local outbound_tag="$2"
     local url="$3"
+    local raw_url="${4:-$3}"
 
     local transport
     transport=$(url_get_query_param "$url" "type")
     case "$transport" in
     tcp | raw) ;;
+    xhttp)
+        local xhttp_options
+
+        # Checked up front rather than left to sing-box: an unknown transport type fails
+        # the whole configuration at load, taking down every other section with it
+        if ! sing_box_has_build_tag "with_xhttp"; then
+            log "The installed sing-box was built without the with_xhttp tag, so XHTTP links are unsupported. Install a build that includes it, for example sing-box-lx. Aborted." "fatal"
+            exit 1
+        fi
+
+        xhttp_options="$(_build_xhttp_transport_options "$url" "$raw_url")"
+
+        config=$(
+            sing_box_cm_set_xhttp_transport_for_outbound "$config" "$outbound_tag" "$xhttp_options"
+        )
+        ;;
     ws)
         local ws_path ws_host ws_early_data
         ws_path=$(url_get_query_param "$url" "path")

@@ -9,6 +9,8 @@
 * поддержка IPv6 через fakeip и nftables
 * sing-box endpoints через режим proxy -> configuration type -> Endpoint Config(можно использовать для WireGuard, AmneziaWG через sing-box-lx)
 * парсинг NaiveProxy ссылок для sing-box > 1.13  
+* секции в LuCI теперь можно сворачивать 
+* поддержка подписок https:// для sing-box urltest и selector outbounds
 
 # Установка mudakop
 ```

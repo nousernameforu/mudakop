@@ -306,6 +306,23 @@ function createSettingsContent(section) {
   o.default = "1d";
   o.rmempty = false;
 
+  // Deliberately coarser than the list update: a refresh that finds new servers has to
+  // rebuild the sing-box configuration, which drops open connections, while a list
+  // update does not
+  o = section.option(
+    form.ListValue,
+    "subscription_update_interval",
+    _("Subscription Update Frequency"),
+    _("Select how often subscriptions with auto update enabled are refreshed"),
+  );
+  o.value("off", _("Never"));
+  o.value("3h", _("Every 3 hours"));
+  o.value("12h", _("Every 12 hours"));
+  o.value("1d", _("Every day"));
+  o.value("3d", _("Every 3 days"));
+  o.default = "1d";
+  o.rmempty = false;
+
   o = section.option(
     form.Flag,
     "download_lists_via_proxy",

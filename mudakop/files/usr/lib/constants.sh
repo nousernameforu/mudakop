@@ -62,6 +62,14 @@ SB_EXCLUSION_RULE_TAG="exclusion-rule-tag"
 # Experimental
 SB_CLASH_API_CONTROLLER_PORT=9090
 
+## Subscriptions
+SUBSCRIPTION_FETCH_TIMEOUT=20
+# Some subscription servers hand out a different (or empty) list to clients they do not
+# recognise, so identify as a proxy client rather than as curl
+SUBSCRIPTION_USER_AGENT="mudakop/$MUDAKOP_VERSION (sing-box)"
+# The schemes sing_box_cf_add_proxy_outbound knows how to turn into an outbound
+SUBSCRIPTION_LINK_REGEX='^(vless|ss|trojan|socks4|socks4a|socks5|hysteria2|hy2|naive\+https|naive\+quic)://[^[:space:]].*$'
+
 ## Lists
 # Domain and subnet lists are supplied entirely by the user, as inline entries, local
 # files on the router, or remote URLs configured per section

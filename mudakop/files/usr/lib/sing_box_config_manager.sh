@@ -587,6 +587,10 @@ sing_box_cm_add_shadowsocks_outbound() {
 #   flow: string, flow setting (optional)
 #   network: string, network type (e.g., "tcp") (optional)
 #   packet_encoding: string, packet encoding method (optional)
+#   encryption: string, VLESS post-quantum layer spec, sing-box-lx only (optional).
+#       "mlkem768x25519plus.<native|xorpub|random>.<0rtt|1rtt>[.<padding>].<key>". Servers
+#       that mandate it drop plain VLESS after the transport comes up, with nothing in the
+#       log, so an outbound built without it looks connected and carries no traffic
 # Outputs:
 #   Writes updated JSON configuration to stdout
 # Example:
@@ -604,6 +608,7 @@ sing_box_cm_add_vless_outbound() {
     local flow="$6"
     local network="$7"
     local packet_encoding="$8"
+    local encryption="$9"
 
     echo "$config" | jq \
         --arg tag "$tag" \
@@ -613,6 +618,7 @@ sing_box_cm_add_vless_outbound() {
         --arg flow "$flow" \
         --arg network "$network" \
         --arg packet_encoding "$packet_encoding" \
+        --arg encryption "$encryption" \
         '.outbounds += [(
             {
               type: "vless",
@@ -624,6 +630,7 @@ sing_box_cm_add_vless_outbound() {
             + (if $flow != "" then {flow: $flow} else {} end)
             + (if $network != "" then {network: $network} else {} end)
             + (if $packet_encoding != "" then {packet_encoding: $packet_encoding} else {} end)
+            + (if $encryption != "" then {encryption: $encryption} else {} end)
         )]'
 }
 
@@ -783,6 +790,41 @@ sing_box_cm_set_grpc_transport_for_outbound() {
                         + (if $permit_without_stream != "" then {permit_without_stream: $permit_without_stream} else {} end)
                     )
                 }
+            else
+                .
+            end
+        )'
+}
+
+#######################################
+# Set XHTTP transport settings for an outbound in a sing-box JSON configuration.
+#
+# XHTTP is a sing-box-lx extension (build tag with_xhttp) and carries two dozen optional
+# fields, so unlike the other transports this one takes them as a ready JSON object
+# rather than as positional arguments. The caller is responsible for producing snake_case
+# keys the core knows: sing-box rejects a configuration carrying an unknown field, so a
+# stray key breaks everything, not just this outbound.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   tag: string, identifier of the outbound to modify
+#   options: string (JSON object), transport fields to set beside the type
+# Outputs:
+#   Writes updated JSON configuration to stdout
+# Example:
+#   CONFIG=$(sing_box_cm_set_xhttp_transport_for_outbound "$CONFIG" "vless-xhttp-out" \
+#       '{"host":"example.com","path":"/xhttp","mode":"auto"}')
+#######################################
+sing_box_cm_set_xhttp_transport_for_outbound() {
+    local config="$1"
+    local tag="$2"
+    local options="${3:-{\}}"
+
+    echo "$config" | jq \
+        --arg tag "$tag" \
+        --argjson options "$options" \
+        '.outbounds |= map(
+            if .tag == $tag then
+                . + { transport: ({ type: "xhttp" } + $options) }
             else
                 .
             end
