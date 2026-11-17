@@ -7,13 +7,6 @@
 "require rpc";
 "require view.mudakop.main as main";
 
-// Returns { "<mac>": { name, ipaddrs: [...], ip6addrs: [...] }, ... }
-const callHostHints = rpc.declare({
-  object: "luci-rpc",
-  method: "getHostHints",
-  expect: { "": {} },
-});
-
 // Settings content
 "require view.mudakop.settings as settings";
 
@@ -25,6 +18,15 @@ const callHostHints = rpc.declare({
 
 // Diagnostic content
 "require view.mudakop.diagnostic as diagnostic";
+
+// Must come after every "require" line: LuCI only honours requires at the top of the
+// file, and any code before them silently drops the ones that follow.
+// Returns { "<mac>": { name, ipaddrs: [...], ip6addrs: [...] }, ... }
+const callHostHints = rpc.declare({
+  object: "luci-rpc",
+  method: "getHostHints",
+  expect: { "": {} },
+});
 
 const EntryPoint = {
   async render() {
