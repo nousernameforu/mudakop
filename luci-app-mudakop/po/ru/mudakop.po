@@ -1037,3 +1037,15 @@ msgstr "Секретный ключ YACD"
 msgid "You can select Output Network Interface, by default autodetect"
 msgstr "Вы можете выбрать выходной сетевой интерфейс, по умолчанию он определяется автоматически."
 
+
+msgid "Fully Routed Devices"
+msgstr "Полностью маршрутизируемые устройства"
+
+msgid "Pick devices by MAC address to send all of their traffic through this section, whatever IP address they get. Exclusion and block sections still apply to them"
+msgstr "Выберите устройства по MAC-адресу, чтобы направлять весь их трафик через эту секцию независимо от полученного IP-адреса. Секции исключений и блокировки по-прежнему применяются к ним"
+
+msgid "Unknown device"
+msgstr "Неизвестное устройство"
+
+msgid "Invalid MAC address"
+msgstr "Неверный MAC-адрес"

@@ -48,6 +48,10 @@ SB_TPROXY_INBOUND_PORT=1602
 SB_TPROXY6_INBOUND_TAG="tproxy6-in"
 SB_TPROXY6_INBOUND_ADDRESS="::1"
 SB_TPROXY6_INBOUND_PORT=1602
+# Sections with fully routed MAC addresses each get their own tproxy inbound, so the
+# device is identified by the listener its traffic arrived on rather than by an IP
+# address. Ports are handed out upwards from here, one per such section
+SB_MAC_TPROXY_BASE_PORT=1610
 SB_DNS_INBOUND_TAG="dns-in"
 SB_DNS_INBOUND_ADDRESS="127.0.0.42"
 SB_DNS_INBOUND_PORT=53

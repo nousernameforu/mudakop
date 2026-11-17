@@ -1296,6 +1296,44 @@ sing_box_cm_add_resolve_rule() {
 }
 
 #######################################
+# Insert a resolve rule immediately before a route rule, matching exactly what the
+# route rule matches. Unlike sing_box_cm_add_resolve_rule, which only carries over
+# rule_set, this copies every matcher (source_ip_cidr, ip_cidr, domain, ...), so it is
+# safe for route rules that are not rule_set based.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   route_rule_tag: string, tag of the route rule to precede
+#   resolve_rule_tag: string, tag for the new resolve rule
+#   server: string, DNS server tag
+# Outputs:
+#   Updated JSON config to stdout
+#######################################
+sing_box_cm_add_resolve_rule_mirroring() {
+    local config="$1"
+    local route_rule_tag="$2"
+    local resolve_rule_tag="$3"
+    local server="$4"
+
+    echo "$config" | jq \
+        --arg service_tag "$SERVICE_TAG" \
+        --arg route_tag "$route_rule_tag" \
+        --arg resolve_tag "$resolve_rule_tag" \
+        --arg server "$server" \
+        '.route.rules |= [
+            .[] |
+            if .[$service_tag] == $route_tag then
+                (
+                    del(.outbound)
+                    | .action = "resolve"
+                    | .server = $server
+                    | .[$service_tag] = $resolve_tag
+                ), .
+            else .
+            end
+        ]'
+}
+
+#######################################
 # Insert a QUIC reject rule immediately before a route rule.
 #
 # The new rule is a copy of the target route rule, so it matches exactly the same

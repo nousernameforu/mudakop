@@ -39,11 +39,50 @@ init_ipv6_state
 # A plain string when IPv6 is off, a JSON array when both inbounds exist.
 #######################################
 get_tproxy_route_inbounds() {
-    if ipv6_enabled; then
-        comma_string_to_json_array "$SB_TPROXY_INBOUND_TAG,$SB_TPROXY6_INBOUND_TAG"
+    local tags="$SB_TPROXY_INBOUND_TAG"
+    ipv6_enabled && tags="$tags,$SB_TPROXY6_INBOUND_TAG"
+    [ -n "$MAC_ROUTED_INBOUND_TAGS" ] && tags="$tags,$MAC_ROUTED_INBOUND_TAGS"
+
+    if [ "$tags" = "$SB_TPROXY_INBOUND_TAG" ]; then
+        echo "$tags"
     else
-        echo "$SB_TPROXY_INBOUND_TAG"
+        comma_string_to_json_array "$tags"
     fi
+}
+
+# Comma-separated tags of the per-section inbounds that fully routed MAC addresses are
+# sent to. Filled in by sing_box_configure_inbounds, before any route rule is built
+MAC_ROUTED_INBOUND_TAGS=""
+MAC_ROUTED_SECTION_COUNT=0
+
+get_mac_inbound_tag() {
+    echo "$1-mac-in"
+}
+
+get_mac6_inbound_tag() {
+    echo "$1-mac6-in"
+}
+
+# The inbound(s) a section's fully routed MAC addresses arrive on, as route rule input
+get_section_mac_route_inbounds() {
+    local section="$1"
+
+    if ipv6_enabled; then
+        comma_string_to_json_array "$(get_mac_inbound_tag "$section"),$(get_mac6_inbound_tag "$section")"
+    else
+        get_mac_inbound_tag "$section"
+    fi
+}
+
+is_mac_address() {
+    echo "$1" | grep -qE '^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$'
+}
+
+is_fully_routed_connection_type() {
+    case "$1" in
+    proxy | vpn | amneziawg) return 0 ;;
+    *) return 1 ;;
+    esac
 }
 
 check_requirements() {
@@ -741,6 +780,73 @@ sing_box_configure_inbounds() {
     config=$(
         sing_box_cm_add_direct_inbound "$config" "$SB_DNS_INBOUND_TAG" "$SB_DNS_INBOUND_ADDRESS" "$SB_DNS_INBOUND_PORT"
     )
+
+    config_foreach configure_mac_routed_inbound_handler "section"
+}
+
+collect_valid_mac_handler() {
+    local mac="$1"
+
+    if ! is_mac_address "$mac"; then
+        log "'$mac' is not a valid MAC address, skipping" "error"
+        return 0
+    fi
+
+    mac="$(echo "$mac" | tr 'A-F' 'a-f')"
+    if [ -z "$section_macs" ]; then
+        section_macs="$mac"
+    else
+        section_macs="$section_macs, $mac"
+    fi
+}
+
+#######################################
+# For a section with fully routed MAC addresses, adds a dedicated tproxy inbound (and its
+# IPv6 twin) and the nft rules that send every non-local connection from those MACs to
+# it. The route rule that picks the section's outbound for that inbound is added later,
+# by include_source_ips_in_routing_handler.
+# Globals:
+#   config, MAC_ROUTED_INBOUND_TAGS, MAC_ROUTED_SECTION_COUNT: modified
+#######################################
+configure_mac_routed_inbound_handler() {
+    local section="$1"
+
+    local fully_routed_macs connection_type
+    config_get fully_routed_macs "$section" "fully_routed_macs"
+    [ -n "$fully_routed_macs" ] || return 0
+
+    config_get connection_type "$section" "connection_type"
+    if ! is_fully_routed_connection_type "$connection_type"; then
+        log "Fully routed devices do not apply to '$connection_type' sections, ignoring them for '$section'" "warn"
+        return 0
+    fi
+
+    local section_macs=""
+    config_list_foreach "$section" "fully_routed_macs" collect_valid_mac_handler
+    [ -n "$section_macs" ] || return 0
+
+    local port tag tag6
+    port=$((SB_MAC_TPROXY_BASE_PORT + MAC_ROUTED_SECTION_COUNT))
+    MAC_ROUTED_SECTION_COUNT=$((MAC_ROUTED_SECTION_COUNT + 1))
+    tag="$(get_mac_inbound_tag "$section")"
+    tag6="$(get_mac6_inbound_tag "$section")"
+
+    log "Fully routing { $section_macs } through '$section' via tproxy port $port"
+
+    config=$(sing_box_cm_add_tproxy_inbound "$config" "$tag" "$SB_TPROXY_INBOUND_ADDRESS" "$port" true true)
+    if [ -z "$MAC_ROUTED_INBOUND_TAGS" ]; then
+        MAC_ROUTED_INBOUND_TAGS="$tag"
+    else
+        MAC_ROUTED_INBOUND_TAGS="$MAC_ROUTED_INBOUND_TAGS,$tag"
+    fi
+
+    nft_route_macs_to_port "$section_macs" "$port" "ip"
+
+    if ipv6_enabled; then
+        config=$(sing_box_cm_add_tproxy_inbound "$config" "$tag6" "$SB_TPROXY6_INBOUND_ADDRESS" "$port" true true)
+        MAC_ROUTED_INBOUND_TAGS="$MAC_ROUTED_INBOUND_TAGS,$tag6"
+        nft_route_macs_to_port "$section_macs" "$port" "ip6"
+    fi
 }
 
 sing_box_configure_outbounds() {
@@ -1170,6 +1276,7 @@ sing_box_configure_route() {
     local sniff_inbounds sniff_inbound_tags
     sniff_inbound_tags="$SB_TPROXY_INBOUND_TAG,$SB_DNS_INBOUND_TAG"
     ipv6_enabled && sniff_inbound_tags="$sniff_inbound_tags,$SB_TPROXY6_INBOUND_TAG"
+    [ -n "$MAC_ROUTED_INBOUND_TAGS" ] && sniff_inbound_tags="$sniff_inbound_tags,$MAC_ROUTED_INBOUND_TAGS"
     sniff_inbounds=$(comma_string_to_json_array "$sniff_inbound_tags")
     config=$(sing_box_cm_sniff_route_rule "$config" "inbound" "$sniff_inbounds")
 
@@ -1207,15 +1314,71 @@ sing_box_configure_route() {
 include_source_ips_in_routing_handler() {
     local section="$1"
 
-    local fully_routed_ips rule_tag
+    local fully_routed_ips rule_tag connection_type outbound_tag
     config_get fully_routed_ips "$section" "fully_routed_ips"
-    if [ -n "$fully_routed_ips" ]; then
+    config_get connection_type "$section" "connection_type"
+    outbound_tag="$(get_outbound_tag_by_section "$section")"
+
+    # Devices picked by MAC arrive on the section's own inbound, set up together with its
+    # nft rules in configure_mac_routed_inbound_handler, so matching the inbound is enough
+    case ",$MAC_ROUTED_INBOUND_TAGS," in
+    *",$(get_mac_inbound_tag "$section"),"*)
+        log "Configuring fully routed devices for '$section' section"
         rule_tag="$(gen_id)"
         config=$(
             sing_box_cm_add_route_rule \
-                "$config" "$rule_tag" "$(get_tproxy_route_inbounds)" "$(get_outbound_tag_by_section "$section")"
+                "$config" "$rule_tag" "$(get_section_mac_route_inbounds "$section")" "$outbound_tag"
         )
-        config_list_foreach "$section" "fully_routed_ips" include_source_ip_in_routing_handler "$rule_tag"
+        finish_fully_routed_rule "$section" "$connection_type" "$rule_tag"
+        ;;
+    esac
+
+    [ -n "$fully_routed_ips" ] || return 0
+
+    if ! is_fully_routed_connection_type "$connection_type"; then
+        log "Fully routed IPs do not apply to '$connection_type' sections, ignoring them for '$section'" "warn"
+        return 0
+    fi
+
+    log "Configuring fully routed IPs for '$section' section"
+    rule_tag="$(gen_id)"
+    config=$(sing_box_cm_add_route_rule "$config" "$rule_tag" "$(get_tproxy_route_inbounds)" "$outbound_tag")
+    config_list_foreach "$section" "fully_routed_ips" include_source_ip_in_routing_handler "$rule_tag"
+    finish_fully_routed_rule "$section" "$connection_type" "$rule_tag"
+}
+
+#######################################
+# Adds the companion rules a fully routed route rule needs: a resolve rule for raw IP
+# tunnels and a QUIC reject when the section disables QUIC. Both mirror the route rule's
+# matchers, so they only ever touch the fully routed traffic.
+#######################################
+finish_fully_routed_rule() {
+    local section="$1"
+    local connection_type="$2"
+    local rule_tag="$3"
+
+    # A fully routed device still gets fake IPs for domains listed in any section, so its
+    # connections can carry a domain instead of an address. Outbound proxies pass the
+    # domain through, but raw IP tunnels (WireGuard / AmneziaWG endpoints) cannot dial a
+    # domain and drop the connection, so resolve it first, as the section lists do
+    local proxy_config_type resolve_server resolve_real_ip_for_routing
+    config_get proxy_config_type "$section" "proxy_config_type"
+    config_get_bool resolve_real_ip_for_routing "$section" "resolve_real_ip_for_routing" 0
+    if { [ "$connection_type" = "proxy" ] && [ "$proxy_config_type" = "endpoint" ]; } ||
+        [ "$connection_type" = "amneziawg" ]; then
+        resolve_server="$(section_domain_resolver_tag "$section")"
+        [ -n "$resolve_server" ] || resolve_server="$SB_DNS_SERVER_TAG"
+    elif [ "$resolve_real_ip_for_routing" -eq 1 ]; then
+        resolve_server="$SB_DNS_SERVER_TAG"
+    fi
+    if [ -n "$resolve_server" ]; then
+        config=$(sing_box_cm_add_resolve_rule_mirroring "$config" "$rule_tag" "$(gen_id)" "$resolve_server")
+    fi
+
+    local section_disable_quic
+    config_get_bool section_disable_quic "$section" "disable_quic" 0
+    if [ "$section_disable_quic" -eq 1 ]; then
+        config=$(sing_box_cm_add_quic_reject_rule "$config" "$rule_tag" "$(gen_id)")
     fi
 }
 
@@ -1952,13 +2115,53 @@ nft_list_all_traffic_from_ip() {
         return 1
     fi
 
-    if ! nft list chain inet "$NFT_TABLE_NAME" mangle | grep -q "$family saddr $ip"; then
+    # Whole-word fixed-string match: a plain substring grep took 192.168.1.2 as already
+    # present whenever 192.168.1.20 had been added before it, leaving it unmarked
+    if ! nft list chain inet "$NFT_TABLE_NAME" mangle | grep -qwF "$family saddr $ip"; then
         nft insert rule inet "$NFT_TABLE_NAME" mangle iifname "@$NFT_INTERFACE_SET_NAME" "$family" saddr "$ip" \
             meta l4proto tcp meta mark set "$NFT_FAKEIP_MARK" counter
         nft insert rule inet "$NFT_TABLE_NAME" mangle iifname "@$NFT_INTERFACE_SET_NAME" "$family" saddr "$ip" \
             meta l4proto udp meta mark set "$NFT_FAKEIP_MARK" counter
         nft insert rule inet "$NFT_TABLE_NAME" mangle "$family" saddr "$ip" "$family" daddr "@$local_set" return
     fi
+}
+
+#######################################
+# Marks every non-local TCP/UDP connection from the given MAC addresses for tproxy and
+# diverts it to a section's own inbound instead of the shared one. The rules are inserted
+# at the top of their chains so they win over the shared tproxy rules; the trailing
+# accept is needed because nft's tproxy statement does not end rule evaluation, and the
+# shared rule further down would otherwise redirect the packet a second time.
+# Arguments:
+#   macs: string, comma-separated MAC addresses ("aa:..:01, aa:..:02")
+#   port: integer, tproxy port of the section's inbound
+#   family: "ip" or "ip6"
+#######################################
+nft_route_macs_to_port() {
+    local macs="$1"
+    local port="$2"
+    local family="$3"
+
+    local local_set tproxy_target nfproto
+    if [ "$family" = "ip6" ]; then
+        local_set="$NFT_LOCALV6_SET_NAME"
+        tproxy_target="[$SB_TPROXY6_INBOUND_ADDRESS]:$port"
+        nfproto="ipv6"
+    else
+        local_set="$NFT_LOCALV4_SET_NAME"
+        tproxy_target="$SB_TPROXY_INBOUND_ADDRESS:$port"
+        nfproto="ipv4"
+    fi
+
+    nft insert rule inet "$NFT_TABLE_NAME" mangle iifname "@$NFT_INTERFACE_SET_NAME" ether saddr "{ $macs }" \
+        "$family" daddr != "@$local_set" meta l4proto "{ tcp, udp }" meta mark set "$NFT_FAKEIP_MARK" counter
+
+    nft insert rule inet "$NFT_TABLE_NAME" proxy meta nfproto "$nfproto" ether saddr "{ $macs }" \
+        meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
+        meta l4proto tcp tproxy "$family" to "$tproxy_target" counter accept
+    nft insert rule inet "$NFT_TABLE_NAME" proxy meta nfproto "$nfproto" ether saddr "{ $macs }" \
+        meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
+        meta l4proto udp tproxy "$family" to "$tproxy_target" counter accept
 }
 
 # Diagnotics

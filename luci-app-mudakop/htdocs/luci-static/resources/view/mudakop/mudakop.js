@@ -4,7 +4,15 @@
 "require baseclass";
 "require network";
 "require uci";
+"require rpc";
 "require view.mudakop.main as main";
+
+// Returns { "<mac>": { name, ipaddrs: [...], ip6addrs: [...] }, ... }
+const callHostHints = rpc.declare({
+  object: "luci-rpc",
+  method: "getHostHints",
+  expect: { "": {} },
+});
 
 // Settings content
 "require view.mudakop.settings as settings";
@@ -43,6 +51,16 @@ const EntryPoint = {
       console.error("Failed to probe AmneziaWG support:", e);
     }
 
+    // Known LAN devices (DHCP leases, static hosts, neighbours), offered as choices for
+    // Fully Routed IPs. Purely a convenience: without it the list still takes typed values
+    let hostHints = {};
+
+    try {
+      hostHints = (await callHostHints()) || {};
+    } catch (e) {
+      console.error("Failed to load host hints:", e);
+    }
+
     const mudakopMap = new form.Map(
       "mudakop",
       _("mudakop Settings"),
@@ -62,7 +80,10 @@ const EntryPoint = {
     sectionsSection.template = "cbi/simpleform";
 
     // Render section content
-    section.createSectionContent(sectionsSection, { amneziaWgAvailable });
+    section.createSectionContent(sectionsSection, {
+      amneziaWgAvailable,
+      hostHints,
+    });
 
     // Settings tab
     const settingsSection = mudakopMap.section(

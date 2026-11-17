@@ -76,6 +76,7 @@ const FIELD_GROUPS = [
     title: _("Advanced"),
     collapsed: true,
     options: [
+      "fully_routed_macs",
       "fully_routed_ips",
       "mixed_proxy_enabled",
       "mixed_proxy_port",
@@ -825,8 +826,47 @@ function confToAwgValues(parsed) {
   return values;
 }
 
+// Turns luci-rpc host hints into [address, label] choices, one per address, named after
+// the device so it can be picked from a list instead of looked up by hand. Link-local
+// IPv6 addresses never reach the router's forwarding path, so they are left out
+function hostHintsToChoices(hostHints) {
+  const choices = [];
+
+  Object.keys(hostHints || {}).forEach((mac) => {
+    const host = hostHints[mac] || {};
+    const name = host.name || mac;
+    const addrs = [].concat(host.ipaddrs || [], host.ip6addrs || []);
+
+    addrs
+      .filter((addr) => addr && !/^fe80:/i.test(addr))
+      .forEach((addr) => choices.push([addr, `${name} (${addr})`, name]));
+  });
+
+  choices.sort((a, b) => a[2].localeCompare(b[2]) || a[0].localeCompare(b[0]));
+
+  return choices;
+}
+
+// One [mac, label] choice per known device. MACs are stored lower-case, which is what
+// the backend normalises to as well, so a picked device and a typed one compare equal
+function hostHintsToMacChoices(hostHints) {
+  return Object.keys(hostHints || {})
+    .filter((mac) => MAC_REGEX.test(mac))
+    .map((mac) => {
+      const host = hostHints[mac] || {};
+      const addr = (host.ipaddrs || [])[0] || (host.ip6addrs || [])[0];
+      const name = host.name || _("Unknown device");
+      const label = addr ? `${name} (${addr}, ${mac})` : `${name} (${mac})`;
+
+      return [mac.toLowerCase(), label, name];
+    })
+    .sort((a, b) => a[2].localeCompare(b[2]) || a[0].localeCompare(b[0]));
+}
+
+const MAC_REGEX = /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/i;
+
 function createSectionContent(section, options = {}) {
-  const { amneziaWgAvailable = false } = options;
+  const { amneziaWgAvailable = false, hostHints = {} } = options;
 
   // Field schema for the AmneziaWG editor. Declaring it once keeps the modal, the .conf
   // importer and the uci writer working from a single source of truth instead of two
@@ -1833,6 +1873,35 @@ function createSectionContent(section, options = {}) {
 
   o = section.option(
     form.DynamicList,
+    "fully_routed_macs",
+    _("Fully Routed Devices"),
+    _(
+      "Pick devices by MAC address to send all of their traffic through this section, whatever IP address they get. Exclusion and block sections still apply to them",
+    ),
+  );
+  o.placeholder = "aa:bb:cc:dd:ee:ff";
+  o.rmempty = true;
+  hostHintsToMacChoices(hostHints).forEach(([mac, label]) => o.value(mac, label));
+  o.depends("connection_type", "proxy");
+  o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
+  o.validate = function (section_id, value) {
+    if (!value || value.length === 0 || MAC_REGEX.test(value)) {
+      return true;
+    }
+
+    return _("Invalid MAC address");
+  };
+  o.write = function (section_id, value) {
+    const list = (Array.isArray(value) ? value : [value]).map((v) =>
+      String(v).toLowerCase(),
+    );
+
+    return this.super("write", [section_id, list]);
+  };
+
+  o = section.option(
+    form.DynamicList,
     "fully_routed_ips",
     _("Fully Routed IPs"),
     _(
@@ -1841,8 +1910,11 @@ function createSectionContent(section, options = {}) {
   );
   o.placeholder = "192.168.1.2, 192.168.1.0/24 or fd00::/64";
   o.rmempty = true;
+  // Known devices show up as a dropdown; a custom address or subnet can still be typed
+  hostHintsToChoices(hostHints).forEach(([addr, label]) => o.value(addr, label));
   o.depends("connection_type", "proxy");
   o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
   o.validate = function (section_id, value) {
     // Optional
     if (!value || value.length === 0) {
