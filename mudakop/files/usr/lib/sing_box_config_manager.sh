@@ -1334,6 +1334,80 @@ sing_box_cm_add_resolve_rule_mirroring() {
 }
 
 #######################################
+# Pins the address family an outbound or DNS server dials with, by turning its
+# domain_resolver into the object form { server, strategy }. Without a resolver of its
+# own the object points at default_server, which is what sing-box would have used.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   path: "outbounds" or "dns.servers"
+#   tag: string, tag of the outbound or DNS server
+#   strategy: string, e.g. "ipv4_only"
+#   default_server: string, DNS server tag to use when none is set
+# Outputs:
+#   Updated JSON config to stdout
+#######################################
+sing_box_cm_set_domain_resolver_strategy() {
+    local config="$1"
+    local path="$2"
+    local tag="$3"
+    local strategy="$4"
+    local default_server="$5"
+
+    echo "$config" | jq \
+        --arg path "$path" \
+        --arg tag "$tag" \
+        --arg strategy "$strategy" \
+        --arg default_server "$default_server" \
+        'def pin:
+            if .tag == $tag then
+                .domain_resolver = {
+                    server: (
+                        if (.domain_resolver | type) == "object" then .domain_resolver.server
+                        elif (.domain_resolver // "") != "" then .domain_resolver
+                        else $default_server end
+                    ),
+                    strategy: $strategy
+                }
+            else . end;
+        if $path == "dns.servers" then .dns.servers |= map(pin) else .outbounds |= map(pin) end'
+}
+
+#######################################
+# Insert an IPv6 reject rule immediately before a route rule, matching exactly what the
+# route rule matches but only for IPv6 connections. sing-box answers a rejected TCP
+# connection with a reset, so clients drop the IPv6 attempt at once and fall back to
+# IPv4 instead of hanging on a tunnel that has no IPv6 route.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+#   route_rule_tag: string, tag of the route rule to precede
+#   reject_rule_tag: string, tag for the new reject rule
+# Outputs:
+#   Updated JSON config to stdout
+#######################################
+sing_box_cm_add_ipv6_reject_rule() {
+    local config="$1"
+    local route_rule_tag="$2"
+    local reject_rule_tag="$3"
+
+    echo "$config" | jq \
+        --arg service_tag "$SERVICE_TAG" \
+        --arg route_tag "$route_rule_tag" \
+        --arg reject_tag "$reject_rule_tag" \
+        '.route.rules |= [
+            .[] |
+            if .[$service_tag] == $route_tag then
+                (
+                    del(.outbound)
+                    | .action = "reject"
+                    | .ip_version = 6
+                    | .[$service_tag] = $reject_tag
+                ), .
+            else .
+            end
+        ]'
+}
+
+#######################################
 # Insert a QUIC reject rule immediately before a route rule.
 #
 # The new rule is a copy of the target route rule, so it matches exactly the same

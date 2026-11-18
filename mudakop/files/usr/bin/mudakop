@@ -78,6 +78,44 @@ is_mac_address() {
     echo "$1" | grep -qE '^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$'
 }
 
+#######################################
+# Whether a section's tunnel is declared to carry IPv6 (the tunnel_ipv6 option). Only
+# meaningful while IPv6 support is on: with it off nothing is IPv6 anyway.
+#######################################
+section_tunnel_lacks_ipv6() {
+    local section="$1"
+
+    ipv6_enabled || return 1
+
+    local tunnel_ipv6
+    config_get_bool tunnel_ipv6 "$section" "tunnel_ipv6" 0
+    [ "$tunnel_ipv6" -eq 0 ]
+}
+
+#######################################
+# The DNS strategy sing-box must use when dialing through a section, or nothing when the
+# default is fine. Layer-3 tunnels (VPN interfaces, WireGuard/AmneziaWG endpoints) send
+# packets as they are, so a name resolved to IPv6 is dialed over IPv6 even when the
+# tunnel has no IPv6 route, and the connection dies. The global DNS strategy prefers
+# IPv6 once IPv6 support is on, hence the pin to IPv4 for such tunnels. Proxy protocols
+# hand the name to the server and are left alone.
+#######################################
+section_dial_strategy() {
+    local section="$1"
+
+    local connection_type proxy_config_type
+    config_get connection_type "$section" "connection_type"
+    config_get proxy_config_type "$section" "proxy_config_type"
+
+    case "$connection_type" in
+    vpn | amneziawg) ;;
+    proxy) [ "$proxy_config_type" = "endpoint" ] || return 0 ;;
+    *) return 0 ;;
+    esac
+
+    section_tunnel_lacks_ipv6 "$section" && echo "ipv4_only"
+}
+
 is_fully_routed_connection_type() {
     case "$1" in
     proxy | vpn | amneziawg) return 0 ;;
@@ -845,7 +883,14 @@ configure_mac_routed_inbound_handler() {
     if ipv6_enabled; then
         config=$(sing_box_cm_add_tproxy_inbound "$config" "$tag6" "$SB_TPROXY6_INBOUND_ADDRESS" "$port" true true)
         MAC_ROUTED_INBOUND_TAGS="$MAC_ROUTED_INBOUND_TAGS,$tag6"
-        nft_route_macs_to_port "$section_macs" "$port" "ip6"
+
+        if ! section_tunnel_lacks_ipv6 "$section"; then
+            nft_route_macs_to_port "$section_macs" "$port" "ip6"
+        else
+            # IPv6 to fake IPs is still caught by the shared rules and works (sing-box
+            # dials the domain over IPv4); everything else is refused at connect time
+            nft_reject_ipv6_from_macs "$section_macs"
+        fi
     fi
 }
 
@@ -919,6 +964,15 @@ configure_section_domain_resolver() {
     tag="$(get_domain_resolver_tag "$section")"
     config=$(sing_box_cf_add_dns_server "$config" "$domain_resolver_dns_type" "$tag" \
         "$domain_resolver_dns_server" "$dns_domain_resolver" "$outbound_tag")
+
+    # The resolver itself is reached through the tunnel, so its own address must be
+    # dialable there too
+    local dial_strategy
+    dial_strategy="$(section_dial_strategy "$section")"
+    if [ -n "$dial_strategy" ] && [ -n "$dns_domain_resolver" ]; then
+        config=$(sing_box_cm_set_domain_resolver_strategy "$config" "dns.servers" "$tag" "$dial_strategy" \
+            "$dns_domain_resolver")
+    fi
 
     SECTION_DOMAIN_RESOLVER_TAG="$tag"
 }
@@ -1057,6 +1111,14 @@ configure_outbound_handler() {
 
         config=$(sing_box_cm_add_interface_outbound "$config" "$outbound_tag" "$interface_name" \
             "$SECTION_DOMAIN_RESOLVER_TAG")
+
+        local dial_strategy
+        dial_strategy="$(section_dial_strategy "$section")"
+        if [ -n "$dial_strategy" ]; then
+            config=$(sing_box_cm_set_domain_resolver_strategy "$config" "outbounds" "$outbound_tag" \
+                "$dial_strategy" "$SB_DNS_SERVER_TAG")
+            log "Section '$section' tunnel has no IPv6, dialing it with $dial_strategy" "debug"
+        fi
         ;;
     amneziawg)
         log "Configuring AmneziaWG endpoint for the $section section"
@@ -1372,13 +1434,30 @@ finish_fully_routed_rule() {
         resolve_server="$SB_DNS_SERVER_TAG"
     fi
     if [ -n "$resolve_server" ]; then
-        config=$(sing_box_cm_add_resolve_rule_mirroring "$config" "$rule_tag" "$(gen_id)" "$resolve_server")
+        local resolve_tag dial_strategy
+        resolve_tag="$(gen_id)"
+        config=$(sing_box_cm_add_resolve_rule_mirroring "$config" "$rule_tag" "$resolve_tag" "$resolve_server")
+        dial_strategy="$(section_dial_strategy "$section")"
+        if [ -n "$dial_strategy" ]; then
+            config=$(sing_box_cm_patch_route_rule "$config" "$resolve_tag" "strategy" "$dial_strategy")
+        fi
     fi
 
     local section_disable_quic
     config_get_bool section_disable_quic "$section" "disable_quic" 0
     if [ "$section_disable_quic" -eq 1 ]; then
         config=$(sing_box_cm_add_quic_reject_rule "$config" "$rule_tag" "$(gen_id)")
+    fi
+
+    # With IPv6 enabled, a fully routed device gets real AAAA answers for unlisted domains
+    # and connects over IPv6. Many tunnels (a WireGuard/AmneziaWG peer with only a ULA
+    # address, for one) cannot carry that, and the connection then hangs until it times
+    # out. Unless the section says its tunnel handles IPv6, reset those connections so the
+    # client retries over IPv4, which still goes through the tunnel. Rejecting rather than
+    # letting IPv6 bypass the tunnel keeps blocked sites from leaking out of the WAN
+    if section_tunnel_lacks_ipv6 "$section"; then
+        config=$(sing_box_cm_add_ipv6_reject_rule "$config" "$rule_tag" "$(gen_id)")
+        log "IPv6 of fully routed devices in '$section' is rejected so they fall back to IPv4" "debug"
     fi
 }
 
@@ -1532,7 +1611,13 @@ configure_routing_for_section_lists() {
     fi
 
     if [ -n "$resolve_server" ]; then
-        config=$(sing_box_cm_add_resolve_rule "$config" "$route_rule_tag" "$(gen_id)" "$resolve_server")
+        local resolve_tag dial_strategy
+        resolve_tag="$(gen_id)"
+        config=$(sing_box_cm_add_resolve_rule "$config" "$route_rule_tag" "$resolve_tag" "$resolve_server")
+        dial_strategy="$(section_dial_strategy "$section")"
+        if [ -n "$dial_strategy" ]; then
+            config=$(sing_box_cm_patch_route_rule "$config" "$resolve_tag" "strategy" "$dial_strategy")
+        fi
         log "Added resolve rule for '$section' section using '$resolve_server'" "debug"
     fi
 
@@ -2162,6 +2247,30 @@ nft_route_macs_to_port() {
     nft insert rule inet "$NFT_TABLE_NAME" proxy meta nfproto "$nfproto" ether saddr "{ $macs }" \
         meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
         meta l4proto udp tproxy "$family" to "$tproxy_target" counter accept
+}
+
+#######################################
+# Refuses forwarded IPv6 connections from the given MAC addresses, for sections whose
+# tunnel cannot carry IPv6. The refusal has to happen at connect time: once tproxy has
+# accepted the connection, a later reset from sing-box looks like a broken site to the
+# client rather than a missing route, and browsers do not retry over IPv4. A TCP reset
+# or an ICMPv6 error on the first packet makes them fall back to IPv4 at once.
+# reject is not allowed in prerouting, hence the forward chain.
+# Arguments:
+#   macs: string, comma-separated MAC addresses
+#######################################
+nft_reject_ipv6_from_macs() {
+    local macs="$1"
+
+    nft add chain inet "$NFT_TABLE_NAME" fully_routed_forward \
+        '{ type filter hook forward priority filter - 5; policy accept; }'
+
+    nft add rule inet "$NFT_TABLE_NAME" fully_routed_forward iifname "@$NFT_INTERFACE_SET_NAME" \
+        oifname != "@$NFT_INTERFACE_SET_NAME" ether saddr "{ $macs }" ip6 daddr != "@$NFT_LOCALV6_SET_NAME" \
+        meta l4proto tcp counter reject with tcp reset
+    nft add rule inet "$NFT_TABLE_NAME" fully_routed_forward iifname "@$NFT_INTERFACE_SET_NAME" \
+        oifname != "@$NFT_INTERFACE_SET_NAME" ether saddr "{ $macs }" ip6 daddr != "@$NFT_LOCALV6_SET_NAME" \
+        counter reject with icmpv6 type admin-prohibited
 }
 
 # Diagnotics

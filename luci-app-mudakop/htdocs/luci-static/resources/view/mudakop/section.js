@@ -78,6 +78,7 @@ const FIELD_GROUPS = [
     options: [
       "fully_routed_macs",
       "fully_routed_ips",
+      "tunnel_ipv6",
       "mixed_proxy_enabled",
       "mixed_proxy_port",
       "resolve_real_ip_for_routing",
@@ -1929,6 +1930,20 @@ function createSectionContent(section, options = {}) {
 
     return validation.message;
   };
+
+  o = section.option(
+    form.Flag,
+    "tunnel_ipv6",
+    _("Tunnel Carries IPv6"),
+    _(
+      "Turn on only if this tunnel has working IPv6. When off, sites are reached through it over IPv4 only, and IPv6 connections of fully routed devices are refused so they switch to IPv4 at once instead of hanging. Only matters when IPv6 support is enabled in the settings",
+    ),
+  );
+  o.default = "0";
+  o.rmempty = false;
+  o.depends("connection_type", "proxy");
+  o.depends("connection_type", "vpn");
+  o.depends("connection_type", "amneziawg");
 
   o = section.option(
     form.Flag,
