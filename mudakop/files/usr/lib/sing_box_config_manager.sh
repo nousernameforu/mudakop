@@ -1372,39 +1372,56 @@ sing_box_cm_set_domain_resolver_strategy() {
         if $path == "dns.servers" then .dns.servers |= map(pin) else .outbounds |= map(pin) end'
 }
 
+# Keys through which a list-based route rule matches traffic. A rule left without any of
+# them matches every connection, which is never what a list section means
+SB_LIST_MATCHER_KEYS='["rule_set","domain","domain_suffix","domain_keyword","domain_regex","ip_cidr","source_ip_cidr"]'
+
 #######################################
-# Insert an IPv6 reject rule immediately before a route rule, matching exactly what the
-# route rule matches but only for IPv6 connections. sing-box answers a rejected TCP
-# connection with a reset, so clients drop the IPv6 attempt at once and fall back to
-# IPv4 instead of hanging on a tunnel that has no IPv6 route.
+# Succeeds when the route rule with the given tag has at least one non-empty matcher.
+# Arguments:
+#   config: string (JSON), sing-box configuration
+#   tag: string, tag of the route rule
+#######################################
+sing_box_cm_route_rule_has_matchers() {
+    local config="$1"
+    local tag="$2"
+
+    echo "$config" | jq -e         --arg service_tag "$SERVICE_TAG"         --arg tag "$tag"         --argjson keys "$SB_LIST_MATCHER_KEYS"         '[.route.rules[] | select(.[$service_tag] == $tag)] | first // {}
+        | . as $r | any($keys[]; ($r[.] // null) as $v | $v != null and $v != [] and $v != "")'         > /dev/null
+}
+
+#######################################
+# Removes the route rule with the given tag.
 # Arguments:
 #   config: string (JSON), sing-box configuration to modify
-#   route_rule_tag: string, tag of the route rule to precede
-#   reject_rule_tag: string, tag for the new reject rule
+#   tag: string, tag of the route rule
 # Outputs:
 #   Updated JSON config to stdout
 #######################################
-sing_box_cm_add_ipv6_reject_rule() {
+sing_box_cm_remove_route_rule() {
     local config="$1"
-    local route_rule_tag="$2"
-    local reject_rule_tag="$3"
+    local tag="$2"
 
-    echo "$config" | jq \
-        --arg service_tag "$SERVICE_TAG" \
-        --arg route_tag "$route_rule_tag" \
-        --arg reject_tag "$reject_rule_tag" \
-        '.route.rules |= [
-            .[] |
-            if .[$service_tag] == $route_tag then
-                (
-                    del(.outbound)
-                    | .action = "reject"
-                    | .ip_version = 6
-                    | .[$service_tag] = $reject_tag
-                ), .
-            else .
-            end
-        ]'
+    echo "$config" | jq         --arg service_tag "$SERVICE_TAG"         --arg tag "$tag"         '.route.rules |= map(select(.[$service_tag] != $tag))'
+}
+
+#######################################
+# Removes resolve rules that ended up without any matcher, for instance because the
+# rule they were copied from had its rule sets dropped. Such a rule would resolve every
+# connection, ahead of the rules that were meant to pick them.
+# Arguments:
+#   config: string (JSON), sing-box configuration to modify
+# Outputs:
+#   Updated JSON config to stdout
+#######################################
+sing_box_cm_remove_unmatched_resolve_rules() {
+    local config="$1"
+
+    echo "$config" | jq         --argjson keys "$SB_LIST_MATCHER_KEYS"         '.route.rules |= map(select(
+            .action != "resolve" or
+            (. as $r | any($keys[]; ($r[.] // null) as $v | $v != null and $v != [] and $v != ""))
+            or has("inbound")
+        ))'
 }
 
 #######################################

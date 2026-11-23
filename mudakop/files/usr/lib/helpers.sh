@@ -200,13 +200,34 @@ url_get_userinfo() {
     echo "$url" | sed -n -e 's#^[^:/?]*://##' -e '/@/!d' -e 's/@.*//p'
 }
 
+# Returns the host[:port] part of a URL, without scheme, user info or path.
+# For http(s) the path is cut first: an "@" there is part of the path, as in jsDelivr's
+# .../repo@branch/file, and cutting user info first would take "branch" for the host.
+# Proxy links keep the old order, because their user info (ss:// base64) may contain "/"
+url_get_authority() {
+    local url="$1"
+
+    case "$url" in
+    http://* | https://*)
+        url="${url#*://}"
+        url="${url%%[/?#]*}"
+        url="${url##*@}"
+        ;;
+    *)
+        url="${url#*://}"
+        url="${url#*@}"
+        url="${url%%[/?#]*}"
+        ;;
+    esac
+
+    echo "$url"
+}
+
 # Extracts the host part from a URL. IPv6 literals are returned without brackets
 url_get_host() {
     local url="$1"
 
-    url="${url#*://}"
-    url="${url#*@}"
-    url="${url%%[/?#]*}"
+    url="$(url_get_authority "$url")"
 
     case "$url" in
     # Bracketed IPv6 literal, with or without a port: [2001:db8::1]:443
@@ -229,9 +250,7 @@ url_get_host() {
 url_get_port() {
     local url="$1"
 
-    url="${url#*://}"
-    url="${url#*@}"
-    url="${url%%[/?#]*}"
+    url="$(url_get_authority "$url")"
 
     case "$url" in
     \[*\]:*)

@@ -53,10 +53,16 @@ get_tproxy_route_inbounds() {
 # Comma-separated tags of the per-section inbounds that fully routed MAC addresses are
 # sent to. Filled in by sing_box_configure_inbounds, before any route rule is built
 MAC_ROUTED_INBOUND_TAGS=""
+# Tags of the per-section DNS inbounds fully routed devices' queries are redirected to
+MAC_DNS_INBOUND_TAGS=""
 MAC_ROUTED_SECTION_COUNT=0
 
 get_mac_inbound_tag() {
     echo "$1-mac-in"
+}
+
+get_mac_dns_inbound_tag() {
+    echo "$1-dns-in"
 }
 
 get_mac6_inbound_tag() {
@@ -79,26 +85,13 @@ is_mac_address() {
 }
 
 #######################################
-# Whether a section's tunnel is declared to carry IPv6 (the tunnel_ipv6 option). Only
-# meaningful while IPv6 support is on: with it off nothing is IPv6 anyway.
-#######################################
-section_tunnel_lacks_ipv6() {
-    local section="$1"
-
-    ipv6_enabled || return 1
-
-    local tunnel_ipv6
-    config_get_bool tunnel_ipv6 "$section" "tunnel_ipv6" 0
-    [ "$tunnel_ipv6" -eq 0 ]
-}
-
-#######################################
-# The DNS strategy sing-box must use when dialing through a section, or nothing when the
-# default is fine. Layer-3 tunnels (VPN interfaces, WireGuard/AmneziaWG endpoints) send
-# packets as they are, so a name resolved to IPv6 is dialed over IPv6 even when the
-# tunnel has no IPv6 route, and the connection dies. The global DNS strategy prefers
-# IPv6 once IPv6 support is on, hence the pin to IPv4 for such tunnels. Proxy protocols
-# hand the name to the server and are left alone.
+# The DNS strategy sing-box uses when dialing a name through a section, or nothing when
+# the default is fine. Layer-3 tunnels (VPN interfaces, WireGuard/AmneziaWG endpoints)
+# send packets as they are, so whether IPv6 works depends on the tunnel, which mudakop
+# does not know and does not test. prefer_ipv4 works either way: IPv4 is used whenever
+# the site has it, and IPv6 only for IPv6-only sites, which then work exactly when the
+# tunnel carries IPv6. Proxy protocols hand the name to the server and are left alone.
+# With IPv6 support off the global strategy is ipv4_only already.
 #######################################
 section_dial_strategy() {
     local section="$1"
@@ -113,7 +106,7 @@ section_dial_strategy() {
     *) return 0 ;;
     esac
 
-    section_tunnel_lacks_ipv6 "$section" && echo "ipv4_only"
+    ipv6_enabled && echo "prefer_ipv4"
 }
 
 is_fully_routed_connection_type() {
@@ -515,11 +508,23 @@ dnsmasq_configure() {
     /etc/init.d/dnsmasq restart
 }
 
+dnsmasq_points_to_sing_box() {
+    local server
+    for server in $(uci_get "dhcp" "@dnsmasq[0]" "server"); do
+        [ "$server" = "$SB_DNS_INBOUND_ADDRESS" ] && return 0
+    done
+
+    return 1
+}
+
 dnsmasq_restore() {
     log "Restoring the dnsmasq configuration"
     local shutdown_correctly
     config_get shutdown_correctly "settings" "shutdown_correctly"
-    if [ "$shutdown_correctly" -eq 1 ]; then
+    # The flag alone is not enough: a start or reload that aborted half-way leaves it at 1
+    # while dnsmasq still forwards to sing-box, and skipping the restore then leaves the
+    # whole network without DNS once sing-box is stopped. What dnsmasq is set to decides
+    if [ "$shutdown_correctly" -eq 1 ] && ! dnsmasq_points_to_sing_box; then
         log "Previous shutdown of mudakop was correct, reconfiguration of dnsmasq is not required"
         return 0
     fi
@@ -880,17 +885,36 @@ configure_mac_routed_inbound_handler() {
 
     nft_route_macs_to_port "$section_macs" "$port" "ip"
 
+    # DNS goes to a plain listener of its own rather than through tproxy: tproxy makes
+    # sing-box answer UDP from sockets bound to the router's address and port 53, and
+    # those then swallow queries meant for dnsmasq from every other client. A redirect
+    # leaves the router's port 53 to dnsmasq and lets conntrack rewrite the replies.
+    # The listener tag tells sing-box which section the query belongs to
+    local dns_port dns_tag
+    dns_port=$((SB_MAC_DNS_BASE_PORT + MAC_ROUTED_SECTION_COUNT - 1))
+    dns_tag="$(get_mac_dns_inbound_tag "$section")"
+    config=$(sing_box_cm_add_direct_inbound "$config" "$dns_tag" "::" "$dns_port")
+    if [ -z "$MAC_DNS_INBOUND_TAGS" ]; then
+        MAC_DNS_INBOUND_TAGS="$dns_tag"
+    else
+        MAC_DNS_INBOUND_TAGS="$MAC_DNS_INBOUND_TAGS,$dns_tag"
+    fi
+    nft_redirect_mac_dns_to_port "$section_macs" "$dns_port"
+
     if ipv6_enabled; then
         config=$(sing_box_cm_add_tproxy_inbound "$config" "$tag6" "$SB_TPROXY6_INBOUND_ADDRESS" "$port" true true)
         MAC_ROUTED_INBOUND_TAGS="$MAC_ROUTED_INBOUND_TAGS,$tag6"
 
-        if ! section_tunnel_lacks_ipv6 "$section"; then
-            nft_route_macs_to_port "$section_macs" "$port" "ip6"
-        else
-            # IPv6 to fake IPs is still caught by the shared rules and works (sing-box
-            # dials the domain over IPv4); everything else is refused at connect time
-            nft_reject_ipv6_from_macs "$section_macs"
-        fi
+        # Their DNS answers are fake addresses (configure_fully_routed_dns_handler). The
+        # IPv4 ones are covered by the rule above; the IPv6 ones must reach this section's
+        # inbound too, not the shared one, or the fully routed rule would not match them
+        nft_route_mac_fakeip6_to_port "$section_macs" "$port"
+
+        # Real IPv6 only comes from apps that skip the router's DNS. It is refused at
+        # connect time, which makes them retry over IPv4 at once: that works through any
+        # tunnel, whether it carries IPv6 or not. Sending it into the tunnel instead would
+        # only work for tunnels with IPv6, and letting it out of the WAN would leak
+        nft_reject_ipv6_from_macs "$section_macs"
     fi
 }
 
@@ -1145,8 +1169,9 @@ configure_outbound_handler() {
         log "Connection type 'exclusion' detected for the $section section – no outbound will be created (handled via route rules)"
         ;;
     *)
-        log "Unknown connection type '$connection_type' for the $section section. Aborted." "fatal"
-        exit 1
+        # A half-configured section (LuCI saves a new one before its type is picked) must
+        # not take the whole service down, and DNS with it: skip just this section
+        log "Unknown connection type '$connection_type' for the $section section, skipping it" "error"
         ;;
     esac
 }
@@ -1314,10 +1339,78 @@ sing_box_configure_dns() {
 
     config=$(sing_box_cm_add_dns_reject_rule "$config" "query_type" "HTTPS")
     config=$(sing_box_cm_add_dns_reject_rule "$config" "domain_suffix" '"use-application-dns.net"')
+    # Must precede the fake IP rule, so fully routed clients never get fake addresses
+    configure_fully_routed_dns
+
     config=$(sing_box_cm_add_dns_route_rule "$config" "$SB_FAKEIP_DNS_SERVER_TAG" "$SB_FAKEIP_DNS_RULE_TAG")
     config=$(sing_box_cm_patch_dns_route_rule "$config" "$SB_FAKEIP_DNS_RULE_TAG" "rewrite_ttl" "$rewrite_ttl")
     service_domains=$(comma_string_to_json_array "$FAKEIP_TEST_DOMAIN,$CHECK_PROXY_IP_DOMAIN")
     config=$(sing_box_cm_patch_dns_route_rule "$config" "$SB_FAKEIP_DNS_RULE_TAG" "domain" "$service_domains")
+}
+
+#######################################
+# DNS for devices fully routed by MAC. Their queries to the router are diverted to their
+# section's own DNS inbound (nft_redirect_mac_dns_to_port), so sing-box can tell them apart
+# from everyone else's, which arrive through dnsmasq, and from other sections' devices.
+# Every name gets fake addresses, IPv4 and IPv6 alike. Connections to them end at
+# sing-box on the router whichever family the device picks, and sing-box dials the real
+# site by name, choosing the family itself (prefer_ipv4 for layer-3 tunnels, see
+# section_dial_strategy). The device's address family is thus decoupled from the
+# tunnel's: without IPv6 in the tunnel its IPv6 connections are carried over IPv4, with
+# it IPv6-only sites work too, and nothing has to know or test which case it is.
+# Query types other than A/AAAA get real answers from the section's resolver, and local
+# names and reverse lookups still go to dnsmasq, which knows the LAN hosts.
+#######################################
+SB_LOCAL_DNS_SERVER_TAG="local-dnsmasq"
+LOCAL_DNS_SUFFIXES='["lan","local","home.arpa","in-addr.arpa","ip6.arpa"]'
+
+configure_fully_routed_dns() {
+    [ -n "$MAC_DNS_INBOUND_TAGS" ] || return 0
+
+    local local_domain local_suffixes
+    local_domain="$(uci -q get dhcp.@dnsmasq[0].domain)"
+    local_suffixes="$LOCAL_DNS_SUFFIXES"
+    if [ -n "$local_domain" ]; then
+        local_suffixes="$(echo "$local_suffixes" | jq -c --arg d "$local_domain" '. + [$d] | unique')"
+    fi
+
+    config=$(sing_box_cm_add_udp_dns_server "$config" "$SB_LOCAL_DNS_SERVER_TAG" "127.0.0.1" 53)
+
+    local tag
+    tag="$(gen_id)"
+    config=$(sing_box_cm_add_dns_route_rule "$config" "$SB_LOCAL_DNS_SERVER_TAG" "$tag")
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "inbound" \
+        "$(comma_string_to_json_array "$MAC_DNS_INBOUND_TAGS")")
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "domain_suffix" "$local_suffixes")
+
+    config_foreach configure_fully_routed_dns_handler "section"
+}
+
+configure_fully_routed_dns_handler() {
+    local section="$1"
+
+    case ",$MAC_ROUTED_INBOUND_TAGS," in
+    *",$(get_mac_inbound_tag "$section"),"*) ;;
+    *) return 0 ;;
+    esac
+
+    local inbounds rewrite_ttl server tag
+    inbounds="$(get_mac_dns_inbound_tag "$section")"
+    config_get rewrite_ttl "settings" "dns_rewrite_ttl" "60"
+
+    tag="$(gen_id)"
+    config=$(sing_box_cm_add_dns_route_rule "$config" "$SB_FAKEIP_DNS_SERVER_TAG" "$tag")
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "inbound" "$inbounds")
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "query_type" '["A","AAAA"]')
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "rewrite_ttl" "$rewrite_ttl")
+
+    server="$(section_domain_resolver_tag "$section")"
+    [ -n "$server" ] || server="$SB_DNS_SERVER_TAG"
+    tag="$(gen_id)"
+    config=$(sing_box_cm_add_dns_route_rule "$config" "$server" "$tag")
+    config=$(sing_box_cm_patch_dns_route_rule "$config" "$tag" "inbound" "$inbounds")
+
+    log "Fully routed devices of '$section' get fake IPv4 and IPv6 addresses for every name" "debug"
 }
 
 sing_box_configure_route() {
@@ -1339,6 +1432,7 @@ sing_box_configure_route() {
     sniff_inbound_tags="$SB_TPROXY_INBOUND_TAG,$SB_DNS_INBOUND_TAG"
     ipv6_enabled && sniff_inbound_tags="$sniff_inbound_tags,$SB_TPROXY6_INBOUND_TAG"
     [ -n "$MAC_ROUTED_INBOUND_TAGS" ] && sniff_inbound_tags="$sniff_inbound_tags,$MAC_ROUTED_INBOUND_TAGS"
+    [ -n "$MAC_DNS_INBOUND_TAGS" ] && sniff_inbound_tags="$sniff_inbound_tags,$MAC_DNS_INBOUND_TAGS"
     sniff_inbounds=$(comma_string_to_json_array "$sniff_inbound_tags")
     config=$(sing_box_cm_sniff_route_rule "$config" "inbound" "$sniff_inbounds")
 
@@ -1371,6 +1465,27 @@ sing_box_configure_route() {
     config_foreach include_source_ips_in_routing_handler "section"
 
     config_foreach configure_routing_for_section_lists "section"
+
+    drop_unmatched_shared_rule "$SB_REJECT_RULE_TAG" "block"
+    drop_unmatched_shared_rule "$SB_EXCLUSION_RULE_TAG" "exclusion"
+    config=$(sing_box_cm_remove_unmatched_resolve_rules "$config")
+}
+
+#######################################
+# Removes a shared block or exclusion rule when none of the lists of its sections could
+# be used. Left in place it would match everything: rejecting, or sending direct, every
+# connection that reaches sing-box. The rule only exists when such sections are set up.
+#######################################
+drop_unmatched_shared_rule() {
+    local tag="$1"
+    local kind="$2"
+
+    echo "$config" | jq -e --arg service_tag "$SERVICE_TAG" --arg tag "$tag"         'any(.route.rules[]; .[$service_tag] == $tag)' > /dev/null || return 0
+
+    if ! sing_box_cm_route_rule_has_matchers "$config" "$tag"; then
+        config=$(sing_box_cm_remove_route_rule "$config" "$tag")
+        log "None of the lists of the $kind sections could be used, so nothing is handled as $kind. Check their list settings" "error"
+    fi
 }
 
 include_source_ips_in_routing_handler() {
@@ -1447,17 +1562,6 @@ finish_fully_routed_rule() {
     config_get_bool section_disable_quic "$section" "disable_quic" 0
     if [ "$section_disable_quic" -eq 1 ]; then
         config=$(sing_box_cm_add_quic_reject_rule "$config" "$rule_tag" "$(gen_id)")
-    fi
-
-    # With IPv6 enabled, a fully routed device gets real AAAA answers for unlisted domains
-    # and connects over IPv6. Many tunnels (a WireGuard/AmneziaWG peer with only a ULA
-    # address, for one) cannot carry that, and the connection then hangs until it times
-    # out. Unless the section says its tunnel handles IPv6, reset those connections so the
-    # client retries over IPv4, which still goes through the tunnel. Rejecting rather than
-    # letting IPv6 bypass the tunnel keeps blocked sites from leaking out of the WAN
-    if section_tunnel_lacks_ipv6 "$section"; then
-        config=$(sing_box_cm_add_ipv6_reject_rule "$config" "$rule_tag" "$(gen_id)")
-        log "IPv6 of fully routed devices in '$section' is rejected so they fall back to IPv4" "debug"
     fi
 }
 
@@ -1549,8 +1653,8 @@ configure_routing_for_section_lists() {
         route_rule_tag="$SB_EXCLUSION_RULE_TAG"
         ;;
     *)
-        log "Unsupported '$section_connection_type' connection type. Skipping routing for '$section' section" "fatal"
-        exit 1
+        log "Unsupported '$section_connection_type' connection type. Skipping routing for '$section' section" "error"
+        return 0
         ;;
     esac
 
@@ -1585,6 +1689,19 @@ configure_routing_for_section_lists() {
         config_list_foreach "$section" "remote_subnet_lists" configure_remote_domain_or_subnet_list_handler \
             "subnets" "$section" "$route_rule_tag"
     fi
+
+    # Every list may have been dropped (missing files, dead URLs), which would leave a
+    # rule that matches all traffic. A proxy/VPN section then routes nothing by list; the
+    # shared block and exclusion rules are checked once all sections are done
+    case "$section_connection_type" in
+    proxy | vpn | amneziawg)
+        if ! sing_box_cm_route_rule_has_matchers "$config" "$route_rule_tag"; then
+            config=$(sing_box_cm_remove_route_rule "$config" "$route_rule_tag")
+            log "None of the lists of section '$section' could be used, so it routes nothing by list. Check its list settings" "error"
+            return 0
+        fi
+        ;;
+    esac
 
     # Endpoints are raw IP tunnels with no in-protocol domain passthrough, so the
     # destination has to be resolved before sing-box dials into them. That conversion is
@@ -1750,6 +1867,47 @@ import_local_subnets_list_handler() {
         "$NFT_COMMON_V6_SET_NAME"
 }
 
+#######################################
+# Succeeds only when a remote URL definitely does not exist (HTTP 404 or 410). sing-box
+# treats a rule set it cannot fetch at startup as fatal, so a single mistyped list URL
+# would keep it from starting and take DNS down for the whole network.
+# Anything short of a definite answer (timeouts, no route, redirects, other errors)
+# counts as "may exist", so a flaky network never silently drops a good list.
+# The host is resolved through the bootstrap server: during a start or reload sing-box,
+# which normally answers the router's own queries, is not running yet.
+#######################################
+remote_url_is_missing() {
+    local url="$1"
+
+    local host scheme port bootstrap_dns_server ip code resolve_ip
+    host="$(url_get_host "$url")"
+    [ -n "$host" ] || return 1
+
+    case "$url" in
+    https://*) port=443 ;;
+    http://*) port=80 ;;
+    *) return 1 ;;
+    esac
+
+    config_get bootstrap_dns_server "settings" "bootstrap_dns_server" "77.88.8.8"
+    if is_ipv4 "$host" || is_ipv6 "$host"; then
+        ip="$host"
+    else
+        ip="$(nslookup "$host" "$bootstrap_dns_server" 2> /dev/null |
+            awk '/^Name:/ { n = 1 } n && /^Address/ && $2 !~ /:/ { print $2; exit }')"
+    fi
+    [ -n "$ip" ] || return 1
+
+    resolve_ip="$ip"
+    is_ipv6 "$ip" && resolve_ip="[$ip]"
+    code="$(curl -s -o /dev/null -I -m 8 --resolve "$host:$port:$resolve_ip" -w '%{http_code}' "$url")"
+
+    case "$code" in
+    404 | 410) return 0 ;;
+    *) return 1 ;;
+    esac
+}
+
 configure_remote_domain_or_subnet_list_handler() {
     local url="$1"
     local type="$2"
@@ -1761,6 +1919,11 @@ configure_remote_domain_or_subnet_list_handler() {
     log "Detected file extension: '$file_extension'" "debug"
     case "$file_extension" in
     json | srs)
+        if remote_url_is_missing "$url"; then
+            log "Remote $type list '$url' in section '$section' does not exist (HTTP 404/410), skipping it. Fix the URL in the section settings" "error"
+            return 0
+        fi
+
         log "Creating a remote $type ruleset from the source URL" "info"
         local basename ruleset_tag format detour update_interval
         basename=$(url_get_basename "$url")
@@ -2247,6 +2410,48 @@ nft_route_macs_to_port() {
     nft insert rule inet "$NFT_TABLE_NAME" proxy meta nfproto "$nfproto" ether saddr "{ $macs }" \
         meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
         meta l4proto udp tproxy "$family" to "$tproxy_target" counter accept
+}
+
+#######################################
+# Sends connections from the given MAC addresses to fake IPv6 addresses into a
+# section's inbound. Inserted at the top of both chains, ahead of the shared fake IP
+# rules that would otherwise hand them to the shared inbound.
+# Arguments:
+#   macs: string, comma-separated MAC addresses
+#   port: integer, tproxy port of the section's inbound
+#######################################
+nft_route_mac_fakeip6_to_port() {
+    local macs="$1"
+    local port="$2"
+
+    local tproxy_target="[$SB_TPROXY6_INBOUND_ADDRESS]:$port"
+
+    nft insert rule inet "$NFT_TABLE_NAME" mangle iifname "@$NFT_INTERFACE_SET_NAME" ether saddr "{ $macs }" \
+        ip6 daddr "$SB_FAKEIP_INET6_RANGE" meta l4proto "{ tcp, udp }" meta mark set "$NFT_FAKEIP_MARK" counter
+
+    nft insert rule inet "$NFT_TABLE_NAME" proxy ether saddr "{ $macs }" ip6 daddr "$SB_FAKEIP_INET6_RANGE" \
+        meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
+        meta l4proto tcp tproxy ip6 to "$tproxy_target" counter accept
+    nft insert rule inet "$NFT_TABLE_NAME" proxy ether saddr "{ $macs }" ip6 daddr "$SB_FAKEIP_INET6_RANGE" \
+        meta mark \& "$NFT_FAKEIP_MARK" == "$NFT_FAKEIP_MARK" \
+        meta l4proto udp tproxy ip6 to "$tproxy_target" counter accept
+}
+
+#######################################
+# Redirects DNS queries that the given MAC addresses send to the router itself, over
+# IPv4 or IPv6, to a section's DNS inbound. "fib daddr type local" matches only the
+# router's own addresses, so a DNS server elsewhere on the LAN is left alone. The nat
+# chain runs ahead of fw4's own dstnat chain.
+# Arguments:
+#   macs: string, comma-separated MAC addresses
+#   port: integer, port of the section's DNS inbound
+#######################################
+nft_redirect_mac_dns_to_port() {
+    local macs="$1"
+    local port="$2"
+
+    nft add chain inet "$NFT_TABLE_NAME" fully_routed_dns         '{ type nat hook prerouting priority dstnat - 5; policy accept; }'
+    nft add rule inet "$NFT_TABLE_NAME" fully_routed_dns iifname "@$NFT_INTERFACE_SET_NAME"         ether saddr "{ $macs }" fib daddr type local meta l4proto "{ tcp, udp }" th dport 53         counter redirect to ":$port"
 }
 
 #######################################

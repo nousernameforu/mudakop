@@ -1050,8 +1050,3 @@ msgstr "Неизвестное устройство"
 msgid "Invalid MAC address"
 msgstr "Неверный MAC-адрес"
 
-msgid "Tunnel Carries IPv6"
-msgstr "Туннель пропускает IPv6"
-
-msgid "Turn on only if this tunnel has working IPv6. When off, sites are reached through it over IPv4 only, and IPv6 connections of fully routed devices are refused so they switch to IPv4 at once instead of hanging. Only matters when IPv6 support is enabled in the settings"
-msgstr "Включайте, только если в туннеле есть рабочий IPv6. При выключенной опции сайты через него открываются только по IPv4, а IPv6-соединения полностью маршрутизируемых устройств отклоняются, чтобы они сразу переходили на IPv4 вместо зависания. Имеет значение только при включённой поддержке IPv6 в настройках"

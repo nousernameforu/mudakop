@@ -52,6 +52,8 @@ SB_TPROXY6_INBOUND_PORT=1602
 # device is identified by the listener its traffic arrived on rather than by an IP
 # address. Ports are handed out upwards from here, one per such section
 SB_MAC_TPROXY_BASE_PORT=1610
+# Plain DNS listeners for the same sections, one port each, upwards from here
+SB_MAC_DNS_BASE_PORT=1660
 SB_DNS_INBOUND_TAG="dns-in"
 SB_DNS_INBOUND_ADDRESS="127.0.0.42"
 SB_DNS_INBOUND_PORT=53
